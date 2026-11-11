@@ -96,14 +96,11 @@ li em{font-style:italic}li strong{font-weight:600}
 .sec:active>span:first-child{transform:scale(.92)}
 .lang button:active,.gi:active{opacity:.6}
 .tabs button:active,.sbtn:active:not([disabled]){background-color:#cfd2d6}
-/* Next: a white disc with a gradient arc travelling round its rim */
+/* Next: a white disc whose arrow taps to the right */
 .nav{position:relative;z-index:0}
 .arrow.next:not([disabled]) .disc{background:#ffffff}
-.arrow.next:not([disabled]) .disc::before{content:'';position:absolute;left:-7px;top:-7px;right:-7px;bottom:-7px;border-radius:50%;pointer-events:none;
-background:conic-gradient(from 0deg,rgba(22,24,28,0) 0deg,rgba(22,24,28,0) 150deg,rgba(22,24,28,.35) 250deg,#16181c 360deg);
--webkit-mask:radial-gradient(farthest-side,rgba(0,0,0,0) calc(100% - 4.5px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,rgba(0,0,0,0) calc(100% - 4.5px),#000 calc(100% - 4px));
-animation:rim 1.5s linear infinite}
-@keyframes rim{to{transform:rotate(360deg)}}
+.arrow.next:not([disabled]) .disc svg{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{0%,55%,100%{transform:translateX(0)}75%{transform:translateX(6px)}}
 /* release: a short spring back, done in a fifth of a second */
 @keyframes pop{0%{transform:scale(.86)}55%{transform:scale(1.09)}100%{transform:scale(1)}}
 .arrow.pop .disc{animation:pop .2s ease-out}
@@ -156,4 +153,4 @@ animation:rim 1.5s linear infinite}
 .sbtn.dark{background:var(--char);color:#fff}
 .sbtn[disabled]{border-color:var(--rule);color:var(--rule)}
 .set-note{margin-top:22px;font-size:19px;line-height:1.4;color:var(--grey)}
-@media (prefers-reduced-motion:reduce){.arrow.next:not([disabled]) .disc::before,.arrow.pop .disc,.sec.pop>span{animation:none}.body.turn *{animation:none !important}}
+@media (prefers-reduced-motion:reduce){.arrow.next:not([disabled]) .disc svg,.arrow.pop .disc,.sec.pop>span{animation:none}.body.turn *{animation:none !important}}
