@@ -122,9 +122,12 @@
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { page.addEventListener(n, holdEnd); });
   document.addEventListener('touchmove', holdEnd, { passive: true });
   function checkServer(cb) {
-    if (!navigator.onLine) return cb({ offline: true });
-    fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (j) { cb({ server: j }); }).catch(function () { cb({ offline: true }); });
+    if (navigator.onLine === false) return cb({ offline: true, why: 'The tablet reports no internet connection.' });
+    var done = false, ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (done) return; done = true; if (ctl) ctl.abort(); cb({ offline: true, why: 'The server did not answer within 8 seconds.' }); }, 8000);
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store', signal: ctl ? ctl.signal : undefined }).then(function (r) { if (!r.ok) throw new Error('Server answered ' + r.status + '.'); return r.json(); })
+      .then(function (j) { if (done) return; done = true; clearTimeout(timer); cb({ server: j }); })
+      .catch(function (e) { if (done) return; done = true; clearTimeout(timer); cb({ offline: true, why: 'Could not reach the server. ' + (e && e.message ? e.message : '') }); });
   }
   function openSettings() {
     if (page.querySelector('.set')) return;
@@ -134,7 +137,7 @@
       '<dt>Last updated on this tablet</dt><dd>' + esc(fmtDT(+store.get('updatedAt') || 0)) + '</dd>' +
       '<dt>Version on the server</dt><dd data-s="srv">Checking\u2026</dd>' +
       '<dt>Saved for offline use</dt><dd data-s="off">\u2026</dd></dl>' +
-      '<div class="set-btns"><button type="button" class="sbtn" data-s="upd" disabled>Update now</button>' +
+      '<div class="set-btns"><button type="button" class="sbtn" data-s="upd">Update now</button>' +
       '<button type="button" class="sbtn" data-s="chk">Check again</button>' +
       '<button type="button" class="sbtn" data-s="p1">Back to page 1, English</button>' +
       '<button type="button" class="sbtn dark" data-s="close">Close</button></div>' +
@@ -146,12 +149,11 @@
     page.appendChild(o);
     var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
     function check() {
-      q('srv').textContent = 'Checking\u2026'; q('upd').disabled = true;
+      q('srv').textContent = 'Checking\u2026 (' + fmtT(Date.now()) + ')';
       checkServer(function (r) {
-        if (r.offline) { q('srv').innerHTML = 'No internet. Not checked.'; return; }
+        if (r.offline) { q('srv').innerHTML = '<strong>Not checked.</strong> ' + esc(r.why) + ' <span>(' + fmtT(Date.now()) + ')</span>'; q('upd').textContent = 'Try update anyway'; return; }
         var same = r.server.version === V.version;
         q('srv').innerHTML = esc(r.server.version) + ' <span>(' + esc(r.server.built) + ')</span><br><strong>' + (same ? 'Same as this tablet. Up to date.' : 'Different from this tablet. Press Update now.') + '</strong>';
-        q('upd').disabled = false;
         q('upd').textContent = same ? 'Reload anyway' : 'Update now';
       });
     }
@@ -171,13 +173,21 @@
       else if (k === 'chk') { check(); offlineCount(); }
       else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); logResume(); }
       else if (k === 'upd') {
-        if (!navigator.onLine) { check(); return; }
         b.disabled = true; b.textContent = 'Updating\u2026';
+        /* only wipe the saved copy after the server has really answered, so a tablet without internet keeps working */
+        checkServer(function (r) {
+          if (r.offline) { b.disabled = false; b.textContent = 'Try update anyway'; q('srv').innerHTML = '<strong>Update not done.</strong> ' + esc(r.why) + ' The saved copy is untouched. <span>(' + fmtT(Date.now()) + ')</span>'; return; }
+          doUpdate();
+        });
+      }
+    });
+    function doUpdate() {
+      {
         var wipe = window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (x) { return caches.delete(x); })); }) : Promise.resolve();
         var unreg = navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }) : Promise.resolve();
         Promise.all([wipe, unreg]).catch(function () {}).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
       }
-    });
+    }
     q('log').innerHTML = logHtml();
     check(); offlineCount();
   }
