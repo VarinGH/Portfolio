@@ -1,6 +1,6 @@
 /* Offline support. Online: always fetch the newest files and refresh the stored copy. Offline: serve the stored copy. */
-var CACHE = 'portfolio-v5';
-var FILES = ['./', 'index.html', 'app.css', 'app.js', 'content.js', 'anims.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
+var CACHE = 'portfolio-v7';
+var FILES = ['./', 'index.html', 'app.css', 'app.js', 'version.js', 'content.js', 'anims.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/source-serif-4-latin-400-normal.woff2', 'fonts/source-serif-4-latin-400-italic.woff2', 'fonts/source-serif-4-latin-600-normal.woff2',
   'fonts/source-sans-3-latin-400-normal.woff2', 'fonts/source-sans-3-latin-600-normal.woff2', 'fonts/source-sans-3-latin-700-normal.woff2',
   'fonts/sarabun-thai-400-normal.woff2', 'fonts/sarabun-thai-600-normal.woff2', 'fonts/sarabun-thai-700-normal.woff2'];
@@ -14,6 +14,7 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   var r = e.request;
   if (r.method !== 'GET' || new URL(r.url).origin !== location.origin) return;
+  if (/version\.json/.test(r.url)) return; /* the version check always goes to the server, never to the stored copy */
   if (r.headers.has('range')) { /* video seeking: answer from the stored copy when there is one */
     e.respondWith(caches.match(r.url, { ignoreSearch: true }).then(function (hit) { return hit || fetch(r); }));
     return;

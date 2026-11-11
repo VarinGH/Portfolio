@@ -2,8 +2,7 @@
   var D = window.PORTFOLIO, P = D.pages, N = P.length;
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   var lang = store.get('lang') === 'th' ? 'th' : 'en';
-  var hinted = store.get('hinted') === '1';
-  var cur = 0, mediaIdx = 0, stopAnim = null;
+  var cur = 0, mediaIdx = 0, stopAnim = null, turn = '';
   var page = document.getElementById('page'), stage = document.getElementById('stage');
 
   function tx(v) { return v == null ? '' : (typeof v === 'string' ? v : (v[lang] || v.en || '')); }
@@ -79,21 +78,22 @@
     });
     secs += '</div>';
     return '<nav class="nav" aria-label="Pages"><button type="button" class="arrow" data-go="' + (cur - 1) + '" aria-label="' + esc(u.prev) + '"' + (cur === 0 ? ' disabled' : '') + '>' + CH_L + '</button>' + secs +
-      '<button type="button" class="arrow' + (!hinted && cur < N - 1 ? ' pulse' : '') + '" data-go="' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '>' + CH_R + '</button></nav>' +
+      '<button type="button" class="arrow' + (cur < N - 1 ? ' pulse' : '') + '" data-go="' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '>' + CH_R + '</button></nav>' +
       '<div class="ft"><span>' + esc(u.foot) + '</span><span>' + esc(u.page) + ' ' + (cur + 1) + ' ' + esc(u.of) + ' ' + N + '</span></div>';
   }
   function render() {
     var u = D.ui[lang], p = P[cur];
     document.documentElement.lang = lang;
     if (stopAnim) { stopAnim(); stopAnim = null; }
-    page.innerHTML = header(u) + body(p, u) + nav(u);
+    page.innerHTML = header(u) + '<div class="body' + (turn ? ' turn ' + turn : '') + '">' + body(p, u) + '</div>' + nav(u);
+    turn = '';
     var an = page.querySelector('[data-anim]');
     if (an && window.ANIMS && window.ANIMS[an.dataset.anim]) stopAnim = window.ANIMS[an.dataset.anim](an);
     var v = page.querySelector('video'); if (v) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
   }
   function go(i, fromNext) {
     if (i < 0 || i >= N || i === cur) return;
-    if (fromNext && !hinted) { hinted = true; store.set('hinted', '1'); }
+    turn = i > cur ? 'fwd' : 'back';
     cur = i; mediaIdx = 0;
     try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {}
     render();
@@ -112,6 +112,66 @@
     o.addEventListener('click', function (e) { e.stopPropagation(); o.remove(); });
     page.appendChild(o);
   }
+  /* hidden settings page: press and hold the name at the top left for 1.5 seconds */
+  var V = window.APP_VERSION || { version: '?', built: '' }, holdT = null;
+  function holdStart(e) { if (e.target.closest('.hd-id')) { clearTimeout(holdT); holdT = setTimeout(openSettings, 1500); } }
+  function holdEnd() { clearTimeout(holdT); }
+  page.addEventListener('pointerdown', holdStart);
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { page.addEventListener(n, holdEnd); });
+  document.addEventListener('touchmove', holdEnd, { passive: true });
+  function checkServer(cb) {
+    if (!navigator.onLine) return cb({ offline: true });
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) { cb({ server: j }); }).catch(function () { cb({ offline: true }); });
+  }
+  function openSettings() {
+    if (page.querySelector('.set')) return;
+    var o = document.createElement('div'); o.className = 'set';
+    o.innerHTML = '<h1>Settings</h1><div class="role">Hidden page. Interviewers do not see this.</div>' +
+      '<dl><dt>Version on this tablet</dt><dd>' + esc(V.version) + ' <span>(' + esc(V.built) + ')</span></dd>' +
+      '<dt>Version on the server</dt><dd data-s="srv">Checking\u2026</dd>' +
+      '<dt>Saved for offline use</dt><dd data-s="off">\u2026</dd></dl>' +
+      '<div class="set-btns"><button type="button" class="sbtn" data-s="upd" disabled>Update now</button>' +
+      '<button type="button" class="sbtn" data-s="chk">Check again</button>' +
+      '<button type="button" class="sbtn" data-s="p1">Back to page 1, English</button>' +
+      '<button type="button" class="sbtn dark" data-s="close">Close</button></div>' +
+      '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>';
+    page.appendChild(o);
+    var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
+    function check() {
+      q('srv').textContent = 'Checking\u2026'; q('upd').disabled = true;
+      checkServer(function (r) {
+        if (r.offline) { q('srv').innerHTML = 'No internet. Not checked.'; return; }
+        var same = r.server.version === V.version;
+        q('srv').innerHTML = esc(r.server.version) + ' <span>(' + esc(r.server.built) + ')</span><br><strong>' + (same ? 'Same as this tablet. Up to date.' : 'Different from this tablet. Press Update now.') + '</strong>';
+        q('upd').disabled = false;
+        q('upd').textContent = same ? 'Reload anyway' : 'Update now';
+      });
+    }
+    function offlineCount() {
+      if (!window.caches) { q('off').textContent = 'Not available in this browser'; return; }
+      caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.open(k).then(function (c) { return c.keys(); }); })); })
+        .then(function (ls) { var n = 0; ls.forEach(function (l) { n += l.length; }); q('off').textContent = n ? n + ' files saved. The app can run without internet.' : 'Nothing saved yet. Open the app once with internet.'; })
+        .catch(function () { q('off').textContent = 'Could not read'; });
+    }
+    o.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var b = e.target.closest('button'); if (!b || b.disabled) return;
+      var k = b.dataset.s;
+      if (k === 'close') o.remove();
+      else if (k === 'chk') { check(); offlineCount(); }
+      else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); }
+      else if (k === 'upd') {
+        if (!navigator.onLine) { check(); return; }
+        b.disabled = true; b.textContent = 'Updating\u2026';
+        var wipe = window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (x) { return caches.delete(x); })); }) : Promise.resolve();
+        var unreg = navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }) : Promise.resolve();
+        Promise.all([wipe, unreg]).catch(function () {}).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
+      }
+    });
+    check(); offlineCount();
+  }
+  /* each time the app comes to the front with internet, compare versions quietly; the result shows in Settings */
   /* swipe left / right to turn the page */
   var sx = null, sy = null;
   document.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
@@ -145,6 +205,4 @@
   render();
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
-  /* ?reset in the address clears the "Next" hint and language, for setting up before handing over */
-  if (/[?&]reset/.test(location.search)) { store.set('hinted', '0'); store.set('lang', 'en'); }
 })();
