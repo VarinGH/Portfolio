@@ -11,10 +11,10 @@
     ['bottle', 'Bottle', 'Vigamox Alcon Drop-Tainer, round, natural LDPE with a tan cap. Modelled 18.5 mm wide and 52 mm tall with the cap.'],
     ['camera', 'Camera + IR', 'OV2640 camera, 8 \u00d7 8 mm, on a post at the shoulder, tilted 20\u00b0 toward the tip. An 850 nm infrared LED lights the eye. A long ribbon runs down to the base.'],
     ['board', 'XIAO board', 'Seeed XIAO ESP32-S3 Sense, 21 \u00d7 17.8 mm, lying flat in the base. Records a short clip of each instillation and stores it on microSD.'],
-    ['battery', 'Battery', '150 mAh LiPo cell, 25 \u00d7 20 \u00d7 4 mm, under the board. The product version moves to a CR2450 coin cell with a supercapacitor.'],
+    ['battery', 'Button cell', 'CR2450 lithium button cell, 24.5 mm across and 5 mm thick, under the board. A supercapacitor is planned beside it to carry the camera burst.'],
     ['accel', 'Accelerometer', 'ADXL362 runs all the time and wakes the board when the bottle is held upside down for about a second.'],
     ['clock', 'Clock', 'DS3231 real-time clock stamps every event. Nothing is transmitted: the clinic reads the device on a dock.'],
-    ['cradle', 'Cradle', 'Printed TPU cradle: two bands, front spine, back pad for the breakouts, camera post, and a 31 \u00d7 23.6 \u00d7 14 mm base box.']
+    ['cradle', 'Cradle', 'Printed TPU cradle: two bands, front spine, back pad for the breakouts, camera post, and a 31 \u00d7 26 \u00d7 14 mm base box.']
   ];
   /* which way the camera should face to see each unit (radians around the Y axis; 0 = front, camera side) */
   var FACE = { all: null, bottle: 0.7, camera: 0.35, board: 2.3, battery: -0.9, accel: Math.PI + 0.35, clock: Math.PI - 0.35, cradle: 1.0 };
@@ -38,7 +38,7 @@
     function mat(c, o) { var m = new T.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.6, metalness: 0 }, o || {})); m.color.convertSRGBToLinear(); return m; }
     function phys(c, o) { var m = new T.MeshPhysicalMaterial(Object.assign({ color: c, roughness: 0.5, metalness: 0 }, o || {})); m.color.convertSRGBToLinear(); return m; }
     var C = { ldpe: 0xf3f1e8, liquid: 0xc9d34e, label: 0xfbfbf9, cap: 0xb48f62, pcb: 0x141619, gold: 0xe0b552, steel: 0xc9cdd2, chip: 0x18191c,
-      flex: 0xc07a22, red: 0xc0222c, blue: 0x1c4ea6, lipo: 0xc4c8cc, kapton: 0xd08d18, cradle: 0xe7e7e2, led: 0xe8eefb, cone: 0x3d8bff };
+      flex: 0xc07a22, red: 0xc0222c, blue: 0x1c4ea6, kapton: 0xd08d18, cradle: 0xe7e7e2, led: 0xe8eefb, cone: 0x3d8bff };
     var WIRE = [0xd23b3b, 0x222428, 0xe2b100, 0x2f9e55, 0x2f6fd0, 0xf2f2f2];
     var M = {
       pcb: function () { return phys(C.pcb, { roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.35 }); },
@@ -74,7 +74,7 @@
     var P = { Dia: 18.5, H: 27, T: 52 };
     var R = P.Dia / 2, H = P.H, SH = 4, CAPH = 16, CAPR = 7.75, NR = 5.6, WALL = 1.6;
     var neckVis = Math.max(1.5, P.T - H - SH - CAPH), yNeck = H + SH, yCap = yNeck + neckVis, yTop = yCap + CAPH, yTip = yTop - 1.5;
-    var BH = 14, TW = 31, TD = 23.6, yF = -BH + 1.2, yX = yF + 4.6;
+    var BH = 14, TW = 31, TD = 26, yF = -BH + 1.2, yX = yF + 4.6;
     var centerY = (yTop - BH) / 2;
 
     /* ---- bottle: round natural LDPE body, greenish-yellow solution, blank label, tan cap */
@@ -129,10 +129,26 @@
     var xg = new T.Group(); xiao.rotation.x = -Math.PI / 2; xg.add(xiao); xg.rotation.y = Math.PI; xg.position.set(-3.2, yX, 0); root.add(xg); U.board.push(xg);
     tag(xg, 9, 6, 0, 'XIAO ESP32-S3 Sense, 21 \u00d7 17.8', 'board');
 
-    /* ---- LiPo under the board */
-    var lipo = new T.Group(); root.add(lipo); U.battery.push(lipo); lipo.userData.off = V(0, -14, 0);
-    lipo.add(box(25, 4, 20, mat(C.lipo, { metalness: 0.85, roughness: 0.38 }), -1, yF + 2, 0), box(3, 4.1, 20.1, phys(C.kapton, { roughness: 0.3, clearcoat: 0.6, transparent: true, opacity: 0.92 }), 12.9, yF + 2, 0));
-    tag(lipo, TW / 2, yF + 2, 4, 'LiPo 150 mAh, 25 \u00d7 20 \u00d7 4', 'battery');
+    /* ---- CR2450 button cell under the board (24.5 mm across, 5 mm thick). Its top touches the board. */
+    var CR = 12.25, cy0 = yX - 2.5;
+    var coin = new T.Group(); root.add(coin); U.battery.push(coin); coin.userData.off = V(0, -14, 0);
+    var cell = new T.Group(); cell.position.set(0, cy0, 0); coin.add(cell);
+    var ct = document.createElement('canvas'); ct.width = ct.height = 512; var cg2 = ct.getContext('2d');
+    var cgr = cg2.createRadialGradient(256, 256, 20, 256, 256, 256); cgr.addColorStop(0, '#dcdfe2'); cgr.addColorStop(1, '#b4b9be'); cg2.fillStyle = cgr; cg2.fillRect(0, 0, 512, 512);
+    cg2.strokeStyle = 'rgba(255,255,255,.22)'; cg2.lineWidth = 1; for (var cr = 20; cr < 250; cr += 3) { cg2.beginPath(); cg2.arc(256, 256, cr, 0, 6.2832); cg2.stroke(); }
+    cg2.strokeStyle = 'rgba(55,61,68,.6)'; cg2.lineWidth = 3; cg2.beginPath(); cg2.arc(256, 256, 228, 0, 6.2832); cg2.stroke();
+    cg2.fillStyle = '#3a4046'; cg2.textAlign = 'center'; cg2.textBaseline = 'middle';
+    cg2.font = '700 64px "Source Sans 3",Arial,sans-serif'; cg2.fillText('+', 256, 118);
+    cg2.font = '700 80px "Source Sans 3",Arial,sans-serif'; cg2.fillText('CR2450', 256, 230);
+    cg2.font = '600 56px "Source Sans 3",Arial,sans-serif'; cg2.fillText('3 V  LITHIUM', 256, 312);
+    var cTex = new T.CanvasTexture(ct); cTex.encoding = T.sRGBEncoding; cTex.anisotropy = 8;
+    var canM = phys(0xd6dade, { metalness: 0.7, roughness: 0.32, envMapIntensity: 1.7 });
+    cell.add(cyl(CR, CR, 4.6, canM, 0, 0.2, 0, 72));
+    var topFace = new T.Mesh(new T.CircleGeometry(CR - 0.35, 72), new T.MeshStandardMaterial({ map: cTex, metalness: 0.35, roughness: 0.42, envMapIntensity: 1.2 })); topFace.rotation.x = -Math.PI / 2; topFace.position.y = 2.51; cell.add(topFace);
+    var rim = new T.Mesh(new T.TorusGeometry(CR - 0.35, 0.35, 12, 72), canM); rim.rotation.x = Math.PI / 2; rim.position.y = 2.15; cell.add(rim);
+    cell.add(cyl(CR - 1.0, CR - 1.0, 0.3, mat(0x15171a, { roughness: 0.75 }), 0, -2.25, 0, 72));  /* black gasket under the can */
+    cell.add(cyl(CR - 2.6, CR - 2.6, 0.25, canM, 0, -2.375, 0, 72));                                /* negative cap */
+    tag(cell, CR, 2.6, 5, 'CR2450 button cell, 24.5 × 5', 'battery');
 
     /* ---- camera head and IR LED at the shoulder, ribbon down to the base */
     var cam = new T.Group(), blk = mat(0x101113, { roughness: 0.45 });
@@ -181,7 +197,7 @@
       wires.add(wire([V(xp2, yA - 5.2, zp), V(xs, yA - 8, zp - 0.6), V(xs, 2, zp - 0.2), V(xs * 0.95, -3.5, zw - 1.2), V(xe2, yX + 3, zw + 0.5), V(xe2, yX + (s < 3 ? 1.2 : 0), s < 3 ? -8.45 : -6)], WIRE[(s + 2) % 6])); }
     [[-10.27, 5.08, 0], [-7.73, 2.54, 1]].forEach(function (w) { var p = V(w[0], -5.4, 0).applyMatrix4(cam.matrix), xe3 = -w[1] - 3.2;
       wires.add(wire([p, V(p.x + 0.4, p.y - 3, p.z - 1), V(xe3, H - 9, zRun + 0.2), V(xe3, 2, zRun), V(xe3, yX + 3.2, TD / 2 + 0.6), V(xe3, yX + 1.2, 8.45)], WIRE[w[2]])); });
-    [[1, 0], [-1, 1]].forEach(function (w) { wires.add(wire([V(13, yF + 2, w[0] * 2), V(14.2, yF + 3.6, w[0] * 2), V(11, yX - 0.4, w[0] * 1.5), V(6.5, yX - 0.1, w[0] * 1.27)], WIRE[w[1]])); });
+    [[1, 0], [-1, 1]].forEach(function (w) { wires.add(wire([V(CR + 0.1, cy0 + 0.5, w[0] * 2), V(CR + 1.9, cy0 + 1.8, w[0] * 2), V(11, yX - 0.4, w[0] * 1.5), V(6.5, yX - 0.1, w[0] * 1.27)], WIRE[w[1]])); });
 
     /* ---- the eye in use, 25 mm above the tip */
     var eye = new T.Group(); root.add(eye); eye.visible = false;
@@ -211,7 +227,7 @@
     unitList.push(wireUnit);
 
     return { renderer: renderer, canvas: canvas, scene: scene, camera: camera, root: root, units: unitList, tags: tags, labelsEl: labelsEl,
-      parts: [cap, tray, lipo, ga, gr], wires: wires, eye: eye, cone: cone, shadow: shadow, BH: BH, centerY: centerY };
+      parts: [cap, tray, coin, ga, gr], wires: wires, eye: eye, cone: cone, shadow: shadow, BH: BH, centerY: centerY };
   }
 
   window.ANIMS.eyedrop = function (frame) {
@@ -220,29 +236,43 @@
     var T = THREE, cam = S.camera, renderer = S.renderer, canvas = S.canvas;
     frame.classList.add('ed3');
     var ui = document.createElement('div'); ui.className = 'ed3-ui';
-    ui.innerHTML = '<div class="ed3-list" role="group" aria-label="Explore the units"><span class="ed3-h">Explore</span>' +
+    ui.innerHTML = '<div class="ed3-list" role="group" aria-label="Explore the units"><div class="ed3-h">Explore</div>' +
       UNITS.map(function (u) { return '<button type="button" data-u="' + u[0] + '" aria-pressed="' + (u[0] === 'all') + '">' + u[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="ed3-tools"><button type="button" data-t="explode" aria-pressed="false">Explode</button><button type="button" data-t="use" aria-pressed="false">In use</button><button type="button" data-t="labels" aria-pressed="false">Labels</button></div>' +
+      '<div class="ed3-tools"><button type="button" data-t="explode" aria-pressed="false">Explode</button><i></i><button type="button" data-t="use" aria-pressed="false">In use</button><i></i><button type="button" data-t="labels" aria-pressed="false">Labels</button></div>' +
       '<div class="ed3-card"><b></b><span></span></div>' +
-      '<div class="ed3-hint">Drag to turn \u00b7 pinch to zoom</div>';
+      '<div class="ed3-hint">Drag to turn · pinch to zoom</div>';
     frame.appendChild(canvas); frame.appendChild(S.labelsEl); frame.appendChild(ui);
-    var card = ui.querySelector('.ed3-card'), cardB = card.querySelector('b'), cardS = card.querySelector('span');
+    var card = ui.querySelector('.ed3-card'), cardB = card.querySelector('b'), cardS = card.querySelector('span'), hint = ui.querySelector('.ed3-hint');
 
     var st = { sel: 'all', explode: false, use: false, labels: false };
-    var th = 0.75, ph = 1.2, dist = 150, base = 150, zoom = 1, e = 0, u = 0;
-    var tgt = new T.Vector3(0, S.centerY, 0), tgtGoal = tgt.clone(), distGoal = 150, thGoal = null, hold = 0, idle = 0, last = 0;
-    var raf = 0, alive = true, box3 = new T.Box3(), bx = new T.Box3(), tmp = new T.Vector3();
+    /* Everything that moves is a spring or has friction, so nothing jumps: {x: value, v: speed} */
+    function sp(x) { return { x: x, v: 0 }; }
+    function stepS(o, goal, k, z, h) { o.v += (k * (goal - o.x) - 2 * z * Math.sqrt(k) * o.v) * h; o.x += o.v * h; }
+    var A = sp(0.75), P = sp(1.2), Z = sp(1), E = sp(0), CK = sp(0), D = sp(150), TX = sp(0), TY = sp(S.centerY), TZ = sp(0);
+    var zmGoal = 1, distGoal = 150, gx = 0, gy = S.centerY, gz = 0;
+    var seek = null;           /* azimuth the model is turning to after a unit is tapped */
+    var autoV = 0, quiet = 20; /* slow spin speed; seconds since the last touch */
+    var AUTO = 0.26, RESUME = 20, PH_MIN = 0.3, PH_MAX = 2.5, ZM_MIN = 0.55, ZM_MAX = 2.2, SENS = 0.011;
+    var raf = 0, alive = true, last = 0, box3 = new T.Box3(), bx = new T.Box3(), tmp = new T.Vector3();
+    var W = 0, Hh = 0, PANEL = 150, sc = 1, base = 150;
 
     function unitInfo(id) { for (var i = 0; i < UNITS.length; i++) if (UNITS[i][0] === id) return UNITS[i]; }
     function setCard() { var info = unitInfo(st.sel); cardB.textContent = info[1]; cardS.textContent = info[2]; card.classList.toggle('on', st.sel !== 'all'); }
+    function applyFade(un) {
+      var k = 0.1 + 0.9 * un.f;
+      un.mats.forEach(function (m) {
+        var d = m.userData, tr = d.t0 || un.f < 0.999;
+        if (m.transparent !== tr) { m.transparent = tr; m.needsUpdate = true; }
+        m.opacity = d.o0 * k; m.depthWrite = d.d0 && un.f >= 0.999;
+      });
+    }
     function select(id) {
       st.sel = id;
       S.units.forEach(function (un) { un.ft = (id === 'all' || un.id === id) ? 1 : 0; });
       ui.querySelectorAll('[data-u]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.u === id)); });
-      if (id !== 'all' && FACE[id] != null) { var f = FACE[id], d = f - th; d = Math.atan2(Math.sin(d), Math.cos(d)); thGoal = th + d; }
-      else thGoal = null;
-      hold = id === 'all' ? 0 : 5.5; zoom = 1;
-      setCard();
+      if (id !== 'all' && FACE[id] != null) { var d = FACE[id] - A.x; d = Math.atan2(Math.sin(d), Math.cos(d)); seek = A.x + d; A.v *= 0.3; quiet = 0; }
+      else { seek = null; if (id === 'all') quiet = RESUME; } /* Overview lets the slow spin carry on */
+      zmGoal = 1; setCard();
     }
     function toggle(k) {
       st[k] = !st[k];
@@ -252,92 +282,123 @@
     S.eye.visible = false; S.cone.visible = false;
     S.units.forEach(function (un) { un.f = un.ft = 1; applyFade(un); });
     setCard();
-
     ui.addEventListener('click', function (ev) {
       var b = ev.target.closest('button'); if (!b) return;
       if (b.dataset.u) select(b.dataset.u); else if (b.dataset.t) toggle(b.dataset.t);
     });
 
-    function applyFade(un) {
-      var k = 0.1 + 0.9 * un.f;
-      un.mats.forEach(function (m) {
-        var d = m.userData, tr = d.t0 || un.f < 0.999;
-        if (m.transparent !== tr) { m.transparent = tr; m.needsUpdate = true; }
-        m.opacity = d.o0 * k; m.depthWrite = d.d0 && un.f >= 0.999;
-      });
+    /* Turning by hand: the model follows the finger 1:1, keeps its momentum when let go, and stays where it stops.
+       The slow spin only comes back after 20 s untouched. Past the pitch or zoom limits it resists, then springs back with a small bounce. */
+    var drag = false, pinching = false, lx = 0, ly = 0, lt = 0, pd = 0, wheelT = 0;
+    function down(x, y, t) { drag = true; lx = x; ly = y; lt = t; seek = null; A.v = 0; P.v = 0; quiet = 0; hint.classList.add('off'); }
+    function move(x, y, t) {
+      var dt = Math.max(0.004, (t - lt) / 1000), dth = -(x - lx) / sc * SENS, dph = -(y - ly) / sc * SENS; lx = x; ly = y; lt = t;
+      if ((P.x < PH_MIN && dph < 0) || (P.x > PH_MAX && dph > 0)) dph *= 0.3;
+      A.x += dth; P.x += dph;
+      A.v = A.v * 0.55 + (dth / dt) * 0.45; P.v = P.v * 0.55 + (dph / dt) * 0.45; /* finger speed, for the fling */
+      quiet = 0;
     }
-
-    /* orbit: mouse by pointer events, fingers by touch events; touches on the model never turn the page */
-    var drag = false, lx = 0, ly = 0, pinch = 0;
-    function poke() { idle = 3; thGoal = null; hold = 0; }
-    function onPD(ev) { if (ev.pointerType === 'touch') return; drag = true; lx = ev.clientX; ly = ev.clientY; poke(); try { canvas.setPointerCapture(ev.pointerId); } catch (x) {} }
-    function onPM(ev) { if (ev.pointerType === 'touch' || !drag) return; th -= (ev.clientX - lx) * 0.009; ph -= (ev.clientY - ly) * 0.009; lx = ev.clientX; ly = ev.clientY; poke(); }
-    function onPU(ev) { if (ev.pointerType === 'touch') return; drag = false; }
-    function onWheel(ev) { ev.preventDefault(); zoom *= 1 + Math.sign(ev.deltaY) * 0.08; poke(); }
-    function onTS(ev) { ev.stopPropagation(); if (ev.touches.length === 1) { drag = true; lx = ev.touches[0].clientX; ly = ev.touches[0].clientY; } pinch = 0; poke(); }
+    function up(t) { drag = false; if (t - lt > 90) { A.v = 0; P.v = 0; } }
+    function zoomBy(f) { var g = zmGoal * f; if (g < ZM_MIN || g > ZM_MAX) g = zmGoal * Math.pow(f, 0.35); zmGoal = g; quiet = 0; hint.classList.add('off'); }
+    function onPD(ev) { if (ev.pointerType === 'touch') return; down(ev.clientX, ev.clientY, ev.timeStamp); try { canvas.setPointerCapture(ev.pointerId); } catch (x) {} }
+    function onPM(ev) { if (ev.pointerType === 'touch' || !drag) return; move(ev.clientX, ev.clientY, ev.timeStamp); }
+    function onPU(ev) { if (ev.pointerType === 'touch') return; up(ev.timeStamp); }
+    function onWheel(ev) { ev.preventDefault(); zoomBy(1 + Math.sign(ev.deltaY) * 0.08); wheelT = 0.25; }
+    function onTS(ev) { ev.stopPropagation(); var t = ev.touches;
+      if (t.length === 1) down(t[0].clientX, t[0].clientY, ev.timeStamp);
+      else if (t.length === 2) { drag = false; pinching = true; pd = Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); A.v = 0; P.v = 0; quiet = 0; } }
     function onTM(ev) { ev.stopPropagation(); ev.preventDefault(); var t = ev.touches;
-      if (t.length === 1 && drag) { th -= (t[0].clientX - lx) * 0.009; ph -= (t[0].clientY - ly) * 0.009; lx = t[0].clientX; ly = t[0].clientY; }
-      if (t.length === 2) { var d = Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); if (pinch) zoom *= pinch / d; pinch = d; }
-      poke(); }
-    function onTE(ev) { ev.stopPropagation(); drag = false; pinch = 0; if (ev.touches.length === 1) { drag = true; lx = ev.touches[0].clientX; ly = ev.touches[0].clientY; } }
-    canvas.addEventListener('pointerdown', onPD); canvas.addEventListener('pointermove', onPM); canvas.addEventListener('pointerup', onPU);
+      if (t.length === 1 && drag) move(t[0].clientX, t[0].clientY, ev.timeStamp);
+      else if (t.length === 2) { var d = Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); if (pd) zoomBy(pd / d); pd = d; } }
+    function onTE(ev) { ev.stopPropagation(); var t = ev.touches;
+      if (t.length === 0) { up(ev.timeStamp); pinching = false; pd = 0; }
+      else if (t.length === 1) { pinching = false; pd = 0; drag = true; lx = t[0].clientX; ly = t[0].clientY; lt = ev.timeStamp; A.v = 0; P.v = 0; } }
+    canvas.addEventListener('pointerdown', onPD); canvas.addEventListener('pointermove', onPM); canvas.addEventListener('pointerup', onPU); canvas.addEventListener('pointercancel', onPU);
     canvas.addEventListener('wheel', onWheel, { passive: false });
-    canvas.addEventListener('touchstart', onTS, { passive: true }); canvas.addEventListener('touchmove', onTM, { passive: false }); canvas.addEventListener('touchend', onTE);
+    canvas.addEventListener('touchstart', onTS, { passive: true }); canvas.addEventListener('touchmove', onTM, { passive: false }); canvas.addEventListener('touchend', onTE); canvas.addEventListener('touchcancel', onTE);
     ui.addEventListener('touchstart', function (ev) { ev.stopPropagation(); }, { passive: true });
 
-    var W = 0, Hh = 0, PANEL = 150, ck = 0;
     function size() {
       var w = frame.clientWidth, h = frame.clientHeight; if (!w || !h) return;
-      var screenScale = frame.getBoundingClientRect().width / w;
-      var pr = Math.min(2.5, (window.devicePixelRatio || 1) * screenScale);
+      sc = frame.getBoundingClientRect().width / w || 1;
+      var pr = Math.min(2, (window.devicePixelRatio || 1) * sc);
       if (w !== W || h !== Hh || Math.abs(renderer.getPixelRatio() - pr) > 0.01) {
         W = w; Hh = h; renderer.setPixelRatio(pr); renderer.setSize(w, h, false);
-        cam.aspect = w / h;
-        cam.updateProjectionMatrix();
+        cam.aspect = w / h; cam.updateProjectionMatrix();
         base = 46 / Math.tan(cam.fov * Math.PI / 360); /* about 92 mm of height fills the frame */
       }
+    }
+    size(); D.x = base * 1.35; /* the camera glides in when the page opens */
+
+    function sim(h) {
+      if (!drag) {
+        if (seek != null) {
+          stepS(A, seek, 70, 0.8, h); stepS(P, 1.25, 70, 0.8, h);
+          if (Math.abs(seek - A.x) < 0.004 && Math.abs(A.v) < 0.03 && Math.abs(P.x - 1.25) < 0.004) seek = null;
+        } else {
+          A.x += A.v * h; A.v *= Math.exp(-3.2 * h); if (Math.abs(A.v) < 0.015) A.v = 0;
+          if (P.x < PH_MIN || P.x > PH_MAX) stepS(P, P.x < PH_MIN ? PH_MIN : PH_MAX, 150, 0.55, h);
+          else { P.x += P.v * h; P.v *= Math.exp(-4 * h); }
+        }
+      }
+      var spin = !drag && !pinching && seek == null && quiet >= RESUME;
+      autoV += ((spin ? AUTO : 0) - autoV) * (1 - Math.exp(-h * (spin ? 1.2 : 6)));
+      A.x += autoV * h;
+      stepS(Z, zmGoal, 260, 0.9, h);
+      stepS(E, st.explode ? 1 : 0, 110, 0.6, h);
+      stepS(CK, st.sel === 'all' ? 0 : 1, 90, 0.9, h);
+      stepS(D, distGoal * Z.x, 90, 0.85, h);
+      stepS(TX, gx, 90, 0.9, h); stepS(TY, gy, 90, 0.9, h); stepS(TZ, gz, 90, 0.9, h);
     }
 
     function frameLoop(now) {
       if (!alive) return;
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016; last = now;
       size();
-      /* explode and fades */
-      e += ((st.explode ? 1 : 0) - e) * (1 - Math.pow(0.001, dt));
+      if (!drag) quiet += dt;
+      if (wheelT > 0) wheelT -= dt; else if (!pinching) zmGoal = Math.max(ZM_MIN, Math.min(ZM_MAX, zmGoal));
+      /* where to look */
+      var e = Math.max(0, E.x);
+      if (st.sel === 'all') { gx = 0; gy = S.centerY + (st.use ? 18 : 0) - 9 * e; gz = 0; distGoal = base * (st.use ? 1.5 : 1) * (1 + 0.68 * e); }
+      else {
+        var un = null; for (var i = 0; i < S.units.length; i++) if (S.units[i].id === st.sel) un = S.units[i];
+        box3.makeEmpty(); un.groups.forEach(function (g) { g.updateWorldMatrix(true, true); g.traverseVisible(function (o) { if (o.isMesh && !o.userData.fixed) { if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); bx.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box3.union(bx); } }); });
+        box3.getCenter(tmp); gx = tmp.x; gy = tmp.y; gz = tmp.z; distGoal = Math.max(65, box3.getSize(tmp).length() * 3.0);
+      }
+      var n = Math.ceil(dt / 0.008), h = dt / n; for (var j = 0; j < n; j++) sim(h);
       S.parts.forEach(function (g) { g.position.copy(g.userData.off).multiplyScalar(e); });
       S.wires.visible = e < 0.03;
       S.shadow.position.y = -S.BH - 0.05 - 32 * e;
       S.units.forEach(function (un) { if (Math.abs(un.f - un.ft) > 0.001) { un.f += (un.ft - un.f) * (1 - Math.pow(0.002, dt)); if (Math.abs(un.f - un.ft) < 0.002) un.f = un.ft; applyFade(un); } });
-      /* where to look */
-      if (st.sel === 'all') { tgtGoal.set(0, S.centerY + (st.use ? 18 : 0) - 9 * e, 0); distGoal = base * (st.use ? 1.5 : 1) * (1 + 0.55 * e); }
-      else {
-        var un = null; for (var i = 0; i < S.units.length; i++) if (S.units[i].id === st.sel) un = S.units[i];
-        box3.makeEmpty(); un.groups.forEach(function (g) { g.updateWorldMatrix(true, true); g.traverseVisible(function (o) { if (o.isMesh && !o.userData.fixed) { if (!o.geometry.boundingBox) o.geometry.computeBoundingBox(); bx.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box3.union(bx); } }); });
-        box3.getCenter(tgtGoal); var sz = box3.getSize(tmp).length();
-        distGoal = Math.max(65, sz * 3.0);
-      }
-      /* keep the model clear of the button column, and of the info card while a unit is explored */
-      ck += ((st.sel === 'all' ? 0 : 1) - ck) * (1 - Math.pow(0.004, dt));
-      cam.setViewOffset(W, Hh, -PANEL / 2 + 115 * ck, 50 * ck, W, Hh);
-      tgt.lerp(tgtGoal, 1 - Math.pow(0.004, dt));
-      dist += (distGoal * zoom - dist) * (1 - Math.pow(0.004, dt));
-      /* slow turn on the Y axis; turns to face an explored unit, holds, then carries on */
-      if (idle > 0) idle -= dt;
-      else if (thGoal != null) { th += (thGoal - th) * (1 - Math.pow(0.01, dt)); ph += (1.2 - ph) * (1 - Math.pow(0.05, dt)); if (Math.abs(thGoal - th) < 0.01) { thGoal = null; } }
-      else if (hold > 0) hold -= dt;
-      else th += dt * 0.26;
-      ph = Math.max(0.15, Math.min(Math.PI - 0.15, ph)); zoom = Math.max(0.35, Math.min(2.5, zoom));
-      cam.position.set(tgt.x + dist * Math.sin(ph) * Math.sin(th), tgt.y + dist * Math.cos(ph), tgt.z + dist * Math.sin(ph) * Math.cos(th));
-      cam.lookAt(tgt);
+      /* keep the model clear of the list on the left, and of the info card while a unit is explored */
+      cam.setViewOffset(W, Hh, -PANEL / 2 + 115 * CK.x, 50 * CK.x, W, Hh);
+      var ph = Math.max(0.05, Math.min(Math.PI - 0.05, P.x)), dd = Math.max(40, D.x);
+      cam.position.set(TX.x + dd * Math.sin(ph) * Math.sin(A.x), TY.x + dd * Math.cos(ph), TZ.x + dd * Math.sin(ph) * Math.cos(A.x));
+      cam.lookAt(TX.x, TY.x, TZ.x);
       renderer.render(S.scene, cam);
-      /* labels: all when Labels is on; otherwise only the explored unit's */
+      /* labels: all when Labels is on; otherwise only the explored unit's. Crowded ones are lifted so none sit on another. */
+      var vis = [];
       S.tags.forEach(function (t) {
         var show = (st.labels && (t.unit !== 'use' || st.use)) || (t.unit === st.sel);
         if (show) for (var o = t.a; o; o = o.parent) if (!o.visible) { show = false; break; }
         if (show) { t.a.getWorldPosition(tmp).project(cam); show = tmp.z < 1; }
         if (!show) { if (!t.el.hidden) t.el.hidden = true; return; }
-        t.el.hidden = false;
-        t.el.style.transform = 'translate(' + (((tmp.x * 0.5 + 0.5) * W) | 0) + 'px,' + (((-tmp.y * 0.5 + 0.5) * Hh) | 0) + 'px) translate(-50%,-135%)';
+        t.sx = ((tmp.x * 0.5 + 0.5) * W) | 0; t.sy = ((-tmp.y * 0.5 + 0.5) * Hh) | 0; vis.push(t);
+      });
+      vis.sort(function (p, q) { return q.sy - p.sy; });
+      var rects = [];
+      vis.forEach(function (t) {
+        if (t.el.hidden) t.el.hidden = false;
+        if (!t.w) t.w = t.el.offsetWidth || 120;
+        var off = 0, x0 = t.sx - t.w / 2 - 3, x1 = x0 + t.w + 6;
+        for (var tries = 0; tries < 10; tries++) {
+          var y2 = t.sy - 9 - off, y1 = y2 - 21, hit = false;
+          for (var r = 0; r < rects.length; r++) { var q = rects[r]; if (x0 < q[2] && x1 > q[0] && y1 < q[3] && y2 > q[1]) { hit = true; break; } }
+          if (!hit) break; off += 23;
+        }
+        rects.push([x0, t.sy - 9 - off - 21, x1, t.sy - 9 - off]);
+        t.el.style.setProperty('--lead', (9 + off) + 'px');
+        t.el.style.transform = 'translate(' + t.sx + 'px,' + t.sy + 'px) translate(-50%,-100%) translateY(-' + (9 + off) + 'px)';
       });
       raf = requestAnimationFrame(frameLoop);
     }
@@ -345,8 +406,8 @@
 
     return function () {
       alive = false; cancelAnimationFrame(raf);
-      canvas.removeEventListener('pointerdown', onPD); canvas.removeEventListener('pointermove', onPM); canvas.removeEventListener('pointerup', onPU);
-      canvas.removeEventListener('wheel', onWheel); canvas.removeEventListener('touchstart', onTS); canvas.removeEventListener('touchmove', onTM); canvas.removeEventListener('touchend', onTE);
+      canvas.removeEventListener('pointerdown', onPD); canvas.removeEventListener('pointermove', onPM); canvas.removeEventListener('pointerup', onPU); canvas.removeEventListener('pointercancel', onPU);
+      canvas.removeEventListener('wheel', onWheel); canvas.removeEventListener('touchstart', onTS); canvas.removeEventListener('touchmove', onTM); canvas.removeEventListener('touchend', onTE); canvas.removeEventListener('touchcancel', onTE);
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
       if (S.labelsEl.parentNode) S.labelsEl.parentNode.removeChild(S.labelsEl);
       S.parts.forEach(function (g) { g.position.set(0, 0, 0); });
