@@ -1,8 +1,9 @@
 /* Offline support. Online: always fetch the newest files and refresh the stored copy. Offline: serve the stored copy. */
-var CACHE = 'portfolio-v13';
+var CACHE = 'portfolio-v14';
 var FILES = ['./', 'index.html', 'app.css', 'app.js', 'version.js', 'content.js', 'anims.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/source-serif-4-latin-400-normal.woff2', 'fonts/source-serif-4-latin-400-italic.woff2', 'fonts/source-serif-4-latin-600-normal.woff2',
   'fonts/source-sans-3-latin-400-normal.woff2', 'fonts/source-sans-3-latin-600-normal.woff2', 'fonts/source-sans-3-latin-700-normal.woff2',
+  'fonts/sarabun-latin-400.woff2', 'fonts/sarabun-latin-500.woff2', 'fonts/sarabun-latin-600.woff2',
   'fonts/sarabun-thai-400-normal.woff2', 'fonts/sarabun-thai-600-normal.woff2', 'fonts/sarabun-thai-700-normal.woff2'];
 var MEDIA = ['media/photo.jpg', 'media/cv-01.jpg', 'media/cv-02.jpg', 'media/cv-03.jpg', 'media/cv-04.jpg', 'media/cv-05.jpg', 'media/cv-06.jpg', 'media/cv-07.jpg', 'media/cv-08.jpg', 'media/cv-09.jpg', 'media/cv-10.jpg', 'media/cv-11.jpg', 'media/cv-12.jpg', 'media/cv-13.jpg']; /* media files are added here as they arrive, so they are stored for offline use */
 self.addEventListener('install', function (e) {

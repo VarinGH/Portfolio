@@ -7,6 +7,9 @@
 @font-face{font-family:'Sarabun';font-weight:400;src:url(fonts/sarabun-thai-400-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
 @font-face{font-family:'Sarabun';font-weight:600;src:url(fonts/sarabun-thai-600-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
 @font-face{font-family:'Sarabun';font-weight:700;src:url(fonts/sarabun-thai-700-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:'Sarabun UI';font-weight:400;src:url(fonts/sarabun-latin-400.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Sarabun UI';font-weight:500;src:url(fonts/sarabun-latin-500.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Sarabun UI';font-weight:600;src:url(fonts/sarabun-latin-600.woff2) format('woff2');font-display:swap}
 
 :root{--ink:#16181c;--grey:#4a4f57;--mid:#6b7078;--rule:#b9bec6;--paper:#E9E9E6;--char:#25282B;
 --serif:'Source Serif 4','Sarabun',Georgia,serif;--sans:'Source Sans 3','Sarabun',Arial,sans-serif}
@@ -40,7 +43,7 @@ ul{margin:0;padding-left:26px;font-size:22px;line-height:1.38;display:flex;flex-
 /* figure: one large frame, tabs when there are 2 or 3 items */
 figure{margin:18px 0 0;flex:1 1 0;min-height:0;display:flex;flex-direction:column}
 .frame{flex:1 1 0;min-height:200px;background:#1a1a1a;color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.frame.light{background:#ffffff;color:var(--ink);border:1px solid var(--ink)}
+.frame.light{background:#ffffff;color:var(--ink)}
 .frame video,.frame img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
 .frame .fit{object-fit:contain}
 .tabs{display:flex;border:1px solid var(--ink);border-top:0}
@@ -87,10 +90,10 @@ li em{font-style:italic}li strong{font-weight:600}
 .nav{margin-top:18px;display:flex;justify-content:space-between;align-items:center}
 /* arrows: the button is a fixed 76px touch area; only the disc inside it moves, so a tap near the edge still counts */
 .arrow{flex-shrink:0;width:76px;height:76px;margin:-6px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
-.disc{position:relative;width:64px;height:64px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .05s ease-out,background-color .05s ease-out}
+.disc{position:relative;width:64px;height:64px;border:1.5px solid var(--ink);border-radius:50%;background:#F4F4F2;display:flex;align-items:center;justify-content:center;transition:transform .05s ease-out,background-color .05s ease-out}
 .disc svg{width:26px;height:26px}
 .arrow[disabled]{color:var(--rule)}
-.arrow[disabled] .disc{border-color:var(--rule)}
+.arrow[disabled] .disc{border-color:var(--rule);background:none}
 .arrow:active:not([disabled]) .disc{transform:scale(.86);background-color:#cfd2d6}
 .sec>span,.lang button,.tabs button,.sbtn{transition:transform .05s ease-out,background-color .05s ease-out}
 .sec:active>span:first-child{transform:scale(.92)}
@@ -98,7 +101,6 @@ li em{font-style:italic}li strong{font-weight:600}
 .tabs button:active,.sbtn:active:not([disabled]){background-color:#cfd2d6}
 /* Next: a white disc whose arrow taps to the right */
 .nav{position:relative;z-index:0}
-.arrow.next:not([disabled]) .disc{background:#ffffff}
 .arrow.next:not([disabled]) .disc svg{animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{0%,55%,100%{transform:translateX(0)}75%{transform:translateX(6px)}}
 /* release: a short spring back, done in a fifth of a second */
@@ -132,13 +134,13 @@ li em{font-style:italic}li strong{font-weight:600}
 
 /* page turn: the content slides in from the side it came from, pieces a beat apart, done within half a second */
 .body{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
-/* page turn: each section fades up in turn, a quarter of a second each */
-@keyframes secIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.body.turn>h1,.body.turn>.sub,.body.turn>.role,.body.turn .blk,.body.turn>figure,.body.turn .col,.body.turn .cv-top,.body.turn .cv-sec,.body.turn>.gal{animation:secIn .25s ease-out both}
-.body.turn .blk:nth-child(1),.body.turn .col:nth-child(1),.body.turn .cv-top,.body.turn .fill>.cv-sec:first-child,.body.turn>.gal{animation-delay:.14s}
-.body.turn .blk:nth-child(2),.body.turn .col:nth-child(2),.body.turn .fill>:nth-child(2){animation-delay:.28s}
-.body.turn>figure,.body.turn .fill>:nth-child(3){animation-delay:.42s}
-.body.turn .fill>:nth-child(n+4){animation-delay:.56s}
+/* page turn: every section fades in together; each rises from a slightly different depth so it does not feel like one block */
+@keyframes secIn{from{opacity:0;transform:translateY(var(--rise,8px))}to{opacity:1;transform:none}}
+.body.turn>h1,.body.turn>.sub,.body.turn>.role,.body.turn .blk,.body.turn>figure,.body.turn .col,.body.turn .cv-top,.body.turn .cv-sec,.body.turn>.gal{animation:secIn .3s cubic-bezier(.2,.7,.2,1) both}
+.body.turn>h1,.body.turn>.sub,.body.turn>.role{--rise:5px}
+.body.turn .blk:nth-child(1),.body.turn .col:nth-child(1),.body.turn .cv-top{--rise:9px;animation-duration:.34s}
+.body.turn .blk:nth-child(2),.body.turn .col:nth-child(2),.body.turn .cv-sec{--rise:13px;animation-duration:.38s}
+.body.turn>figure,.body.turn>.gal{--rise:18px;animation-duration:.42s}
 
 /* hidden settings page */
 .set{position:fixed;left:0;top:0;right:0;bottom:0;background:var(--paper);color:var(--ink);font-family:var(--serif);z-index:99;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
