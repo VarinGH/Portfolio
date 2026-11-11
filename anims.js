@@ -12,7 +12,9 @@ window.ANIMS.defocus = function (frame) {
   var SN = { '-0.1': '20/16', '0': '20/20', '0.1': '20/25', '0.2': '20/32', '0.3': '20/40', '0.4': '20/50', '0.5': '20/63', '0.6': '20/80' };
   function sn(v) { return SN[String(v)]; }
   var ORDER = [-2.0, 1.0, -3.5, -0.5, 1.5, -1.5, -4.0, -2.5, 0.5, -3.0, -1.0];
-  var START = 5, TYPO = 7, WRONG = 0.6, N = ORDER.length;
+  var START = 5, N = ORDER.length;
+  /* mistyped entries: three in a row at the start of the loop, then at intervals. key = position in ORDER, value = the wrong logMAR typed */
+  var MIST = { 5: 0.5, 6: -0.1, 7: 0.6, 9: 0.6 }, FIRST = 5;
   var MINUS = '−';
   function fd(d) { return (d > 0 ? '+' : d < 0 ? MINUS : '') + Math.abs(d).toFixed(2); }
   function lm(n) { return n; }
@@ -129,9 +131,9 @@ window.ANIMS.defocus = function (frame) {
     var ok = LET[String(ORDER[i])];
     push({ i: i, done: i, ph: 'lens' }, 4);
     push({ i: i, done: i, ph: 'in' }, 3);
-    if (i === TYPO) {
-      push({ i: i, done: i, ph: 'val', va: WRONG }, 3);
-      push({ i: i, done: i + 1, ph: 'flag', va: WRONG, wrong: true }, 14);
+    if (MIST[i] != null) {
+      push({ i: i, done: i, ph: 'val', va: MIST[i] }, 3);
+      push({ i: i, done: i + 1, ph: 'flag', va: MIST[i], wrong: true }, 10);
       push({ i: i, done: i + 1, ph: 'val', va: ok, fixed: true, redo: true }, 4);
       push({ i: i, done: i + 1, ph: 'saved', va: ok, fixed: true }, 4);
     } else {
@@ -144,11 +146,12 @@ window.ANIMS.defocus = function (frame) {
   /* curve state, eased every frame so points grow and lines draw smoothly at any refresh rate */
   var vis = [], yv = [], tv = [], ty = [], ringV = 0, ringT = 0;
   LENS.forEach(function (d, j) { vis[j] = d === 0 ? 1 : 0; tv[j] = vis[j]; yv[j] = ty[j] = py(lm(LET[String(d)])); });
-  var typoIdx = LENS.indexOf(ORDER[TYPO]);
+  var typoIdx = LENS.indexOf(ORDER[FIRST]);
   var last = null, tick = 0, prevPh = '', raf = 0, timer = 0, sec0 = 38 * 60 + 12, t0 = Date.now();
 
   function apply(s) {
-    var lens = ORDER[s.i], after = s.i > TYPO || s.fixed;
+    var lens = ORDER[s.i], after = s.i > FIRST || s.fixed;
+    if (s.wrong) typoIdx = LENS.indexOf(lens);
     swap(el.pos, 'Lens ' + (s.i + 1) + ' of ' + N + (s.redo ? '  re-measure' : ''), 0);
     swap(el.lens, fd(lens), 10);
     el.tap.textContent = 'Lens ' + fd(lens) + ' is in the frame';
@@ -176,7 +179,7 @@ window.ANIMS.defocus = function (frame) {
       if (LENS[j] === 0) continue;
       var oi = ORDER.indexOf(LENS[j]);
       tv[j] = oi < s.done ? 1 : 0;
-      ty[j] = py(lm((s.wrong && oi === TYPO) ? WRONG : LET[String(LENS[j])]));
+      ty[j] = py(lm((s.wrong && oi === s.i) ? MIST[s.i] : LET[String(LENS[j])]));
     }
     ringT = flag ? 1 : 0;
     prevPh = s.ph;

@@ -60,7 +60,7 @@ window.PORTFOLIO = {
       role: 'Web application | Role: [YOUR ROLE] | 2026',
       problem: ['On paper and spreadsheet case report forms, any value can be written down', 'Out-of-range measurements and missing fields are found weeks later at data cleaning, after the participant has gone home'],
       bullets: ['Validation rules run at the moment of entry', 'Out-of-range and missing values are flagged before the visit ends', 'Optometrist, assistant and principal investigator each work on their own linked screen'],
-      media: [{ type: 'anim', name: 'defocus', light: true, bg: 'transparent', cap: 'Measuring a defocus curve on three linked screens. At lens 8 a mistyped value is flagged and re-measured. Illustrative values.' }]
+      media: [{ type: 'anim', name: 'defocus', light: true, bg: 'transparent', cap: 'Measuring a defocus curve on three linked screens. Each mistyped value is flagged at once and re-measured. Illustrative values.' }]
     },
     { type: 'project', sec: 'sw',
       title: 'Globe tracker',
