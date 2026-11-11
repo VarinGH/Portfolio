@@ -83,7 +83,7 @@ window.ANIMS.defocus = function (frame) {
      '</div></div>' +
 
     /* laptop: principal investigator (the dashboard sheet) */
-    '<div style="' + dev + 'left:466px;top:138px;width:246px;height:214px;border-radius:10px 10px 0 0">' +
+    '<div style="' + dev + 'left:462px;top:138px;width:246px;height:214px;border-radius:10px 10px 0 0">' +
      '<div style="' + scr + 'left:7px;top:7px;right:7px;bottom:6px;background:' + I.shell + ';color:' + I.ink + ';display:flex;flex-direction:column">' +
       '<div style="background:#fff;border-bottom:1px solid ' + I.rule + ';display:flex;gap:11px;padding:0 8px;font-size:11px"><span style="padding:6px 0 4px">Participants</span><span style="padding:6px 0 3px;color:' + I.navy + ';font-weight:600;border-bottom:2px solid ' + I.navy + '">Dashboard</span><span style="padding:6px 0 4px">QC flags</span></div>' +
       '<div style="margin:5px;background:#fff;border:1px solid ' + I.rule + ';border-radius:3px;flex:1 1 0;min-height:0;display:flex;flex-direction:column">' +
@@ -91,11 +91,12 @@ window.ANIMS.defocus = function (frame) {
         '<svg viewBox="0 0 ' + CW + ' ' + CH + '" style="flex:1 1 0;min-height:0;width:100%;font-family:' + F + ';font-size:9.5px;fill:' + I.muted + '">' + grid + marks + '</svg>' +
       '</div>' +
      '</div></div>' +
-    '<div style="position:absolute;left:452px;top:352px;width:266px;height:11px;background:#1d2024;border-radius:0 0 10px 10px"></div>' +
+    '<div style="position:absolute;left:450px;top:352px;width:270px;height:11px;background:#1d2024;border-radius:0 0 10px 10px"></div>' +
+    '<div data-k="alarm" style="position:absolute;left:563px;top:84px;width:44px;height:44px;border-radius:50%;background:' + I.confirmBg + ';border:1.6px solid #e6c48a;color:' + I.block + ';display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform-origin:50% 10%"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2.5h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/><path d="M12 3V5"/></svg></div>' +
 
     '<div style="' + lab + ';left:8px;width:256px">Optometrist<span style="' + sub + '">enters each reading</span></div>' +
     '<div style="' + lab + ';left:268px;width:190px">Assistant<span style="' + sub + '">follows visit status</span></div>' +
-    '<div style="' + lab + ';left:452px;width:268px">Principal investigator<span style="' + sub + '">sees curve and quality flags</span></div>' +
+    '<div style="' + lab + ';left:450px;width:270px">Principal investigator<span style="' + sub + '">sees curve and quality flags</span></div>' +
     '</div>';
 
   var box = frame.firstChild, el = {}, ptEl = [], segEl = [];
@@ -111,6 +112,13 @@ window.ANIMS.defocus = function (frame) {
     if (n.textContent === String(txt)) return;
     n.textContent = txt;
     if (n.animate) n.animate([{ opacity: 0, transform: 'translateY(' + (dy || 7) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  }
+  /* error: a small alarm pops up above the laptop, shakes, then fades away */
+  function alarm() {
+    var a = el.alarm, bell = a.firstChild;
+    if (!a.animate) return;
+    a.animate([{ opacity: 0, transform: 'translateY(16px) scale(.7)' }, { opacity: 1, transform: 'translateY(0) scale(1)', offset: .12 }, { opacity: 1, transform: 'translateY(0) scale(1)', offset: .78 }, { opacity: 0, transform: 'translateY(-8px) scale(.96)' }], { duration: 2600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    bell.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(16deg)' }, { transform: 'rotate(-14deg)' }, { transform: 'rotate(11deg)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(5deg)' }, { transform: 'rotate(0)' }], { duration: 620, delay: 260, iterations: 2, easing: 'ease-in-out' });
   }
   function press(n) { if (n.animate) n.animate([{ transform: 'scale(1)' }, { transform: 'scale(.94)', offset: .35 }, { transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' }); }
 
@@ -157,7 +165,7 @@ window.ANIMS.defocus = function (frame) {
     el.save.style.opacity = flag ? 0 : (hasV ? 1 : .4);
     el.save.textContent = s.ph === 'saved' || s.ph === 'end' ? 'Saved' : (hasV ? 'Save ' + sn(s.va) + ' at ' + fd(lens) : 'Enter a value');
     el.save.style.background = s.ph === 'saved' || s.ph === 'end' ? T.ok : T.action;
-    if (s.ph !== prevPh) { if (s.ph === 'in') press(el.tap); if (s.ph === 'saved' || s.ph === 'flag') press(el.save); }
+    if (s.ph !== prevPh) { if (s.ph === 'in') press(el.tap); if (s.ph === 'saved' || s.ph === 'flag') press(el.save); if (s.ph === 'flag') alarm(); }
     el.pflag.style.maxHeight = flag ? '50px' : '0'; el.pflag.style.opacity = flag ? 1 : 0; el.pflag.style.marginTop = flag ? '5px' : '0';
     el.row.style.borderColor = flag ? '#e5c27a' : '#9db5d6';
     el.tag.textContent = flag ? 'R09 open' : (after ? 'R09 resolved' : 'No. 014');
