@@ -72,9 +72,13 @@ window.PORTFOLIO = {
         html: '<svg viewBox="0 0 320 220" width="420" height="289" aria-hidden="true"><g class="gt"><circle cx="160" cy="110" r="70" fill="#262626" stroke="#555555"></circle><circle cx="160" cy="110" r="44" fill="#3d3d3d"></circle><circle cx="160" cy="110" r="20" fill="#0d0d0d"></circle><rect x="84" y="34" width="152" height="152" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 6"></rect><path d="M160 20 V200 M70 110 H250" stroke="#ffffff" stroke-width="1" fill="none"></path></g></svg>' }]
     },
     { type: 'research', sec: 're',
-      title: 'Publications and research interest',
-      left: { heading: 'Publications',
-        list: ['[PUBLICATION 1: authors, title, journal, year]', '[PUBLICATION 2]', '[PUBLICATION 3]'] },
+      title: 'Research and awards',
+      left: { heading: 'Publications', items: [
+        { sm: true, name: 'Development of a Camera-Based Refractive Error Image Simulation Dataset and Mobile Application: A Proof-of-Concept Study', meta: 'BMC Ophthalmology | Accepted, 2026' }
+      ],
+        sub: { heading: 'Awards', items: [
+          { name: 'Winner, Cataract Surgery category', meta: 'APACRS Film Festival 2026', text: 'Laser-Assisted Precision Flange Creation' }
+        ] } },
       right: { heading: 'Research interest', items: [
         { name: 'Umbrella reviews', text: 'An umbrella review gathers the systematic reviews on one clinical question and compares their conclusions. It is most useful where several reviews exist and disagree.' }
       ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'],
