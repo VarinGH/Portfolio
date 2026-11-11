@@ -77,8 +77,7 @@ window.PORTFOLIO = {
         sub: { heading: 'Awards', items: [
           { name: 'Winner, Cataract Surgery category', meta: 'APACRS Film Festival 2026', text: 'Laser-Assisted Precision Flange Creation' }
         ] } },
-      media: [{ type: 'video', src: 'media/flange-firing.mp4', fit: true, tab: 'Laser firing', cap: 'From the winning film: a single endolaser shot at 200 mW for 400 ms forms the flange on the haptic tip.' },
-        { type: 'video', src: 'media/flange-dose-table.mp4', fit: true, tab: 'Dose table', cap: 'From the winning film: flanges formed across a 5 × 5 grid of laser power (100–500 mW) and duration (100–500 ms), with the measured size of each.' }],
+      media: [{ type: 'video', src: 'media/apacrs-film.mp4', fit: true, cap: 'From the winning film: a single endolaser shot at 200 mW for 400 ms forms the flange on the haptic tip, then flanges formed across a 5 × 5 grid of laser power (100–500 mW) and duration (100–500 ms), with the measured size of each.' }],
       right: { heading: 'Research interest', items: [
         { name: 'Umbrella reviews', text: 'An umbrella review gathers the systematic reviews on one clinical question and compares their conclusions. It is most useful where several reviews exist and disagree.' }
       ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'],
