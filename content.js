@@ -25,8 +25,8 @@ window.PORTFOLIO = {
       role: 'Surgical instrument | Role: [YOUR ROLE] | [YEAR]',
       problem: ['In Yamane scleral fixation, each flange is made with handheld cautery, so its size varies from one haptic to the next', 'A flange that is too small can slip back through the sclera'],
       bullets: ['[HOW THE FORCEPS HOLDS THE HAPTIC]', 'Endolaser forms the flange at a set power and duration', 'Benchtop study on PVDF haptics: [KEY RESULT]'],
-      media: [{ type: 'video', src: 'media/flange-firing.mp4', fit: true, tab: 'Laser firing', cap: 'From the winning film, APACRS Film Festival 2026 (Cataract Surgery category): a single endolaser shot at 200 mW for 400 ms forms the flange on the haptic tip.' },
-        { type: 'video', src: 'media/flange-dose-table.mp4', fit: true, tab: 'Dose table', cap: 'From the winning film, APACRS Film Festival 2026: flanges formed across a 5 × 5 grid of laser power (100–500 mW) and duration (100–500 ms), with the measured size of each.' }]
+      media: [{ type: 'html', cap: 'Animated demonstration (placeholder). The real recording goes here.',
+        html: '<svg viewBox="0 0 360 200" width="432" height="240" aria-hidden="true"><path d="M20 100 H170" stroke="#ffffff" stroke-width="5" fill="none"></path><circle class="flB" cx="176" cy="100" r="18" fill="#ffffff"></circle><path class="flL" d="M200 100 H286" stroke="#ffffff" stroke-width="2" stroke-dasharray="3 6" fill="none"></path><rect x="286" y="88" width="64" height="24" fill="#3d3d3d" stroke="#9a9a9a"></rect><text x="20" y="72" fill="#c9c9c9" font-family="Source Sans 3, Arial, sans-serif" font-size="14">IOL haptic</text><text x="286" y="72" fill="#c9c9c9" font-family="Source Sans 3, Arial, sans-serif" font-size="14">Endolaser</text></svg>' }]
     },
     { type: 'project', sec: 'pr',
       title: 'Automatic VA machine',
@@ -77,6 +77,8 @@ window.PORTFOLIO = {
         sub: { heading: 'Awards', items: [
           { name: 'Winner, Cataract Surgery category', meta: 'APACRS Film Festival 2026', text: 'Laser-Assisted Precision Flange Creation' }
         ] } },
+      media: [{ type: 'video', src: 'media/flange-firing.mp4', fit: true, tab: 'Laser firing', cap: 'From the winning film: a single endolaser shot at 200 mW for 400 ms forms the flange on the haptic tip.' },
+        { type: 'video', src: 'media/flange-dose-table.mp4', fit: true, tab: 'Dose table', cap: 'From the winning film: flanges formed across a 5 × 5 grid of laser power (100–500 mW) and duration (100–500 ms), with the measured size of each.' }],
       right: { heading: 'Research interest', items: [
         { name: 'Umbrella reviews', text: 'An umbrella review gathers the systematic reviews on one clinical question and compares their conclusions. It is most useful where several reviews exist and disagree.' }
       ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'],

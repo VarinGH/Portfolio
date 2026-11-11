@@ -70,6 +70,8 @@ h3{margin:0;font-size:29px;font-weight:600}
 .cols ul{font-size:21px;line-height:1.36;gap:7px}
 .cols p{font-size:21px;line-height:1.4}
 .col{gap:16px}
+.col>figure{margin:4px 0 0}
+.col>figure figcaption{font-size:16px}
 .subh{margin-top:6px;padding-top:14px;border-top:1px solid var(--rule)}
 .item.sm{gap:3px}.item.sm h3{font-size:23px}.item.sm p{font-size:20px;line-height:1.36}.item.sm .meta{font-size:17px}
 .fill{flex:1 1 0;min-height:0;margin-top:20px}
