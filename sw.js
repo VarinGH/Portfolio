@@ -1,0 +1,25 @@
+/* Offline support. Online: always fetch the newest files and refresh the stored copy. Offline: serve the stored copy. */
+var CACHE = 'portfolio-v1';
+var FILES = ['./', 'index.html', 'app.css', 'app.js', 'content.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
+  'fonts/source-serif-4-latin-400-normal.woff2', 'fonts/source-serif-4-latin-400-italic.woff2', 'fonts/source-serif-4-latin-600-normal.woff2',
+  'fonts/source-sans-3-latin-400-normal.woff2', 'fonts/source-sans-3-latin-600-normal.woff2', 'fonts/source-sans-3-latin-700-normal.woff2',
+  'fonts/sarabun-thai-400-normal.woff2', 'fonts/sarabun-thai-600-normal.woff2', 'fonts/sarabun-thai-700-normal.woff2'];
+var MEDIA = []; /* media files are added here as they arrive, so they are stored for offline use */
+self.addEventListener('install', function (e) {
+  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES.concat(MEDIA)); }).then(function () { return self.skipWaiting(); }));
+});
+self.addEventListener('activate', function (e) {
+  e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); }));
+});
+self.addEventListener('fetch', function (e) {
+  var r = e.request;
+  if (r.method !== 'GET' || new URL(r.url).origin !== location.origin) return;
+  if (r.headers.has('range')) { /* video seeking: answer from the stored copy when there is one */
+    e.respondWith(caches.match(r.url, { ignoreSearch: true }).then(function (hit) { return hit || fetch(r); }));
+    return;
+  }
+  e.respondWith(fetch(r, { cache: 'no-cache' }).then(function (res) {
+    if (res && res.status === 200) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(r, copy); }); }
+    return res;
+  }).catch(function () { return caches.match(r, { ignoreSearch: true }).then(function (hit) { return hit || caches.match('index.html'); }); }));
+});

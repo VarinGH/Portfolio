@@ -1,0 +1,97 @@
+@font-face{font-family:'Source Serif 4';font-weight:400;font-style:normal;src:url(fonts/source-serif-4-latin-400-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Source Serif 4';font-weight:400;font-style:italic;src:url(fonts/source-serif-4-latin-400-italic.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Source Serif 4';font-weight:600;font-style:normal;src:url(fonts/source-serif-4-latin-600-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Source Sans 3';font-weight:400;src:url(fonts/source-sans-3-latin-400-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Source Sans 3';font-weight:600;src:url(fonts/source-sans-3-latin-600-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Source Sans 3';font-weight:700;src:url(fonts/source-sans-3-latin-700-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Sarabun';font-weight:400;src:url(fonts/sarabun-thai-400-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:'Sarabun';font-weight:600;src:url(fonts/sarabun-thai-600-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:'Sarabun';font-weight:700;src:url(fonts/sarabun-thai-700-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+
+:root{--ink:#16181c;--grey:#4a4f57;--mid:#6b7078;--rule:#b9bec6;--paper:#E9E9E6;--char:#25282B;
+--serif:'Source Serif 4','Sarabun',Georgia,serif;--sans:'Source Sans 3','Sarabun',Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:pan-x pan-y}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+#stage{position:fixed;left:50%;top:50%;width:800px;height:1280px;transform-origin:center center}
+#page{width:800px;height:1280px;background:var(--paper);color:var(--ink);font-family:var(--serif);padding:26px 40px 22px;display:flex;flex-direction:column;position:relative}
+
+/* header: journal masthead with thick rule (A6-H1) */
+.hd{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:12px;border-bottom:3px solid var(--ink)}
+.hd-id{display:flex;flex-direction:column;gap:2px;font-size:17px;color:var(--grey)}
+.hd-name{font-size:21px;font-weight:600;color:var(--ink)}
+.lang{display:flex;flex-shrink:0;align-items:center;font-size:20px}
+.lang button{min-width:68px;min-height:48px;padding:0 14px;color:#5a5f66}
+.lang button[aria-pressed="true"]{color:var(--ink);font-weight:600}
+.lang .th{font-family:'Sarabun',Arial,sans-serif}
+.lang button[aria-pressed="true"].th{font-weight:700}
+.lang .en{padding-right:0}
+.lang i{width:1px;height:24px;background:var(--ink)}
+
+h1{margin:20px 0 0;font-size:44px;line-height:1.15;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:6px 0 0;font-size:26px;line-height:1.2;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.role{margin-top:8px;font-size:19px;line-height:1.4;font-style:italic;color:var(--grey)}
+.txt{display:flex;flex-direction:column;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.blk{display:flex;flex-direction:column;gap:4px}
+h2{margin:0;font-family:var(--sans);font-size:21px;font-weight:700}
+p{margin:0;font-size:22px;line-height:1.42;text-wrap:pretty}
+ul{margin:0;padding-left:26px;font-size:22px;line-height:1.38;display:flex;flex-direction:column;gap:4px}
+
+/* figure: one large frame, tabs when there are 2 or 3 items */
+figure{margin:18px 0 0;flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+.frame{flex:1 1 0;min-height:200px;background:#1a1a1a;color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.frame video,.frame img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover}
+.frame .fit{object-fit:contain}
+.tabs{display:flex;border:1px solid var(--ink);border-top:0}
+.tabs button{flex:1 1 0;min-height:48px;font-family:var(--sans);font-size:18px;color:var(--grey);border-left:1px solid var(--ink)}
+.tabs button:first-child{border-left:0}
+.tabs button[aria-selected="true"]{background:var(--char);color:#fff;font-weight:700}
+figcaption{margin-top:10px;font-size:17px;line-height:1.4;color:var(--grey);min-height:24px}
+figcaption strong{color:var(--ink)}
+
+/* research + CV pages */
+.cols{flex:1 1 0;margin-top:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;align-content:start}
+.col{display:flex;flex-direction:column;gap:20px}
+.item{display:flex;flex-direction:column;gap:6px}
+h3{margin:0;font-size:29px;font-weight:600}
+.meta{font-size:18px;font-style:italic;color:var(--grey)}
+.lbl{font-family:var(--sans);font-size:19px;font-weight:700}
+.fill{flex:1 1 0;margin-top:24px}
+.cv-top{display:flex;gap:28px;align-items:flex-start}
+.photo{width:220px;height:280px;flex-shrink:0;background:#d4d4d0;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:17px;color:var(--grey);overflow:hidden}
+.photo img{width:100%;height:100%;object-fit:cover}
+.cv-sec{margin-top:22px;padding-top:12px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
+
+/* bottom menu: four sections with their dots (A6-05) */
+.nav{margin-top:18px;display:flex;justify-content:space-between;align-items:center}
+.arrow{position:relative;flex-shrink:0;width:64px;height:64px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.arrow[disabled]{border-color:var(--rule);color:var(--rule)}
+.arrow svg{width:26px;height:26px}
+.arrow:active:not([disabled]){background:var(--char);color:#fff}
+.secs{display:flex;align-items:stretch;gap:10px}
+.sec{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:60px;padding:0 10px;font-family:var(--sans);font-size:18px;line-height:1;color:var(--mid)}
+.sec[aria-current="true"]{color:var(--ink);font-weight:700}
+.dots{display:flex;align-items:center;gap:8px;height:12px}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--rule)}
+.dots i.on{width:12px;height:12px;background:var(--ink)}
+@keyframes nxPulse{0%{transform:scale(1);opacity:.75}70%,100%{transform:scale(1.5);opacity:0}}
+.pulse::after{content:'';position:absolute;left:-1.5px;top:-1.5px;right:-1.5px;bottom:-1.5px;border-radius:50%;border:1.5px solid var(--ink);animation:nxPulse 2.4s ease-out infinite;pointer-events:none}
+.ft{margin-top:14px;padding-top:10px;border-top:1px solid var(--ink);display:flex;justify-content:space-between;font-family:var(--sans);font-size:16px;color:var(--grey)}
+
+/* placeholder animations (replaced by real media) */
+@keyframes flGrow{0%,15%{transform:scale(.28)}70%,100%{transform:scale(1)}}
+@keyframes flBeam{0%,15%{opacity:0}20%,65%{opacity:1}70%,100%{opacity:0}}
+.flB{animation:flGrow 6s ease-out infinite;transform-box:fill-box;transform-origin:center}.flL{animation:flBeam 6s linear infinite}
+@keyframes vaStep{0%{left:0}20%{left:20%}40%{left:40%}60%{left:60%}80%,100%{left:80%}}
+.vaBox{animation:vaStep 7s step-end infinite}
+@keyframes spRot{from{transform:rotate(0deg)}to{transform:rotate(180deg)}}
+.spL{animation:spRot 8s linear infinite;transform-box:view-box;transform-origin:110px 110px}
+@keyframes sweepH{from{left:0}to{left:100%}}
+@keyframes drawH{from{stroke-dashoffset:283}to{stroke-dashoffset:0}}
+.phH{animation:sweepH 9s linear infinite}.rxH{animation:drawH 9s linear infinite}
+@keyframes crfA{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+@keyframes crfB{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}
+.crfA{animation:crfA 8s linear infinite}.crfB{animation:crfB 8s linear infinite;opacity:0}
+@keyframes gtMove{from{transform:translate(-46px,12px)}to{transform:translate(46px,-12px)}}
+.gt{animation:gtMove 5s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.pulse::after{animation:none;opacity:0}}
