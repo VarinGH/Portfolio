@@ -77,8 +77,8 @@
       secs += '<button type="button" class="sec" data-go="' + first + '" aria-current="' + (P[cur].sec === s.id) + '"><span>' + T(s.label) + '</span><span class="dots">' + dots + '</span></button>';
     });
     secs += '</div>';
-    return '<nav class="nav" aria-label="Pages"><button type="button" class="arrow" data-go="' + (cur - 1) + '" aria-label="' + esc(u.prev) + '"' + (cur === 0 ? ' disabled' : '') + '>' + CH_L + '</button>' + secs +
-      '<button type="button" class="arrow next" data-go=""' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '>' + CH_R + '</button></nav>' +
+    return '<nav class="nav" aria-label="Pages"><button type="button" class="arrow" data-go="' + (cur - 1) + '" aria-label="' + esc(u.prev) + '"' + (cur === 0 ? ' disabled' : '') + '><span class="disc">' + CH_L + '</span></button>' + secs +
+      '<button type="button" class="arrow next" data-go="' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '><span class="disc">' + CH_R + '</span></button></nav>' +
       '<div class="ft"><span>' + esc(u.foot) + '</span><span>' + esc(u.page) + ' ' + (cur + 1) + ' ' + esc(u.of) + ' ' + N + '</span></div>';
   }
   function render() {
@@ -130,9 +130,9 @@
       .catch(function (e) { if (done) return; done = true; clearTimeout(timer); cb({ offline: true, why: 'Could not reach the server. ' + (e && e.message ? e.message : '') }); });
   }
   function openSettings() {
-    if (page.querySelector('.set')) return;
+    if (document.querySelector('.set')) return;
     var o = document.createElement('div'); o.className = 'set';
-    o.innerHTML = '<h1>Settings</h1><div class="role">You have found the easter egg.</div>' +
+    o.innerHTML = '<div class="set-in" style="zoom:' + (window.innerWidth / 800) + '"><h1>Settings</h1><div class="role">You have found the easter egg.</div>' +
       '<dl><dt>Version on this tablet</dt><dd>' + esc(V.version) + ' <span>(' + esc(V.built) + ')</span></dd>' +
       '<dt>Last updated on this tablet</dt><dd>' + esc(fmtDT(+store.get('updatedAt') || 0)) + '</dd>' +
       '<dt>Version on the server</dt><dd data-s="srv">Checking\u2026</dd>' +
@@ -144,9 +144,9 @@
       '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>' +
       '<h2 class="set-h">Usage log</h2><p class="set-note" style="margin-top:6px">Which page was on screen, when, and for how long. Time on this settings page and time with the screen off are not counted. Press Clear log just before you hand the tablet over.</p>' +
       '<div class="set-btns"><button type="button" class="sbtn" data-s="clr">Clear log</button><button type="button" class="sbtn" data-s="ref">Refresh log</button></div>' +
-      '<div data-s="log"></div>';
+      '<div data-s="log"></div></div>';
     logPause();
-    page.appendChild(o);
+    document.body.appendChild(o);
     var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
     function check() {
       q('srv').textContent = 'Checking\u2026 (' + fmtT(Date.now()) + ')';
@@ -233,7 +233,7 @@
   var sx = null, sy = null;
   document.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
   document.addEventListener('touchend', function (e) {
-    if (sx == null || page.querySelector('.set, .lb')) { sx = null; return; }
+    if (sx == null || document.querySelector('.set, .lb')) { sx = null; return; }
     var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
     if (Math.abs(dx) > 70 && Math.abs(dx) > 2 * Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1), dx < 0);
   }, { passive: true });
