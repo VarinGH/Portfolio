@@ -88,19 +88,29 @@ li em{font-style:italic}li strong{font-weight:600}
 .arrow{position:relative;flex-shrink:0;width:64px;height:64px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink)}
 .arrow[disabled]{border-color:var(--rule);color:var(--rule)}
 .arrow svg{width:26px;height:26px}
-.arrow,.sec,.tabs button,.lang button,.gi,.sbtn{transition:transform .09s ease-out,background-color .09s ease-out,color .09s ease-out}
-.arrow:active:not([disabled]){background:var(--char);color:#fff;transform:scale(.88)}
-.sec:active,.lang button:active,.tabs button:active,.sbtn:active:not([disabled]){transform:scale(.93)}
+.arrow,.sec,.tabs button,.lang button,.gi,.sbtn{transition:transform .07s ease-out}
+.arrow:active:not([disabled]){transform:scale(.84)}
+.sec:active,.lang button:active,.tabs button:active,.sbtn:active:not([disabled]){transform:scale(.92)}
 .gi:active{transform:scale(.97)}
+/* Next: dark button with a slow sheen and a soft breathing halo, so it reads as the thing to press */
+.nav{position:relative;z-index:0}
+.arrow.next:not([disabled]){border:0;color:#fff;background:linear-gradient(115deg,#25282B 0%,#25282B 38%,#7b828b 50%,#25282B 62%,#25282B 100%);background-size:320% 100%;background-position:100% 0;animation:sheen 2.6s ease-in-out infinite}
+@keyframes sheen{0%,35%{background-position:100% 0}85%,100%{background-position:0 0}}
+.arrow.next:not([disabled])::after{content:'';position:absolute;left:-26px;top:-26px;right:-26px;bottom:-26px;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle,rgba(37,40,43,.5) 0%,rgba(37,40,43,.28) 38%,rgba(37,40,43,.1) 58%,rgba(37,40,43,0) 72%);animation:halo 2.6s ease-out infinite}
+@keyframes halo{0%{transform:scale(.62);opacity:0}30%{opacity:1}100%{transform:scale(1.12);opacity:0}}
+/* release: the button springs back past its size and settles, like a real key */
+@keyframes pop{0%{transform:scale(.78)}42%{transform:scale(1.16)}68%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes popFill{0%{background-color:var(--char);color:#fff}55%{background-color:var(--char);color:#fff}100%{background-color:rgba(37,40,43,0);color:var(--ink)}}
+.arrow.pop{animation:pop .46s ease-out,popFill .46s ease-out}
+.arrow.next.pop:not([disabled]){animation:pop .46s ease-out,sheen 2.6s ease-in-out infinite}
+.arrow.pop[disabled]{animation:pop .46s ease-out}
+.sec.pop{animation:pop .4s ease-out}
 .secs{display:flex;align-items:stretch;gap:10px}
 .sec{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:60px;padding:0 10px;font-family:var(--sans);font-size:18px;line-height:1;color:var(--mid)}
 .sec[aria-current="true"]{color:var(--ink);font-weight:700}
 .dots{display:flex;align-items:center;gap:8px;height:12px}
 .dots i{width:9px;height:9px;border-radius:50%;background:var(--rule)}
 .dots i.on{width:12px;height:12px;background:var(--ink)}
-@keyframes nxPulse{0%{transform:scale(1);opacity:.9}75%,100%{transform:scale(1.6);opacity:0}}
-.pulse::after{content:'';position:absolute;left:-1.5px;top:-1.5px;right:-1.5px;bottom:-1.5px;border-radius:50%;border:1.5px solid var(--ink);animation:nxPulse 1.8s ease-out infinite;pointer-events:none}
-.pulse:active::after{animation:none;opacity:0}
 .ft{margin-top:14px;padding-top:10px;border-top:1px solid var(--ink);display:flex;justify-content:space-between;font-family:var(--sans);font-size:16px;color:var(--grey)}
 
 /* placeholder animations (replaced by real media) */
@@ -147,4 +157,4 @@ li em{font-style:italic}li strong{font-weight:600}
 .sbtn.dark,.sbtn:active:not([disabled]){background:var(--char);color:#fff}
 .sbtn[disabled]{border-color:var(--rule);color:var(--rule)}
 .set-note{margin-top:22px;font-size:19px;line-height:1.4;color:var(--grey)}
-@media (prefers-reduced-motion:reduce){.pulse::after{animation:none;opacity:0}.body.turn>*{animation:none}}
+@media (prefers-reduced-motion:reduce){.arrow.next:not([disabled]),.arrow.next:not([disabled])::after,.arrow.pop,.sec.pop{animation:none}.body.turn>*{animation:none}}

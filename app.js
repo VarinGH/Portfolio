@@ -2,7 +2,7 @@
   var D = window.PORTFOLIO, P = D.pages, N = P.length;
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   var lang = store.get('lang') === 'th' ? 'th' : 'en';
-  var cur = 0, mediaIdx = 0, stopAnim = null, turn = '';
+  var cur = 0, mediaIdx = 0, stopAnim = null, turn = '', popSel = '';
   var page = document.getElementById('page'), stage = document.getElementById('stage');
 
   function tx(v) { return v == null ? '' : (typeof v === 'string' ? v : (v[lang] || v.en || '')); }
@@ -78,7 +78,7 @@
     });
     secs += '</div>';
     return '<nav class="nav" aria-label="Pages"><button type="button" class="arrow" data-go="' + (cur - 1) + '" aria-label="' + esc(u.prev) + '"' + (cur === 0 ? ' disabled' : '') + '>' + CH_L + '</button>' + secs +
-      '<button type="button" class="arrow' + (cur < N - 1 ? ' pulse' : '') + '" data-go="' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '>' + CH_R + '</button></nav>' +
+      '<button type="button" class="arrow next" data-go=""' + (cur + 1) + '" data-next="1" aria-label="' + esc(u.next) + '"' + (cur === N - 1 ? ' disabled' : '') + '>' + CH_R + '</button></nav>' +
       '<div class="ft"><span>' + esc(u.foot) + '</span><span>' + esc(u.page) + ' ' + (cur + 1) + ' ' + esc(u.of) + ' ' + N + '</span></div>';
   }
   function render() {
@@ -87,6 +87,7 @@
     if (stopAnim) { stopAnim(); stopAnim = null; }
     page.innerHTML = header(u) + '<div class="body' + (turn ? ' turn ' + turn : '') + '">' + body(p, u) + '</div>' + nav(u);
     turn = '';
+    if (popSel) { var pb = page.querySelector(popSel); if (pb) pb.classList.add('pop'); popSel = ''; }
     var an = page.querySelector('[data-anim]');
     if (an && window.ANIMS && window.ANIMS[an.dataset.anim]) stopAnim = window.ANIMS[an.dataset.anim](an);
     var v = page.querySelector('video'); if (v) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
@@ -94,6 +95,7 @@
   function go(i, fromNext) {
     if (i < 0 || i >= N || i === cur) return;
     turn = i > cur ? 'fwd' : 'back';
+    if (!popSel) popSel = i > cur ? '.arrow.next' : '.arrow:not(.next)';
     cur = i; mediaIdx = 0; logTurn();
     try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {}
     render();
@@ -103,7 +105,7 @@
     if (b.dataset.lang) { lang = b.dataset.lang; store.set('lang', lang); render(); }
     else if (b.dataset.media != null) { mediaIdx = +b.dataset.media; render(); }
     else if (b.dataset.zoom != null) zoom(P[cur].items[+b.dataset.zoom]);
-    else if (b.dataset.go != null) go(+b.dataset.go, !!b.dataset.next);
+    else if (b.dataset.go != null) { if (b.classList.contains('sec')) popSel = '.sec[aria-current="true"]'; go(+b.dataset.go, !!b.dataset.next); }
   });
   function zoom(it) {
     var o = document.createElement('button');
