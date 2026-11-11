@@ -13,9 +13,9 @@ window.PORTFOLIO = {
     th: { name: '[ชื่อ-นามสกุล ภาษาไทย]', running: 'แฟ้มผลงานประกอบการสมัครแพทย์ประจำบ้าน สาขาจักษุวิทยา พ.ศ. 2569', problem: 'ปัญหา', solution: 'แนวทางแก้ไข', fig: 'รูปที่', page: 'หน้า', of: 'จาก', prev: 'หน้าก่อนหน้า', next: 'หน้าถัดไป', foot: 'Dejgambhir V. Portfolio' }
   },
   sections: [
-    { id: 'pr', label: { en: 'Product', th: 'ผลิตภัณฑ์' } },
-    { id: 'sw', label: { en: 'Software', th: 'ซอฟต์แวร์' } },
-    { id: 're', label: { en: 'Research', th: 'งานวิจัย' } },
+    { id: 'pr', label: { en: 'Product innovation', th: 'นวัตกรรมผลิตภัณฑ์' } },
+    { id: 'sw', label: { en: 'Software innovation', th: 'นวัตกรรมซอฟต์แวร์' } },
+    { id: 're', label: { en: 'Research and Awards', th: 'งานวิจัยและรางวัล' } },
     { id: 'cv', label: { en: 'CV', th: 'ประวัติย่อ' } }
   ],
   pages: [
