@@ -22,7 +22,7 @@ window.PORTFOLIO = {
       title: 'Laser flange forceps',
       sub: 'Custom forceps for laser-assisted flange creation',
       role: 'Surgical instrument | Role: [YOUR ROLE] | [YEAR]',
-      problem: 'In Yamane scleral fixation, the flange on each haptic is made with handheld cautery, so its size varies from one haptic to the next. A flange that is too small can slip back through the sclera.',
+      problem: ['In Yamane scleral fixation, each flange is made with handheld cautery, so its size varies from one haptic to the next', 'A flange that is too small can slip back through the sclera'],
       bullets: ['[HOW THE FORCEPS HOLDS THE HAPTIC]', 'Endolaser forms the flange at a set power and duration', 'Benchtop study on PVDF haptics: [KEY RESULT]'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder). The real recording goes here.',
         html: '<svg viewBox="0 0 360 200" width="432" height="240" aria-hidden="true"><path d="M20 100 H170" stroke="#ffffff" stroke-width="5" fill="none"></path><circle class="flB" cx="176" cy="100" r="18" fill="#ffffff"></circle><path class="flL" d="M200 100 H286" stroke="#ffffff" stroke-width="2" stroke-dasharray="3 6" fill="none"></path><rect x="286" y="88" width="64" height="24" fill="#3d3d3d" stroke="#9a9a9a"></rect><text x="20" y="72" fill="#c9c9c9" font-family="Source Sans 3, Arial, sans-serif" font-size="14">IOL haptic</text><text x="286" y="72" fill="#c9c9c9" font-family="Source Sans 3, Arial, sans-serif" font-size="14">Endolaser</text></svg>' }]
@@ -31,7 +31,7 @@ window.PORTFOLIO = {
       title: 'Automatic VA machine',
       sub: 'Voice-guided visual acuity test that runs without staff',
       role: 'Medical device prototype | Role: [YOUR ROLE] | 2026',
-      problem: 'Visual acuity is measured on every eye patient, and each test needs a staff member to stand with the patient. In a busy clinic this becomes a queue before anyone sees a doctor.',
+      problem: ['Visual acuity is measured on every eye patient, and each test needs a staff member to stand with the patient', 'In a busy clinic this becomes a queue before anyone sees a doctor'],
       bullets: ['Spoken instructions guide the patient through the test', 'Speech recognition on the device hears and grades each answer', 'Prints the result with no assistant needed'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder). The real recording goes here.',
         html: '<div style="display:flex;flex-direction:column;align-items:center;gap:22px;' + SANS + '"><div style="position:relative;width:420px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));font-size:64px;font-weight:700;text-align:center;line-height:1.4"><span>4</span><span>7</span><span>2</span><span>9</span><span>5</span><div class="vaBox" style="position:absolute;top:0;bottom:0;width:20%;box-sizing:border-box;border:3px solid #ffffff"></div></div><div style="font-size:17px;color:#c9c9c9">Patient reads aloud. The machine listens and grades each digit.</div></div>' }]
@@ -40,7 +40,7 @@ window.PORTFOLIO = {
       title: 'Scheimpflug microsurface analysis',
       sub: '[ONE-LINE DESCRIPTION OF WHAT IT MEASURES]',
       role: '[TYPE OF PRODUCT] | Role: [YOUR ROLE] | [YEAR]',
-      problem: '[PROBLEM: two or three sentences on what cannot be measured or seen today.]',
+      problem: ['[PROBLEM 1: what cannot be measured or seen today]', '[PROBLEM 2]'],
       bullets: ['[KEY SOLUTION 1]', '[KEY SOLUTION 2]', '[KEY SOLUTION 3]'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder).',
         html: '<svg viewBox="0 0 220 220" width="280" height="280" aria-hidden="true"><circle cx="110" cy="110" r="96" fill="#262626" stroke="#555555"></circle><circle cx="110" cy="110" r="60" fill="none" stroke="#555555" stroke-dasharray="3 5"></circle><path class="spL" d="M110 8 V212" stroke="#ffffff" stroke-width="3" fill="none"></path></svg>' }]
@@ -49,7 +49,7 @@ window.PORTFOLIO = {
       title: 'Hindsight',
       sub: 'Case video management with phase detection for rapid review',
       role: 'Desktop application | Role: Idea and application development | 2026',
-      problem: 'Trainees record nearly every case, yet most footage is never watched again. Locating one step inside a full-length recording takes longer than the step itself, so feedback happens from memory.',
+      problem: ['Trainees record nearly every case, yet most footage is never watched again', 'Locating one step inside a full-length recording takes longer than the step itself', 'Feedback ends up being given from memory'],
       bullets: ['Automatic USB thumbdrive case sync', 'Automatic phase detection', 'Quick review, e.g. export the last 10 capsulorhexis you did'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder). The real recording goes here.',
         html: '<div style="align-self:stretch;flex-grow:1;display:flex;flex-direction:column;width:100%"><div style="flex-grow:1;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 200 200" width="230" height="230" aria-hidden="true"><circle cx="100" cy="100" r="94" fill="#262626" stroke="#555555" stroke-width="1"></circle><circle cx="100" cy="100" r="64" fill="#3d3d3d"></circle><circle cx="100" cy="100" r="45" fill="#0d0d0d"></circle><circle class="rxH" cx="100" cy="100" r="45" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="283" transform="rotate(-90 100 100)"></circle></svg></div><div style="position:relative;display:grid;grid-template-columns:1fr 2fr 1fr 3fr 1fr 1fr;' + SANS + ';font-size:16px;color:#16181c;background:#ffffff;border:1px solid #16181c"><span style="padding:9px 8px;border-right:1px solid #b9bec6">Incision</span><span style="padding:9px 8px;border-right:1px solid #b9bec6;background:#e2e2e2;font-weight:700">Capsulorhexis</span><span style="padding:9px 8px;border-right:1px solid #b9bec6">Hydro</span><span style="padding:9px 8px;border-right:1px solid #b9bec6">Phaco</span><span style="padding:9px 8px;border-right:1px solid #b9bec6">I/A</span><span style="padding:9px 8px">IOL</span><div class="phH" style="position:absolute;top:-6px;bottom:-6px;width:3px;background:#16181c"></div></div></div>' }]
@@ -58,7 +58,7 @@ window.PORTFOLIO = {
       title: 'Electronic CRF',
       sub: 'Case report form that checks each value as it is entered',
       role: 'Web application | Role: [YOUR ROLE] | 2026',
-      problem: 'On paper and spreadsheet case report forms, any value can be written down. Out-of-range measurements and missing fields are found weeks later at data cleaning, after the participant has gone home.',
+      problem: ['On paper and spreadsheet case report forms, any value can be written down', 'Out-of-range measurements and missing fields are found weeks later at data cleaning, after the participant has gone home'],
       bullets: ['Validation rules run at the moment of entry', 'Out-of-range and missing values are flagged before the visit ends', '[THIRD KEY FEATURE]'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder); the range shown is an example.',
         html: '<div style="position:relative;width:480px;height:200px;' + SANS + ';color:#16181c"><div class="crfA" style="position:absolute;inset:0;box-sizing:border-box;background:#ffffff;padding:24px 28px;display:flex;flex-direction:column;gap:10px"><span style="font-size:18px;font-weight:600">Axial length, right eye (mm)</span><span style="font-size:32px;font-weight:700;padding:6px 12px;border:4px solid #16181c">236.0</span><span style="font-size:18px;font-weight:700">Out of range. Expected 20 to 35. Please re-check.</span></div><div class="crfB" style="position:absolute;inset:0;box-sizing:border-box;background:#ffffff;padding:24px 28px;display:flex;flex-direction:column;gap:10px"><span style="font-size:18px;font-weight:600">Axial length, right eye (mm)</span><span style="font-size:32px;font-weight:700;padding:8px 14px;border:2px solid #9a9a9a">23.60</span><span style="font-size:18px;color:#4a4f57">Accepted</span></div></div>' }]
@@ -67,7 +67,7 @@ window.PORTFOLIO = {
       title: 'Globe tracker',
       sub: '[ONE-LINE DESCRIPTION OF WHAT IT DOES]',
       role: '[TYPE OF SOFTWARE] | Role: [YOUR ROLE] | [YEAR]',
-      problem: '[PROBLEM: two or three sentences on what goes wrong today and for whom.]',
+      problem: ['[PROBLEM 1: what goes wrong today and for whom]', '[PROBLEM 2]'],
       bullets: ['[KEY SOLUTION 1]', '[KEY SOLUTION 2]', '[KEY SOLUTION 3]'],
       media: [{ type: 'html', cap: 'Animated demonstration (placeholder).',
         html: '<svg viewBox="0 0 320 220" width="420" height="289" aria-hidden="true"><g class="gt"><circle cx="160" cy="110" r="70" fill="#262626" stroke="#555555"></circle><circle cx="160" cy="110" r="44" fill="#3d3d3d"></circle><circle cx="160" cy="110" r="20" fill="#0d0d0d"></circle><rect x="84" y="34" width="152" height="152" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 6"></rect><path d="M160 20 V200 M70 110 H250" stroke="#ffffff" stroke-width="1" fill="none"></path></g></svg>' }]
@@ -149,7 +149,27 @@ window.PORTFOLIO = {
           'Assisted at an ophthalmology screening event in Saraburi, June 2025',
           'Produced a public education video in collaboration with the Obstetrics and Gynecology department, Queen Savang Vadhana Memorial Hospital, Thai Red Cross Society',
           'Participated in Medi-Lingo, a local language proficiency initiative for healthcare workers at Queen Savang Vadhana Memorial Hospital, Thai Red Cross Society'
-        ] }
+        ] },
+        { heading: 'Contact information', list: ['Email: Varin.MD@outlook.com', 'Phone: 099-959-9259'] }
+      ]
+    },
+    { type: 'gallery', sec: 'cv',
+      title: 'Activities',
+      hint: { en: 'Tap a photo to enlarge.', th: 'แตะรูปเพื่อขยาย' },
+      items: [
+        { src: 'media/cv-01.jpg', cap: "ESCRS 2026 with Dr. Thanapong and Dr. Sérgio Canabrava" },
+        { src: 'media/cv-02.jpg', cap: "APVRS 2026, Gold Coast, Australia" },
+        { src: 'media/cv-03.jpg', cap: "APACRS 2026 Video Competition Winner" },
+        { src: 'media/cv-04.jpg', cap: "Global Ocular Inflammation Workshop Meeting, 2025" },
+        { src: 'media/cv-05.jpg', cap: "Cataract Day, 2025" },
+        { src: 'media/cv-06.jpg', cap: "APACRS 2025" },
+        { src: 'media/cv-07.jpg', cap: "Ophthalmology screening, Saraburi, June 2025" },
+        { src: 'media/cv-08.jpg', cap: "AIER Sichuan Eye Hospital visit, Chengdu, China" },
+        { src: 'media/cv-09.jpg', cap: "22nd Specialty Day, TES" },
+        { src: 'media/cv-10.jpg', cap: "EyeSi and wet lab" },
+        { src: 'media/cv-11.jpg', cap: "Ophthalmology rotation, University of Dundee, NHS Tayside" },
+        { src: 'media/cv-12.jpg', cap: "President of CU-MEDi student committee and SMCU representative" },
+        { src: 'media/cv-13.jpg', cap: "Teaching at Assumption University" }
       ]
     }
   ]

@@ -42,7 +42,7 @@
   function body(p, u) {
     if (p.type === 'project') {
       return '<h1>' + T(p.title) + '</h1><p class="sub">' + T(p.sub) + '</p><div class="role">' + T(p.role) + '</div>' +
-        '<div class="txt"><div class="blk"><h2>' + esc(u.problem) + '</h2><p>' + T(p.problem) + '</p></div>' +
+        '<div class="txt"><div class="blk"><h2>' + esc(u.problem) + '</h2>' + (Array.isArray(p.problem) ? '<ul>' + li(p.problem) + '</ul>' : '<p>' + T(p.problem) + '</p>') + '</div>' +
         '<div class="blk"><h2>' + esc(u.solution) + '</h2><ul>' + li(p.bullets) + '</ul></div></div>' + figure(p, u);
     }
     if (p.type === 'research') {
@@ -53,6 +53,10 @@
         return h + '</div>';
       };
       return '<h1>' + T(p.title) + '</h1><div class="cols">' + col(p.left) + col(p.right) + '</div>';
+    }
+    if (p.type === 'gallery') {
+      return '<h1>' + T(p.title) + '</h1><div class="role">' + T(p.hint) + '</div><div class="gal">' + p.items.map(function (it, i) {
+        return '<button type="button" class="gi" data-zoom="' + i + '"><img src="' + esc(it.src) + '" alt=""><span>' + T(it.cap) + '</span></button>'; }).join('') + '</div>';
     }
     var h = '<h1>' + T(p.title) + '</h1><div class="fill">';
     if (p.statement) h += '<div class="cv-top">' + (p.photo ? '<div class="photo"><img src="' + esc(p.photo) + '" alt=""></div>' : '') + '<p class="stmt">' + T(p.statement) + '</p></div>';
@@ -94,8 +98,16 @@
     var b = e.target.closest('button'); if (!b || b.disabled) return;
     if (b.dataset.lang) { lang = b.dataset.lang; store.set('lang', lang); render(); }
     else if (b.dataset.media != null) { mediaIdx = +b.dataset.media; render(); }
+    else if (b.dataset.zoom != null) zoom(P[cur].items[+b.dataset.zoom]);
     else if (b.dataset.go != null) go(+b.dataset.go, !!b.dataset.next);
   });
+  function zoom(it) {
+    var o = document.createElement('button');
+    o.type = 'button'; o.className = 'lb';
+    o.innerHTML = '<img src="' + esc(it.src) + '" alt=""><span>' + T(it.cap) + '</span>';
+    o.addEventListener('click', function (e) { e.stopPropagation(); o.remove(); });
+    page.appendChild(o);
+  }
   /* swipe left / right to turn the page */
   var sx = null, sy = null;
   document.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
