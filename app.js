@@ -142,9 +142,8 @@
       '<button type="button" class="sbtn" data-s="p1">Back to page 1, English</button>' +
       '<button type="button" class="sbtn dark" data-s="close">Close</button></div>' +
       '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>' +
-      '<h2 class="set-h">Usage log</h2><p class="set-note" style="margin-top:6px">Which page was on screen, when, and for how long. Time on this settings page and time with the screen off are not counted. Press Clear log just before you hand the tablet over.</p>' +
-      '<div class="set-btns"><button type="button" class="sbtn" data-s="clr">Clear log</button><button type="button" class="sbtn" data-s="ref">Refresh log</button></div>' +
-      '<div data-s="log"></div></div>';
+      '<div class="set-btns" style="margin-top:34px;padding-top:24px;border-top:3px solid var(--ink)"><button type="button" class="sbtn" data-s="exp">Export data</button><button type="button" class="sbtn" data-s="clr">Clear data</button></div>' +
+      '<p class="set-note" data-s="expmsg"></p></div>';
     logPause();
     document.body.appendChild(o);
     var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
@@ -168,8 +167,11 @@
       var b = e.target.closest('button'); if (!b || b.disabled) return;
       var k = b.dataset.s;
       if (k === 'close') { o.remove(); logResume(); }
-      else if (k === 'clr') { logClear(); q('log').innerHTML = logHtml(); }
-      else if (k === 'ref') q('log').innerHTML = logHtml();
+      else if (k === 'exp') logExport(function (m) { q('expmsg').textContent = m; });
+      else if (k === 'clr') {
+        if (b.dataset.arm) { logClear(); delete b.dataset.arm; b.textContent = 'Clear data'; q('expmsg').textContent = 'Data cleared at ' + fmtT(Date.now()) + '.'; }
+        else { b.dataset.arm = '1'; b.textContent = 'Press again to clear'; setTimeout(function () { if (b.dataset.arm) { delete b.dataset.arm; b.textContent = 'Clear data'; } }, 4000); }
+      }
       else if (k === 'chk') { check(); offlineCount(); }
       else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); logResume(); }
       else if (k === 'upd') {
@@ -188,7 +190,6 @@
         Promise.all([wipe, unreg]).catch(function () {}).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
       }
     }
-    q('log').innerHTML = logHtml();
     check(); offlineCount();
   }
 
@@ -217,18 +218,34 @@
   function fmtT(ms) { var d = new Date(ms); return two(d.getHours()) + ':' + two(d.getMinutes()) + ':' + two(d.getSeconds()); }
   function fmtD(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + two(s % 60); }
   function pageName(n) { var p = P[n - 1]; return p ? tx(p.short || p.title) : '?'; }
-  function logHtml() {
-    if (!LOG.length) return '<p class="set-note">No page views recorded yet.</p>';
-    var tot = {}, cnt = {}, all = 0;
-    LOG.forEach(function (e) { tot[e.p] = (tot[e.p] || 0) + e.d; cnt[e.p] = (cnt[e.p] || 0) + 1; all += e.d; });
-    var h = '<table class="logt"><tr><th>Page</th><th></th><th>Views</th><th>Total time</th></tr>';
-    for (var n = 1; n <= N; n++) h += '<tr' + (tot[n] ? '' : ' class="none"') + '><td>' + n + '</td><td>' + esc(pageName(n)) + '</td><td>' + (cnt[n] || 0) + '</td><td>' + (tot[n] ? fmtD(tot[n]) : 'not opened') + '</td></tr>';
-    h += '<tr class="sum"><td></td><td>All pages, from ' + esc(fmtDT(LOG[0].t)) + '</td><td>' + LOG.length + '</td><td>' + fmtD(all) + '</td></tr></table>';
-    h += '<table class="logt"><tr><th>Time</th><th>Page</th><th></th><th>Shown for</th></tr>';
-    LOG.slice(-300).forEach(function (e) { h += '<tr><td>' + fmtT(e.t) + '</td><td>' + e.p + '</td><td>' + esc(pageName(e.p)) + '</td><td>' + fmtD(e.d) + '</td></tr>'; });
-    return h + '</table>';
+  function tabletId() { var id = store.get('tabletId'); if (!id) { id = Math.random().toString(36).slice(2, 6).toUpperCase(); store.set('tabletId', id); } return id; }
+  /* export as a CSV file: shared through the tablet's share sheet when possible, otherwise saved to Downloads */
+  function logExport(say) {
+    if (!LOG.length) { say('Nothing recorded yet.'); return; }
+    var rows = ['tablet,date,time,page,title,seconds'];
+    LOG.forEach(function (e) {
+      var d = new Date(e.t);
+      rows.push([tabletId(), d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate()), fmtT(e.t), e.p, '"' + pageName(e.p).replace(/"/g, '""') + '"', (e.d / 1000).toFixed(1)].join(','));
+    });
+    var n = new Date(), name = 'portfolio-data-' + tabletId() + '-' + n.getFullYear() + two(n.getMonth() + 1) + two(n.getDate()) + '-' + two(n.getHours()) + two(n.getMinutes()) + '.csv';
+    var blob = new Blob(['\ufeff' + rows.join('\r\n') + '\r\n'], { type: 'text/csv' });
+    function download() {
+      var u = URL.createObjectURL(blob), l = document.createElement('a');
+      l.href = u; l.download = name; document.body.appendChild(l); l.click(); l.remove();
+      setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+      say('Saved ' + LOG.length + ' rows as ' + name + ' in the Downloads folder.');
+    }
+    try {
+      var file = new File([blob], name, { type: 'text/csv' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: name }).then(function () { say('Exported ' + LOG.length + ' rows as ' + name + '.'); })
+          .catch(function (e) { if (e && e.name === 'AbortError') say('Export cancelled.'); else download(); });
+        return;
+      }
+    } catch (e) {}
+    download();
   }
-  /* each time the app comes to the front with internet, compare versions quietly; the result shows in Settings */
+
   /* swipe left / right to turn the page */
   var sx = null, sy = null;
   document.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });

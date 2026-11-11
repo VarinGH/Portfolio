@@ -146,12 +146,6 @@ animation:rim 1.5s linear infinite}
 /* hidden settings page */
 .set{position:fixed;left:0;top:0;right:0;bottom:0;background:var(--paper);color:var(--ink);font-family:var(--serif);z-index:99;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
 .set-in{width:800px;padding:40px}
-.set-h{margin-top:34px;padding-top:16px;border-top:3px solid var(--ink);font-size:26px}
-.logt{width:100%;margin-top:18px;border-collapse:collapse;font-family:var(--sans);font-size:19px;font-variant-numeric:tabular-nums}
-.logt th{text-align:left;font-weight:700;border-bottom:1.5px solid var(--ink);padding:6px 8px 6px 0}
-.logt td{border-bottom:1px solid var(--rule);padding:7px 8px 7px 0;vertical-align:top}
-.logt td:last-child,.logt th:last-child{text-align:right;padding-right:0;white-space:nowrap}
-.logt tr.none td{color:#8a9097}.logt tr.sum td{font-weight:700;border-bottom:0}
 .set h1{margin:0}
 .set dl{margin:26px 0 0;border-top:3px solid var(--ink)}
 .set dt{font-family:var(--sans);font-size:19px;font-weight:700;margin-top:16px}
