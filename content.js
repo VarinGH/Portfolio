@@ -68,8 +68,7 @@ window.PORTFOLIO = {
       role: '[TYPE OF SOFTWARE] | Role: [YOUR ROLE] | [YEAR]',
       problem: ['[PROBLEM 1: what goes wrong today and for whom]', '[PROBLEM 2]'],
       bullets: ['[KEY SOLUTION 1]', '[KEY SOLUTION 2]', '[KEY SOLUTION 3]'],
-      media: [{ type: 'html', cap: 'Animated demonstration (placeholder).',
-        html: '<svg viewBox="0 0 320 220" width="420" height="289" aria-hidden="true"><g class="gt"><circle cx="160" cy="110" r="70" fill="#262626" stroke="#555555"></circle><circle cx="160" cy="110" r="44" fill="#3d3d3d"></circle><circle cx="160" cy="110" r="20" fill="#0d0d0d"></circle><rect x="84" y="34" width="152" height="152" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 6"></rect><path d="M160 20 V200 M70 110 H250" stroke="#ffffff" stroke-width="1" fill="none"></path></g></svg>' }]
+      media: [{ type: 'video', src: 'media/globe-tracker.mp4', fit: true, cap: 'Screen recording during capsulorhexis: the limbus is fitted on every frame, and the pitch, yaw and torsion of the globe are tracked in degrees and plotted across the whole case, phase by phase.' }]
     },
     { type: 'research', sec: 're',
       title: 'Research and awards',
