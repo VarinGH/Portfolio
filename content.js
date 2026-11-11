@@ -34,8 +34,7 @@ window.PORTFOLIO = {
       role: 'Medical device prototype | Role: [YOUR ROLE] | 2026',
       problem: ['Visual acuity is measured on every eye patient, and each test needs a staff member to stand with the patient', 'In a busy clinic this becomes a queue before anyone sees a doctor'],
       bullets: ['Spoken instructions guide the patient through the test', 'Speech recognition on the device hears and grades each answer', 'Prints the result with no assistant needed'],
-      media: [{ type: 'html', cap: 'Animated demonstration (placeholder). The real recording goes here.',
-        html: '<div style="display:flex;flex-direction:column;align-items:center;gap:22px;' + SANS + '"><div style="position:relative;width:420px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));font-size:64px;font-weight:700;text-align:center;line-height:1.4"><span>4</span><span>7</span><span>2</span><span>9</span><span>5</span><div class="vaBox" style="position:absolute;top:0;bottom:0;width:20%;box-sizing:border-box;border:3px solid #ffffff"></div></div><div style="font-size:17px;color:#c9c9c9">Patient reads aloud. The machine listens and grades each digit.</div></div>' }]
+      media: [{ type: 'anim', name: 'vakiosk', light: true, bg: '#DDE2E6', cap: 'Redrawn from the kiosk application: the patient stands at 6 m, says "start", and reads each line aloud; the machine hears, grades and prints the result. Illustrative values.' }]
     },
     { type: 'project', sec: 'pr',
       title: 'Scheimpflug microsurface analysis',

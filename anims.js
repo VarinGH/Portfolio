@@ -459,3 +459,256 @@ window.ANIMS.hindsight = function (frame) {
   draw(0); window.addEventListener('resize', fit);
   return function () { clearInterval(id); window.removeEventListener('resize', fit); };
 };
+
+/* Automatic VA machine. Redrawn from the kiosk application: its three screens (registration,
+   measurement, summary) and the staff-side monitor, in the app's own type (Sarabun, IBM Plex Mono),
+   colours and Thai wording. One run: right eye, switch, left eye, printed result. Values are illustrative. */
+window.ANIMS.vakiosk = function (frame) {
+  var F = "'Sarabun UI','Sarabun',sans-serif", M = "'IBM Plex Mono',ui-monospace,Consolas,monospace";
+  var C = { ink: '#242424', grey: '#616161', mute: '#757575', line: '#E0E0E0', blue: '#0F6CBD', green: '#107C10', ok: '#54B054', bad: '#F7630C',
+    dot: '#D1D1D1', dev: '#1F1F1F', card: '#292929', cardL: '#424242', dBlue: '#479EF5', dLab: '#B0B0B0', dTxt: '#DADADA' };
+  var LINES = [['20/200', 1.0], ['20/125', 0.78], ['20/80', 0.6], ['20/60', 0.48], ['20/40', 0.3], ['20/30', 0.18], ['20/20', 0.0]];
+  var SIZE = [118, 92, 74, 60, 48, 38, 30];
+  var WORD = ['ศูนย์', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+  var CHART = { od: [[5], [3, 8], [6, 2, 9], [4, 7, 1, 5], [8, 3, 6, 2, 9], [7, 4, 9, 1, 6], [2, 5, 8, 3, 0]],
+    os: [[9], [4, 1], [7, 3, 8], [2, 6, 9, 4], [5, 1, 7, 3, 8], [6, 2, 4, 9, 1], [3, 8, 5, 1, 7]] };
+  /* what the patient says: a digit, or -1 for "ไม่เห็น" (cannot see). Lines not listed are read correctly. */
+  var SAY = { od: { 4: [8, 3, 5, 2, 9], 5: [1, -1] }, os: { 6: [5, -1] } };
+  var RES = { od: ['20/40-1', '0.32'], os: ['20/30', '0.18'] };
+
+  /* ---------- timeline ---------- */
+  var S = { st: 'reg', dist: null, ready: false, ms: 'READY', msSub: 'waiting for patient…', eye: 'od', li: 0, mk: [], ptr: 0, hit: -1, hitN: 0,
+    instr: '', mic: 'listening', chips: [], chipN: 0, lat: [], spk: false, done: 0 }, TL = [];
+  function snap(d) { TL.push({ d: d, s: JSON.parse(JSON.stringify(S)) }); S.hit = -1; }
+  function chip(h, e, v) { var ms = 150 + ((S.chipN * 37) % 110); S.chipN++; S.chips.unshift({ n: S.chipN, h: h, e: e, v: v, ms: ms }); S.chips = S.chips.slice(0, 5); S.lat.push(ms); S.lat = S.lat.slice(-12); }
+  snap(.6);
+  [3.2, 4.1, 4.9, 5.5, 5.8].forEach(function (d) { S.dist = d; snap(.28); });
+  S.dist = 6.01; S.ready = true; snap(.9);
+  S.spk = true; snap(.5);
+  S.spk = false; chip('เริ่ม', 'START', 'cmd'); S.ms = 'STARTING'; S.msSub = 'test begins'; snap(.8);
+  function eyeRun(eye, a, b) {
+    S.st = 'meas'; S.eye = eye; S.li = 0; S.mk = []; S.ptr = 0; S.done = 0; S.mic = 'listening';
+    S.instr = eye === 'od' ? 'ปิดตาซ้าย' : 'สลับตา — ปิดตาขวา'; snap(eye === 'od' ? 1.3 : 1.6);
+    S.instr = 'อ่านตัวเลขทีละตัว'; snap(.6);
+    for (var li = 0; li < LINES.length; li++) {
+      S.li = li; S.mk = []; S.ptr = 0;
+      if (li) { S.instr = 'แถวถัดไป'; snap(.5); S.instr = 'อ่านตัวเลขทีละตัว'; }
+      var exp = CHART[eye][li], say = (SAY[eye][li] || exp), wrong = 0;
+      for (var k = 0; k < say.length; k++) {
+        S.spk = true; S.mic = 'listening'; snap(a);
+        var v = say[k] === -1 ? 'unseen' : say[k] === exp[k] ? 'correct' : 'wrong';
+        if (v !== 'correct') wrong++;
+        S.mk[k] = v; S.hit = k; S.hitN++; S.ptr = k + 1; S.spk = false; S.mic = 'heard';
+        chip(say[k] === -1 ? 'ไม่เห็น' : WORD[say[k]], String(exp[k]), v); snap(b);
+      }
+      if (say.length < exp.length || wrong > 1) return; /* line failed: this eye is done */
+      S.done = li + 1;
+    }
+  }
+  eyeRun('od', .26, .34);
+  eyeRun('os', .12, .16);
+  S.instr = 'กำลังพิมพ์ผล'; S.mic = 'idle'; snap(1);
+  S.st = 'sum'; snap(6.5);
+  var TOT = 0, START = TL.map(function (x) { var t = TOT; TOT += x.d; return t; });
+
+  /* ---------- drawing ---------- */
+  var sty = '<style>' +
+    '@keyframes vkPulse{0%,100%{box-shadow:0 0 0 0 rgba(15,108,189,.35)}50%{box-shadow:0 0 0 10px rgba(15,108,189,0)}}' +
+    '@keyframes vkRing{0%,100%{opacity:1}50%{opacity:.55}}@keyframes vkWave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}' +
+    '@keyframes vkChip{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}' +
+    '@keyframes vkIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}' +
+    '.vk-wv i{display:block;width:3px;height:22px;border-radius:2px;background:' + C.dBlue + ';transform:scaleY(.12);transition:transform .2s}' +
+    '.vk-wv.on i{animation:vkWave .5s ease-in-out infinite}' +
+    '.vk-mic[data-s=listening]{animation:vkPulse 1.6s infinite}.vk-mic[data-s=listening] .vk-md{animation:vkRing 1.2s infinite}' +
+    '.vk-st{animation:vkIn .4s ease-out}' +
+    '</style>';
+  var wave = ''; for (var w = 0; w < 28; w++) wave += '<i style="animation-delay:-' + ((w * 0.137) % 0.5).toFixed(2) + 's"></i>';
+  var rail = ''; LINES.forEach(function (l, i) { rail += '<div data-r="' + i + '" style="display:flex;align-items:center;gap:9px"><div style="width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid ' + C.dot + ';box-sizing:border-box"></div><div style="font-family:' + M + ';font-size:12px;color:#b3b0a6">' + l[0] + '</div></div>'; });
+  var person = '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#b3b0a6" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>';
+  var mic = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="23"/></svg>';
+  var qr = '<svg width="44" height="44" viewBox="0 0 11 11" shape-rendering="crispEdges">';
+  ['11101101111', '10101001001', '11101011111', '00000100000', '10110111011', '01011010100', '11010110110', '00000101000', '11101011011', '10100110101', '11101101111'].forEach(function (r, y) { for (var x = 0; x < 11; x++) if (r[x] === '1') qr += '<rect x="' + x + '" y="' + y + '" width="1" height="1"/>'; });
+  qr += '</svg>';
+  function lab(x, wd, t, s) { return '<div style="position:absolute;top:380px;left:' + x + 'px;width:' + wd + 'px;text-align:center;font-family:' + F + ';font-size:18px;font-weight:600;color:#16181c;line-height:1.2">' + t + '<span style="display:block;font-weight:400;font-size:15px;color:#4a4f57">' + s + '</span></div>'; }
+  var bootRow = function (k, v, col) { return '<div style="display:flex;justify-content:space-between;background:' + C.card + ';border-radius:6px;padding:8px 12px;font-family:' + M + ';font-size:13px;margin-top:7px"><span>' + k + '</span><span data-k="' + (col ? 'bd' : '') + '" style="color:' + (col || C.ok) + '">' + v + '</span></div>'; };
+  var secLab = function (t, mt) { return '<div style="font-family:' + M + ';font-size:12px;letter-spacing:.1em;color:' + C.dLab + ';margin-top:' + (mt || 0) + 'px">' + t + '</div>'; };
+
+  frame.innerHTML =
+    '<div style="position:relative;width:720px;height:430px;flex-shrink:0;transform-origin:center center">' + sty +
+    '<div style="position:absolute;left:39px;top:6px;width:642px;height:366px;border-radius:10px;background:#1d2024"></div>' +
+    '<div style="position:absolute;left:45px;top:12px;width:630px;height:354px;overflow:hidden;border-radius:3px">' +
+    '<div style="position:absolute;left:0;top:0;width:900px;height:506px;transform:scale(.7);transform-origin:0 0">' +
+
+    /* ===== kiosk zone (what the patient sees) ===== */
+    '<div style="position:absolute;left:0;top:0;width:600px;height:506px;background:#fff;color:' + C.ink + ';font-family:' + F + ';overflow:hidden">' +
+    '<div style="position:absolute;left:0;right:0;top:16px;display:flex;justify-content:center;gap:26px">' +
+    ['reg:ลงทะเบียน', 'meas:ตรวจวัด', 'sum:ผลตรวจ'].map(function (x) { x = x.split(':'); return '<div data-dot="' + x[0] + '" style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:' + C.dot + ';transition:background .35s"></div><div style="font-size:16px;color:#a4a89f;transition:color .35s">' + x[1] + '</div></div>'; }).join('') + '</div>' +
+
+    /* registration */
+    '<div data-st="reg" style="position:absolute;left:0;right:0;top:50px;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding-bottom:30px">' +
+    '<div style="font-size:26px;font-weight:700">สวัสดีค่ะ กรุณายืนที่จุดที่กำหนด</div>' +
+    '<div style="display:flex;gap:34px;align-items:center">' +
+    '<div style="border:1px dashed #C7C7C7;border-radius:10px;padding:14px 18px;display:flex;gap:14px;align-items:center">' + person +
+    '<div><div style="font-size:16px;color:' + C.grey + ';font-weight:700">ยังไม่มีข้อมูลผู้ป่วย</div><div style="font-size:12px;color:' + C.grey + '">สแกนบัตรเพื่อระบุตัวตน (ไม่บังคับ)</div></div></div>' +
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="font-size:14px;color:' + C.grey + ';font-weight:600">ระยะ</div>' +
+    '<div data-k="dist" style="font-size:44px;font-weight:800;line-height:1;color:#B0B0B0;font-variant-numeric:tabular-nums;transition:color .3s">-- ม.</div>' +
+    '<div data-k="dstate" style="font-size:15px;font-weight:600;color:#B0B0B0;transition:color .3s">กำลังวัด…</div></div></div>' +
+    '<div class="vk-mic" data-s="listening" style="display:flex;align-items:center;gap:12px;background:' + C.blue + ';color:#fff;border-radius:999px;padding:12px 26px">' + mic +
+    '<div><div style="font-size:18px;font-weight:700">พูดว่า "เริ่ม" เพื่อเริ่มการตรวจ</div><div style="font-size:11px;opacity:.85">ไม่ต้องสแกนบัตรก็เริ่มได้</div></div></div></div>' +
+
+    /* measurement */
+    '<div data-st="meas" style="position:absolute;left:0;right:0;top:50px;bottom:0;display:none">' +
+    '<div style="position:absolute;left:22px;top:44%;transform:translateY(-50%);display:flex;flex-direction:column;gap:13px">' + rail + '</div>' +
+    '<div style="position:absolute;right:20px;top:4px;border:1px solid ' + C.line + ';border-radius:8px;padding:5px 12px"><div data-k="eye" style="font-size:30px;font-weight:800;color:' + C.blue + ';line-height:1.1">ตาขวา</div></div>' +
+    '<div style="position:absolute;left:110px;right:20px;top:34px;bottom:104px;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
+    '<div style="position:relative"><div style="height:44px;position:relative"><svg data-k="ptr" width="34" height="34" viewBox="0 0 60 59" style="position:absolute;bottom:2px;left:0;transition:left .45s cubic-bezier(.2,.85,.2,1),opacity .25s"><path d="M22 4 H38 V27 H52 L30 53 L8 27 H22 Z" fill="' + C.ink + '"/></svg></div>' +
+    '<div data-k="line" style="display:flex;font-weight:800;line-height:1.05"></div></div>' +
+    '<div data-k="next" style="display:flex;gap:.26em;font-weight:800;opacity:.14;line-height:1;margin-top:4px"></div>' +
+    '<div data-k="lbl" style="font-family:' + M + ';font-size:12px;color:' + C.mute + ';margin-top:8px"></div></div>' +
+    '<div style="position:absolute;left:0;right:0;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:9px">' +
+    '<div class="vk-mic" data-k="mic" data-s="listening" style="display:flex;align-items:center;gap:8px;background:' + C.blue + ';color:#fff;border-radius:999px;padding:6px 16px;transition:background .3s"><div class="vk-md" data-k="md" style="width:8px;height:8px;border-radius:50%;background:#8BC7FF"></div><div data-k="ml" style="font-size:14px;font-weight:600">กำลังฟัง…</div></div>' +
+    '<div style="width:440px;height:50px;border:1px solid ' + C.line + ';border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden"><div data-k="instr" style="font-size:22px;font-weight:700"></div></div></div></div>' +
+
+    /* summary */
+    '<div data-st="sum" style="position:absolute;left:0;right:0;top:50px;bottom:0;display:none;gap:22px;justify-content:center;padding:26px 22px 0">' +
+    '<div style="width:290px;display:flex;flex-direction:column;gap:16px">' +
+    '<div style="font-size:26px;font-weight:700">ผลการตรวจสายตา</div><div style="display:flex;gap:10px">' +
+    ['od:ตาขวา · OD', 'os:ตาซ้าย · OS'].map(function (x) { x = x.split(':'); return '<div style="flex:1;border:1px solid ' + C.line + ';border-radius:10px;padding:12px 14px"><div style="font-size:12px;color:' + C.grey + ';font-weight:600">' + x[1] + '</div><div style="font-size:28px;font-weight:800;color:' + C.blue + ';line-height:1.15;white-space:nowrap">' + RES[x[0]][0] + '</div><div style="font-family:' + M + ';font-size:11px;color:' + C.grey + '">logMAR ' + RES[x[0]][1] + '</div></div>'; }).join('') + '</div>' +
+    '<div style="border:1px solid ' + C.line + ';border-radius:10px;padding:10px 14px;font-size:13px"><div style="font-weight:700;margin-bottom:4px">ประวัติผลตรวจ</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 62px 52px;font-family:' + M + ';font-size:10px;color:' + C.mute + '"><span></span><span style="text-align:right">OD</span><span style="text-align:right">OS</span></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 62px 52px;border-top:1px solid #F0F0F0;padding:4px 0"><span style="color:' + C.grey + '">วันนี้</span><span style="text-align:right;font-family:' + M + '">20/40-1</span><span style="text-align:right;font-family:' + M + '">20/30</span></div></div>' +
+    '<div style="font-size:17px;font-weight:600;color:' + C.blue + '">รับใบผลได้ที่เครื่องพิมพ์ด้านล่าง</div></div>' +
+    '<div style="display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 8px 16px rgba(0,0,0,.25))">' +
+    '<div style="width:220px;background:#1F1F1F;border-radius:10px 10px 3px 3px;padding:12px 14px 0;position:relative;z-index:1"><div style="width:7px;height:7px;border-radius:50%;background:' + C.ok + ';margin-bottom:10px"></div><div style="height:8px;background:#000;border-radius:2px"></div></div>' +
+    '<div style="overflow:hidden;width:208px;height:330px;margin-top:-2px"><div data-k="rcpt" style="width:208px;background:#fff;font-family:' + M + ';font-size:10px;color:#000;padding:12px 12px 10px;box-sizing:border-box;line-height:1.55">' +
+    '<div style="border-bottom:1px dashed #999;padding-bottom:8px"><div style="font-family:' + F + ';font-weight:800;font-size:13px">โรงพยาบาลสาธิตจักษุ</div>DEMO EYE HOSPITAL<br>VISUAL ACUITY REPORT</div>' +
+    '<div style="border-bottom:1px dashed #999;padding:8px 0"><div style="font-family:' + F + ';font-size:14px;font-weight:700">ผู้ป่วยไม่ระบุตัวตน</div>HN WALK-IN<br>METHOD: AUTOMATIC VA SYSTEM</div>' +
+    '<div style="border-bottom:1px dashed #999;padding:8px 0"><div style="font-size:9px;letter-spacing:.14em">THIS VISIT</div><div style="display:flex;gap:8px">' +
+    '<div style="flex:1"><div style="font-size:8px;letter-spacing:.1em">RIGHT / OD</div><div style="font-size:19px;font-weight:600;line-height:1.1;white-space:nowrap">20/40-1</div></div>' +
+    '<div style="flex:1"><div style="font-size:8px;letter-spacing:.1em">LEFT / OS</div><div style="font-size:19px;font-weight:600;line-height:1.1;white-space:nowrap">20/30</div></div></div></div>' +
+    '<div style="display:flex;align-items:center;gap:9px;padding-top:9px">' + qr + '<div style="font-family:' + F + ';font-size:12px;font-weight:600;line-height:1.35">สแกนเพื่อดูผลใน<br>แอปโรงพยาบาล</div></div>' +
+    '</div></div></div></div>' +
+    '</div>' +
+
+    /* ===== staff monitor ===== */
+    '<div style="position:absolute;left:600px;top:0;width:300px;height:506px;background:' + C.dev + ';color:#fff;font-family:' + F + ';overflow:hidden">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #333"><div style="font-family:' + M + ';font-size:13px;letter-spacing:.16em;color:' + C.dLab + '">DEV MONITOR</div><div data-k="tm" style="font-family:' + M + ';font-size:13px;color:' + C.dBlue + '">00:00</div></div>' +
+    '<div style="margin:10px 16px 0;background:' + C.card + ';border-radius:8px;height:38px;padding:0 12px;display:flex;align-items:center;position:relative"><div data-k="wv" class="vk-wv" style="display:flex;gap:3px;align-items:center;height:24px">' + wave + '</div>' +
+    '<div style="position:absolute;right:8px;top:3px;font-family:' + M + ';font-size:9px;color:' + C.mute + '">LOCAL ASR</div></div>' +
+    '<div data-dv="reg" style="padding:14px 16px">' + secLab('ENGINE BOOT') + bootRow('camera', 'READY') + bootRow('mic permission', 'GRANTED') + bootRow('ASR engine', 'ON DEVICE') + bootRow('laser rangefinder', '-- m', C.dBlue) +
+    '<div style="background:' + C.card + ';border:1px solid ' + C.cardL + ';border-radius:8px;padding:14px;text-align:center;margin-top:14px">' + secLab('MACHINE STATUS') +
+    '<div data-k="ms" style="font-family:' + M + ';font-size:24px;font-weight:600;color:' + C.dBlue + ';margin-top:4px">READY</div><div data-k="mss" style="font-family:' + M + ';font-size:12px;color:' + C.dLab + '">waiting for patient…</div></div>' +
+    '<div data-k="chR" style="margin-top:12px"></div></div>' +
+    '<div data-dv="meas" style="padding:12px 16px;display:none">' +
+    '<div style="display:flex;gap:8px"><div style="flex:1;background:' + C.card + ';border:1px solid ' + C.cardL + ';border-radius:8px;padding:9px 11px">' + secLab('CURRENT VA') +
+    '<div data-k="va" style="font-family:' + M + ';font-size:24px;font-weight:600;color:' + C.dBlue + ';margin-top:2px;transform-origin:left center">20/200</div><div data-k="vap" style="font-family:' + M + ';font-size:11px;color:' + C.dLab + '"></div></div>' +
+    '<div style="width:112px;background:' + C.card + ';border:1px solid ' + C.cardL + ';border-radius:8px;padding:9px 11px">' + secLab('LATENCY') +
+    '<div style="display:flex;align-items:baseline;gap:4px;margin-top:2px"><span data-k="lt" style="font-family:' + M + ';font-size:24px;font-weight:600;color:' + C.dBlue + '">—</span><span style="font-family:' + M + ';font-size:11px;color:' + C.mute + '">ms</span></div>' +
+    '<div data-k="sp" style="display:flex;gap:2px;align-items:flex-end;height:16px;margin-top:2px"></div></div></div>' +
+    secLab('TRANSCRIPT', 12) + '<div data-k="ch" style="display:flex;flex-direction:column;gap:6px;margin-top:7px"></div></div>' +
+    '<div data-dv="sum" style="padding:14px 16px;display:none">' + secLab('RESULT') +
+    '<pre style="background:' + C.card + ';border-radius:8px;padding:12px 14px;font-family:' + M + ';font-size:12px;color:' + C.dTxt + ';line-height:1.7;margin:8px 0 0;white-space:pre">{\n  "patient": "WALK-IN",\n  "od": { "snellen": "20/40-1",\n          "logmar": 0.32 },\n  "os": { "snellen": "20/30",\n          "logmar": 0.18 },\n  "method": "automatic"\n}</pre>' +
+    '<div style="margin-top:12px;background:' + C.dBlue + ';color:#141414;border-radius:8px;padding:10px;text-align:center;font-family:' + M + ';font-size:13px;font-weight:600">PRINTED ✓</div></div>' +
+    '</div>' +
+    '</div></div>' +
+    lab(45, 420, 'Patient screen', 'spoken guidance, digits read aloud') + lab(465, 210, 'Staff monitor', 'graded on the machine') +
+    '</div>';
+
+  var box = frame.firstChild, el = {};
+  [].forEach.call(box.querySelectorAll('[data-k]'), function (n) { if (n.getAttribute('data-k')) el[n.getAttribute('data-k')] = n; });
+  var st = {}, dv = {}, dots = {}, rails = [];
+  [].forEach.call(box.querySelectorAll('[data-st]'), function (n) { st[n.getAttribute('data-st')] = n; });
+  [].forEach.call(box.querySelectorAll('[data-dv]'), function (n) { dv[n.getAttribute('data-dv')] = n; });
+  [].forEach.call(box.querySelectorAll('[data-dot]'), function (n) { dots[n.getAttribute('data-dot')] = n; });
+  [].forEach.call(box.querySelectorAll('[data-r]'), function (n) { rails.push(n); });
+  function fit() { var s = Math.min(frame.clientWidth / 720, frame.clientHeight / 430); box.style.transform = 'scale(' + s + ')'; }
+  fit();
+  function swap(n, txt) {
+    if (n.textContent === String(txt)) return;
+    n.textContent = txt;
+    if (n.animate) n.animate([{ opacity: 0, transform: 'translateY(7px)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  }
+  var VCOL = { correct: C.ok, wrong: C.bad, unseen: C.mute, cmd: C.dBlue };
+  var VLAB = { correct: 'CORRECT', wrong: 'WRONG', unseen: 'MAI HEN', cmd: 'START' };
+  function chipHtml(c, isNew) {
+    var col = VCOL[c.v];
+    return '<div style="display:flex;align-items:center;gap:7px;background:' + C.card + ';border:1px solid ' + C.cardL + ';border-radius:6px;padding:5px 9px;font-family:' + M + ';font-size:12px' + (isNew ? ';animation:vkChip .25s ease' : '') + '">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:' + col + ';flex:none"></div>' +
+      '<span style="font-family:' + F + ';font-weight:600;color:#fff;font-size:14px">' + c.h + '</span><span style="color:#616161">→</span><span style="color:#fff;font-weight:600">' + c.e + '</span>' +
+      '<span style="font-size:10px;padding:1px 5px;border-radius:3px;color:' + col + ';background:' + col + '26">' + VLAB[c.v] + '</span>' +
+      '<span style="flex:1"></span><span style="color:' + C.mute + ';font-size:11px">' + c.ms + 'ms</span></div>';
+  }
+  var cur = { st: '', line: '', hitN: 0, chip: 0 };
+  function apply(s) {
+    if (s.st !== cur.st) {
+      ['reg', 'meas', 'sum'].forEach(function (k) {
+        st[k].style.display = k === s.st ? 'flex' : 'none'; dv[k].style.display = k === s.st ? 'block' : 'none';
+        if (k === s.st) { st[k].classList.remove('vk-st'); void st[k].offsetWidth; st[k].classList.add('vk-st'); }
+      });
+      if (s.st === 'sum' && el.rcpt.animate) el.rcpt.animate([{ transform: 'translateY(-100%)' }, { transform: 'translateY(-100%)', offset: .2 }, { transform: 'none' }], { duration: 2600, easing: 'cubic-bezier(.3,.6,.3,1)', fill: 'both' });
+      var order = ['reg', 'meas', 'sum'], ci = order.indexOf(s.st);
+      order.forEach(function (k, i) { var d = dots[k]; d.firstChild.style.background = i <= ci ? C.green : C.dot; d.lastChild.style.color = i === ci ? C.ink : '#a4a89f'; d.lastChild.style.fontWeight = i === ci ? 700 : 400; });
+      cur.st = s.st;
+    }
+    /* registration */
+    el.dist.textContent = s.dist == null ? '-- ม.' : s.dist.toFixed(2) + ' ม.';
+    el.dist.style.color = el.dstate.style.color = s.ready ? C.blue : '#B0B0B0';
+    el.dstate.textContent = s.ready ? 'พร้อม' : 'กำลังวัด…';
+    el.bd.textContent = s.dist == null ? '-- m' : s.dist.toFixed(2) + ' m';
+    swap(el.ms, s.ms); el.mss.textContent = s.msSub;
+    /* measurement */
+    var key = s.eye + s.li;
+    if (key !== cur.line) {
+      var digs = CHART[s.eye][s.li], sz = SIZE[s.li], nx = CHART[s.eye][s.li + 1];
+      el.line.style.fontSize = sz + 'px';
+      el.line.innerHTML = digs.map(function (d) { return '<span style="display:inline-block;text-align:center;width:' + Math.round(sz * .78) + 'px">' + d + '</span>'; }).join('');
+      el.next.style.fontSize = (nx ? SIZE[s.li + 1] : 0) + 'px';
+      el.next.innerHTML = nx ? nx.map(function (d) { return '<span>' + d + '</span>'; }).join('') : '';
+      el.lbl.textContent = LINES[s.li][0];
+      if (cur.line && el.line.parentNode.animate) el.line.parentNode.animate([{ transform: 'translateY(30px) scale(.7)', opacity: .15 }, { transform: 'none', opacity: 1 }], { duration: 600, easing: 'cubic-bezier(.2,.85,.2,1)' });
+      cur.line = key; el.ptr.style.transition = 'none';
+    }
+    var w = Math.round(SIZE[s.li] * .78), n = CHART[s.eye][s.li].length;
+    el.ptr.style.left = (Math.min(s.ptr, n - 1) * w + w / 2 - 17) + 'px';
+    el.ptr.style.opacity = s.ptr < n && s.st === 'meas' ? 1 : 0;
+    void el.ptr.offsetWidth; el.ptr.style.transition = '';
+    if (s.hit >= 0 && s.hitN !== cur.hitN) {
+      var cell = el.line.children[s.hit], v = s.mk[s.hit];
+      if (cell && cell.animate && v !== 'unseen') { var col = v === 'correct' ? C.ok : C.bad;
+        cell.animate([{ color: col, transform: 'scale(1)' }, { color: col, transform: 'scale(1.28)', offset: .4 }, { color: col, transform: 'scale(1)', offset: .8 }, { color: C.ink }], { duration: 700, easing: 'ease-out' }); }
+      cur.hitN = s.hitN;
+    }
+    rails.forEach(function (r, i) { var dt = r.firstChild, lb = r.lastChild, done = i < s.done, now = i === s.li;
+      dt.style.background = done ? C.blue : now ? C.ink : '#fff'; dt.style.borderColor = done ? C.blue : now ? C.ink : C.dot; lb.style.color = now ? C.ink : '#b3b0a6'; });
+    swap(el.eye, s.eye === 'od' ? 'ตาขวา' : 'ตาซ้าย');
+    if (s.instr) swap(el.instr, s.instr);
+    el.mic.setAttribute('data-s', s.mic);
+    el.mic.style.background = s.mic === 'idle' ? C.line : C.blue; el.mic.style.color = s.mic === 'idle' ? C.grey : '#fff';
+    el.md.style.background = s.mic === 'idle' ? '#B0B0B0' : '#8BC7FF';
+    el.ml.textContent = { listening: 'กำลังฟัง…', heard: 'ได้ยินแล้ว', idle: 'รอ…' }[s.mic];
+    if (s.mic === 'heard' && el.mic.animate) el.mic.animate([{ background: C.green }, { background: C.blue }], { duration: 500, easing: 'ease-out' });
+    /* staff monitor */
+    el.wv.className = 'vk-wv' + (s.spk ? ' on' : '');
+    var va = LINES[s.li]; if (el.va.textContent !== va[0]) { el.va.textContent = va[0]; if (el.va.animate) el.va.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)', offset: .45 }, { transform: 'scale(1)' }], { duration: 500 }); }
+    el.vap.textContent = 'logMAR ' + va[1].toFixed(2);
+    var top = s.chips.length ? s.chips[0].n : 0;
+    if (top !== cur.chip) {
+      var h = s.chips.map(function (c) { return chipHtml(c, c.n === top && top > cur.chip); }).join('');
+      el.chR.innerHTML = s.st === 'reg' ? h : ''; el.ch.innerHTML = s.st === 'reg' ? '' : h;
+      cur.chip = top;
+    }
+    var ls = s.lat; el.lt.textContent = ls.length ? Math.round(ls.reduce(function (a, b) { return a + b; }, 0) / ls.length) : '—';
+    el.sp.innerHTML = ls.map(function (x) { return '<i style="display:block;width:5px;border-radius:1px;background:' + C.dBlue + ';height:' + Math.round((x - 120) / 160 * 16) + 'px"></i>'; }).join('');
+  }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { apply(TL[TL.length - 1].s); return function () {}; }
+  var t0 = performance.now(), idx = -1;
+  function tick() {
+    var t = ((performance.now() - t0) / 1000) % TOT, i = 0;
+    while (i < TL.length - 1 && START[i + 1] <= t) i++;
+    if (i !== idx) { if (i < idx) { cur = { st: '', line: '', hitN: 0, chip: 0 }; } idx = i; apply(TL[i].s); }
+    var sec = Math.floor(t); el.tm.textContent = '0' + (sec / 60 | 0) + ':' + ('0' + sec % 60).slice(-2);
+  }
+  tick(); var id = setInterval(tick, 50); window.addEventListener('resize', fit);
+  return function () { clearInterval(id); window.removeEventListener('resize', fit); };
+};
