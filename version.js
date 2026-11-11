@@ -1,1 +1,1 @@
-window.APP_VERSION = {"version": "v39", "built": "12 Nov 2026, 01:57"};
+window.APP_VERSION = {"version": "v40", "built": "12 Nov 2026, 01:58"};
