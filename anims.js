@@ -218,50 +218,141 @@ window.ANIMS.hindsight = function (frame) {
     ['IOL implantation', .11, '#c678dd'], ['OVD removal', .07, '#e88db9'], ['Wound sealing', .04, '#8b949e']];
   var DRAW = [0, 1, 2, 3, 3, 4, 5, 6, 6, 6];   /* which eye drawing each phase uses */
   var acc = 0; PH.forEach(function (p) { p.push(acc); acc += p[1]; });          /* p[3] = start */
-  var CASE_MIN = 15.5, L = 17, T1 = 3.6, T2 = 11, T3 = 16;                      /* seconds */
+  var CASE_MIN = 15.5, L = 21.5, T1 = 3.6, T2 = 15, T3 = 20;                      /* seconds */
   var CASES = ['12 Nov', '11 Nov', '7 Nov', '5 Nov', '4 Nov', '31 Oct', '29 Oct', '24 Oct', '22 Oct', '17 Oct'];
   var BG = '#262623', PANEL = '#1f1f1d', LINE = '#3a3a36', TXT = '#e8e8e4', DIM = '#9a9a94', BLUE = '#3b8beb';
   function mmss(m) { var s = Math.round(m * 60); return (s / 60 | 0) + ':' + ('0' + s % 60).slice(-2); }
   function cl(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
   function ease(x) { x = cl(x); return x * x * (3 - 2 * x); }
 
-  /* one eye, top view through the microscope. ph = phase index, p = progress 0..1 within it */
-  function eye(cx, cy, R, ph, p, mini) {
-    var k = R / 100, s = '';
-    var nuc = ph < 4 ? 1 : ph === 4 ? 1 - ease(p) : 0;
-    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (100 * k) + '" fill="url(#hsScl)"/>';
-    if (!mini) s += '<path d="M' + (cx - 70 * k) + ' ' + (cy - 60 * k) + ' q30 20 50 8 M' + (cx + 40 * k) + ' ' + (cy + 70 * k) + ' q20 -10 34 -34 M' + (cx - 80 * k) + ' ' + (cy + 30 * k) + ' q16 6 26 22" stroke="#c96a6a" stroke-width="1.2" fill="none" opacity=".7"/>';
-    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (60 * k) + '" fill="#3f4c58"/>';
-    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (44 * k) + '" fill="url(#hsRef)"/>';
-    if (nuc > 0) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (34 * k * (0.25 + .75 * nuc)) + '" fill="#c98a32" opacity="' + (0.35 + .5 * nuc) + '"/>';
-    if (ph === 1 || ph === 2) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (40 * k * (ph === 1 ? ease(p) : 1)) + '" fill="#ffffff" opacity=".12"/>';
-    if (ph >= 2) { /* capsulorhexis edge */
-      var rp = ph === 2 ? ease(p) : 1, C = 2 * Math.PI * 30 * k;
-      s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (30 * k) + '" fill="none" stroke="#ffffff" stroke-opacity=".85" stroke-width="' + (mini ? 1.4 : 2) + '" stroke-dasharray="' + (C * rp) + ' ' + C + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>';
-    }
-    if (ph === 3) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (34 * k * (0.7 + .3 * ((p * 3) % 1))) + '" fill="none" stroke="#9fe3ff" stroke-width="2" opacity="' + (1 - (p * 3) % 1) + '"/>';
-    if (ph >= 6) { /* IOL unfolds */
-      var q = ph === 6 ? ease(p) : 1;
-      s += '<g opacity="' + q + '" transform="rotate(' + (-60 + 60 * q) + ' ' + cx + ' ' + cy + ')"><circle cx="' + cx + '" cy="' + cy + '" r="' + (26 * k) + '" fill="#dff3ff" fill-opacity=".22" stroke="#ffffff" stroke-opacity=".7" stroke-width="1.2"/>' +
-        '<path d="M' + (cx + 22 * k) + ' ' + (cy - 12 * k) + ' q26 -10 18 -40 M' + (cx - 22 * k) + ' ' + (cy + 12 * k) + ' q-26 10 -18 40" stroke="#ffffff" stroke-opacity=".75" stroke-width="1.6" fill="none"/></g>';
-    }
-    if (!mini) { /* instrument for the current phase */
-      var tool = '#c9ced4', w = 5;
-      if (ph === 0) { var a = ease(p); s += '<path d="M' + (cx - 150 + 80 * a) + ' ' + (cy - 70 + 30 * a) + ' l' + 50 + ' ' + 20 + '" stroke="' + tool + '" stroke-width="7" stroke-linecap="round"/>'; if (p > .5) s += '<path d="M' + (cx - 66) + ' ' + (cy - 36) + ' l10 6" stroke="#7a2a2a" stroke-width="3"/>'; }
-      else {
-        var ang = ph === 2 ? -Math.PI / 2 + 2 * Math.PI * ease(p) : Math.PI * 1.15, tip = ph === 2 ? 30 : ph === 4 ? 12 : 18;
-        var tx = cx + Math.cos(ang) * tip, ty = cy + Math.sin(ang) * tip;
-        s += '<path d="M' + (cx - 130) + ' ' + (cy - 40) + ' L' + (cx - 64) + ' ' + (cy - 30) + ' L' + tx + ' ' + ty + '" stroke="' + tool + '" stroke-width="' + (ph === 4 ? 9 : w) + '" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
-        if (ph === 4) s += '<path d="M' + (cx + 130) + ' ' + (cy + 30) + ' L' + (cx + 60) + ' ' + (cy + 24) + ' L' + (cx + 14 * Math.cos(p * 30)) + ' ' + (cy + 10) + '" stroke="' + tool + '" stroke-width="4" fill="none" stroke-linecap="round"/>';
+  /* ---- realistic microscope view. Local coordinates: eye centre at 0,0, limbus radius 90. ---- */
+  var RL = 90, RP = 63, RX = 41, RN = 36, RO = 47;          /* limbus, dilated pupil, rhexis, nucleus, IOL optic */
+  var MAIN = [-89, -14], SIDE = [-42, 80];                   /* main incision (temporal) and side port */
+  function seed(n) { return function () { n = (n * 16807) % 2147483647; return (n - 1) / 2147483646; }; }
+  var rnd = seed(7), vessels = '';
+  for (var v = 0; v < 14; v++) { /* conjunctival vessels: from the fornix toward the limbus, branching */
+    var a = rnd() * 6.283, r0 = 170, r1 = RL + 6 + rnd() * 18, d = 'M' + (Math.cos(a) * r0).toFixed(1) + ' ' + (Math.sin(a) * r0 * .8).toFixed(1);
+    for (var st = 1; st <= 5; st++) { var rr = r0 + (r1 - r0) * st / 5, aa = a + (rnd() - .5) * .18 * st / 2; d += ' L' + (Math.cos(aa) * rr).toFixed(1) + ' ' + (Math.sin(aa) * rr * (st < 5 ? .86 : 1)).toFixed(1); }
+    vessels += '<path d="' + d + '" stroke="#c0504a" stroke-width="' + (0.5 + rnd() * .8).toFixed(2) + '" fill="none" opacity="' + (0.25 + rnd() * .25).toFixed(2) + '" stroke-linecap="round"/>';
+  }
+  var fib = '';
+  for (var f2 = 0; f2 < 120; f2++) { var fa = f2 / 120 * 6.283 + (rnd() - .5) * .03, w1 = RP + 1, w2 = RL - 3 - rnd() * 6;
+    fib += '<path d="M' + (Math.cos(fa) * w1).toFixed(1) + ' ' + (Math.sin(fa) * w1).toFixed(1) + ' L' + (Math.cos(fa + .02) * w2).toFixed(1) + ' ' + (Math.sin(fa + .02) * w2).toFixed(1) + '" stroke="' + (f2 % 3 ? '#76808c' : '#2b333c') + '" stroke-width=".9" opacity=".55"/>'; }
+  var hook = function (x, y, sx, sy) { return '<path d="M' + x + ' ' + y + ' q' + (18 * sx) + ' ' + (-30 * sy) + ' ' + (58 * sx) + ' ' + (-38 * sy) + ' M' + x + ' ' + y + ' q' + (8 * sx) + ' ' + (8 * sy) + ' ' + (22 * sx) + ' ' + (4 * sy) + '" stroke="#55595f" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M' + x + ' ' + y + ' q' + (18 * sx) + ' ' + (-30 * sy) + ' ' + (58 * sx) + ' ' + (-38 * sy) + '" stroke="#e8ebee" stroke-width="1.6" fill="none"/>'; };
+  var EYEDEFS =
+    '<radialGradient id="hsConj" r="50%"><stop offset=".4" stop-color="#f8ece6"/><stop offset=".78" stop-color="#efcdc4"/><stop offset="1" stop-color="#d59a8f"/></radialGradient>' +
+    '<radialGradient id="hsRef" cx="46%" cy="44%" r="55%"><stop offset="0" stop-color="#ffb866"/><stop offset=".6" stop-color="#ec8a35"/><stop offset="1" stop-color="#b4521d"/></radialGradient>' +
+    '<radialGradient id="hsNuc" r="50%"><stop offset="0" stop-color="#c78a2e" stop-opacity=".95"/><stop offset=".7" stop-color="#b4782a" stop-opacity=".8"/><stop offset="1" stop-color="#e9d2a0" stop-opacity=".35"/></radialGradient>' +
+    '<radialGradient id="hsLimb" r="50%"><stop offset=".86" stop-color="#26303a" stop-opacity="0"/><stop offset=".97" stop-color="#26303a" stop-opacity=".9"/><stop offset="1" stop-color="#9aa6b0" stop-opacity=".4"/></radialGradient>' +
+    '<clipPath id="hsPupC" clipPathUnits="userSpaceOnUse"><circle r="' + RP + '"/></clipPath>' +
+    '<clipPath id="hsCorC" clipPathUnits="userSpaceOnUse"><circle r="' + (RL - 1) + '"/></clipPath>' +
+    '<filter id="hsSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>' +
+    '<g id="hsBack"><ellipse rx="190" ry="120" fill="url(#hsConj)"/>' + vessels + '<circle r="' + RP + '" fill="url(#hsRef)"/></g>' +
+    '<g id="hsIris"><path d="M' + RL + ' 0 A' + RL + ' ' + RL + ' 0 1 0 ' + (-RL) + ' 0 A' + RL + ' ' + RL + ' 0 1 0 ' + RL + ' 0 Z M' + RP + ' 0 A' + RP + ' ' + RP + ' 0 1 1 ' + (-RP) + ' 0 A' + RP + ' ' + RP + ' 0 1 1 ' + RP + ' 0 Z" fill="#4b5763" fill-rule="evenodd"/>' + fib +
+      '<circle r="' + (RP + 9) + '" fill="none" stroke="#5f6a76" stroke-width="2" opacity=".7"/><circle r="' + (RP + .5) + '" fill="none" stroke="#1d242b" stroke-width="2"/><circle r="' + RL + '" fill="url(#hsLimb)"/></g>' +
+    '<g id="hsGlint"><ellipse cx="-16" cy="-22" rx="2.6" ry="2.1" fill="#fff" opacity=".9"/><ellipse cx="-9" cy="-23" rx="1.9" ry="1.6" fill="#fff" opacity=".8"/>' +
+      '<path d="M-60 -52 A80 80 0 0 1 20 -82" stroke="#fff" stroke-width="5" fill="none" opacity=".08" filter="url(#hsSoft)"/></g>';
+  var FIELD = '<rect x="-222" y="-131" width="444" height="262" fill="url(#hsDrape)"/><rect x="-222" y="-131" width="444" height="262" fill="#ffffff" opacity=".06"/>' +
+    '<ellipse rx="196" ry="126" fill="#b0675b"/><use href="#hsBack"/>';
+  var HOOKS = hook(-112, -88, 1, 1) + hook(112, -88, -1, 1) + hook(-112, 88, 1, -1) + hook(112, 88, -1, -1);
+
+  function mtl(x1, y1, x2, y2, w) { /* a polished steel shaft */
+    var L = 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' L' + x2.toFixed(1) + ' ' + y2.toFixed(1);
+    return '<path d="' + L + '" stroke="#4a4f56" stroke-width="' + (w + 2) + '" stroke-linecap="round"/><path d="' + L + '" stroke="#b9c0c8" stroke-width="' + w + '" stroke-linecap="round"/><path d="' + L + '" stroke="#f3f5f7" stroke-width="' + Math.max(.8, w * .28) + '" stroke-linecap="round" transform="translate(-.6 -.6)"/>';
+  }
+  /* an instrument through a wound: straight, pivoting at the wound, handle running off screen */
+  function thru(W, tx, ty, w, out) {
+    var dx = W[0] - tx, dy = W[1] - ty, n = Math.sqrt(dx * dx + dy * dy) || 1, fx = W[0] + dx / n * 260, fy = W[1] + dy / n * 260;
+    var hx = W[0] + dx / n * (out || 70), hy = W[1] + dy / n * (out || 70);
+    return mtl(fx, fy, hx, hy, w + 6) + mtl(hx, hy, tx, ty, w);
+  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function sector(r, a0, a1) { return 'M0 0 L' + (Math.cos(a0) * r).toFixed(1) + ' ' + (Math.sin(a0) * r).toFixed(1) + ' A' + r + ' ' + r + ' 0 0 1 ' + (Math.cos(a1) * r).toFixed(1) + ' ' + (Math.sin(a1) * r).toFixed(1) + ' Z'; }
+  var CORTEX = []; for (var c2 = 0; c2 < 12; c2++) CORTEX.push(c2 / 12 * 6.283 + .2);
+
+  /* ph = phase index in PH (0..9), p = progress in it */
+  function surg(ph, p) {
+    var under = '', over = '', tools = '', wounds = '';
+    var nucLeft = ph < 5 ? 1 : ph === 5 ? 1 - cl((p - .3) / .7) : 0;
+    var rx = ph < 2 ? 0 : ph === 2 ? cl((p - .15) / .85) : 1;              /* rhexis completed fraction */
+    var ovd = ph === 1 ? p : ph >= 2 && ph < 8 ? 1 : ph === 8 ? 1 - p : 0;  /* viscoelastic in the chamber */
+    var a0 = -Math.PI * .55;
+    /* lens: cortex rim, nucleus, IOL. All seen through the pupil */
+    if (ph < 7) under += '<circle r="' + (RX + 6) + '" fill="#f1e0bd" opacity="' + (ph === 6 ? .22 * (1 - p) : .22) + '"/>';
+    if (ph === 6 || ph < 6) CORTEX.forEach(function (ca, i) { var gone = ph === 6 && p > i / 12; if (!gone) under += '<path d="M' + (Math.cos(ca) * (RX + 1)).toFixed(1) + ' ' + (Math.sin(ca) * (RX + 1)).toFixed(1) + ' L' + (Math.cos(ca + .08) * (RX + 8)).toFixed(1) + ' ' + (Math.sin(ca + .08) * (RX + 8)).toFixed(1) + '" stroke="#fff4dc" stroke-width="2" opacity=".16" stroke-linecap="round"/>'; });
+    if (ph < 5) {
+      var rot = ph === 3 ? cl((p - .75) / .25) * 50 : ph === 4 ? 50 : 0;
+      under += '<g transform="rotate(' + rot + ')"><circle r="' + RN + '" fill="url(#hsNuc)"/><path d="M0 0 L0 -14 M0 0 L12 7 M0 0 L-12 7" stroke="#e7c27a" stroke-width="1.3" opacity=".7"/></g>';
+      if (ph === 4) under += '<circle r="' + (RN - 9) + '" fill="none" stroke="#ffd27a" stroke-width="2.4" opacity="' + (.9 * cl(p * 1.5)) + '"/>';
+    } else if (ph === 5) {
+      var crack = cl(p / .3), k;
+      for (k = 0; k < 4; k++) {
+        var s0 = cl((p - .3 - k * .175) / .175), al = k * Math.PI / 2 + Math.PI / 4, mx = Math.cos(al + Math.PI / 4), my = Math.sin(al + Math.PI / 4), gap = 3 * crack, sc = 1 - s0;
+        if (sc > 0) under += '<g transform="translate(' + (mx * (gap + 12 * s0)).toFixed(1) + ' ' + (my * (gap + 12 * s0)).toFixed(1) + ') scale(' + sc.toFixed(3) + ')" opacity="' + (1 - s0 * .4) + '"><path d="' + sector(RN, al, al + Math.PI / 2) + '" fill="url(#hsNuc)"/><path d="' + sector(RN - 9, al, al + Math.PI / 2) + '" fill="#d9a046" opacity=".25"/></g>';
       }
+      if (p < .3) under += '<path d="M' + (-RN * crack) + ' 0 H' + (RN * crack) + ' M0 ' + (-RN * crack) + ' V' + (RN * crack) + '" stroke="#7a3d12" stroke-width="2" opacity=".6" transform="rotate(45)"/>';
+      for (k = 0; k < 6; k++) under += '<circle cx="' + (Math.sin(p * 90 + k * 2) * 6).toFixed(1) + '" cy="' + (Math.cos(p * 70 + k * 3) * 6).toFixed(1) + '" r="1.1" fill="#fff" opacity=".5"/>';
     }
-    return s;
+    if (ph >= 7) { /* IOL: folded at the wound, unfolds and slides into the bag */
+      var u = ph === 7 ? cl(p * 1.25) : 1, ox = lerp(MAIN[0] + 18, 0, Math.min(1, u * 1.3)), oy = lerp(MAIN[1] + 4, 0, Math.min(1, u * 1.3)), rxo = lerp(10, RO, u), rot2 = lerp(-70, -15, u);
+      var opt = '<g transform="translate(' + ox.toFixed(1) + ' ' + oy.toFixed(1) + ') rotate(' + rot2.toFixed(1) + ')">' +
+        '<ellipse rx="' + rxo.toFixed(1) + '" ry="' + RO + '" fill="#fff" fill-opacity=".06" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.3"/>' +
+        '<path d="M' + (-rxo * .5).toFixed(1) + ' ' + (-RO * .7) + ' A' + rxo.toFixed(1) + ' ' + RO + ' 0 0 1 ' + (rxo * .7).toFixed(1) + ' ' + (-RO * .4) + '" stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none"/>' +
+        '<path d="M' + (rxo * .55).toFixed(1) + ' ' + (-RO * .82) + ' C' + (rxo * 1.2 + 10).toFixed(1) + ' -70 ' + (40 * u + 20) + ' -95 ' + (-10 * u + 25) + ' -' + (60 + 40 * u).toFixed(0) + '" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" fill="none"/>' +
+        '<path d="M' + (-rxo * .55).toFixed(1) + ' ' + (RO * .82) + ' C' + (-rxo * 1.2 - 10).toFixed(1) + ' 70 ' + (-40 * u - 20) + ' 95 ' + (10 * u - 25) + ' ' + (60 + 40 * u).toFixed(0) + '" stroke="#fff" stroke-opacity="' + (.5 * cl(u * 2 - .6)) + '" stroke-width="1.6" fill="none"/></g>';
+      over += opt;
+    }
+    if (rx > 0) { /* capsulorhexis edge, and the free flap while tearing */
+      var C = 2 * Math.PI * RX;
+      over += '<circle r="' + RX + '" fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="1.4" stroke-dasharray="' + (C * rx).toFixed(1) + ' ' + (C + 1).toFixed(1) + '" transform="rotate(' + (a0 * 180 / Math.PI).toFixed(1) + ')"/>';
+      if (rx < 1) { var ta = a0 + rx * 6.283; over += '<path d="M' + (Math.cos(ta) * RX).toFixed(1) + ' ' + (Math.sin(ta) * RX).toFixed(1) + ' Q' + (Math.cos(ta - .4) * 22).toFixed(1) + ' ' + (Math.sin(ta - .4) * 22).toFixed(1) + ' ' + (Math.cos(a0) * RX).toFixed(1) + ' ' + (Math.sin(a0) * RX).toFixed(1) + '" fill="#ffffff" fill-opacity=".14" stroke="#fff" stroke-opacity=".5" stroke-width="1"/>'; }
+    }
+    if (ph === 3) { var wx = lerp(RX, -RX - 10, cl((p - .1) / .6)); over += '<path d="M' + wx.toFixed(1) + ' -60 Q' + (wx - 14).toFixed(1) + ' 0 ' + wx.toFixed(1) + ' 60" stroke="#6b250c" stroke-width="5" fill="none" opacity="' + (.35 * (p < .7 ? 1 : 0)) + '" filter="url(#hsSoft)"/>'; }
+
+    /* wounds */
+    if (ph > 0 || p > .3) wounds += '<path d="M' + (SIDE[0] - 4) + ' ' + (SIDE[1] - 5) + ' l7 6" stroke="#fdf3ee" stroke-width="2.4" opacity=".75"/>';
+    if (ph > 0 || p > .8) wounds += '<path d="M' + (MAIN[0] + 1) + ' ' + (MAIN[1] - 10) + ' q-4 10 0 20" stroke="#fdf3ee" stroke-width="3" fill="none" opacity=".75"/>';
+    if (ph === 9) wounds += '<ellipse cx="' + (MAIN[0] + 4) + '" cy="' + MAIN[1] + '" rx="' + (10 * p) + '" ry="' + (14 * p) + '" fill="#ffffff" opacity=".45" filter="url(#hsSoft)"/>';
+
+    /* instruments, pivoting at the wounds */
+    var tx, ty;
+    if (ph === 0) {
+      if (p < .35) { var q = Math.sin(cl(p / .35) * Math.PI); tools += thru(SIDE, SIDE[0] + 16 * q, SIDE[1] - 18 * q, 2.5); }
+      else { var q2 = Math.sin(cl((p - .35) / .65) * Math.PI); tx = MAIN[0] + 30 * q2; ty = MAIN[1] + 4 * q2; tools += thru(MAIN, tx, ty, 3) + '<path d="M' + tx + ' ' + ty + ' l-14 -8 l-4 16 Z" fill="#d7dde3" stroke="#5a6068" stroke-width="1"/>'; }
+    } else if (ph === 1 || ph === 3 || ph === 4 || ph === 9) {
+      tx = ph === 1 ? lerp(MAIN[0] + 10, 20, p) : ph === 3 ? RX - 4 : ph === 4 ? 14 : MAIN[0] + 6; ty = ph === 1 ? lerp(MAIN[1], -6, p) : ph === 9 ? MAIN[1] + 2 : 4;
+      tools += thru(MAIN, tx, ty, 2.2);
+      if (ph === 1) over += '<circle cx="' + tx + '" cy="' + ty + '" r="' + (6 + 30 * p) + '" fill="#d8ecff" opacity=".12"/>';
+    } else if (ph === 2) {
+      if (p < .15) { tx = lerp(MAIN[0] + 10, Math.cos(a0) * RX, p / .15); ty = lerp(MAIN[1], Math.sin(a0) * RX, p / .15); tools += thru(MAIN, tx, ty, 1.8) + '<path d="M' + tx + ' ' + ty + ' l0 5" stroke="#d7dde3" stroke-width="1.6"/>'; }
+      else { var ta2 = a0 + rx * 6.283; tx = Math.cos(ta2 - .25) * (RX - 4); ty = Math.sin(ta2 - .25) * (RX - 4); tools += thru(MAIN, tx - 2, ty - 3, 1.8, 40) + thru(MAIN, tx + 2, ty + 3, 1.8, 40); }
+    } else if (ph === 5) {
+      var qa = p < .3 ? 0 : Math.floor(cl((p - .3) / .7) * 4 - .001) * Math.PI / 2 + Math.PI / 2;
+      tx = p < .3 ? lerp(-20, 22, cl(p / .3)) : Math.cos(qa) * 16; ty = p < .3 ? 0 : Math.sin(qa) * 16;
+      tools += thru(MAIN, tx, ty, 4.2, 26) + '<path d="M' + tx + ' ' + ty + ' l-6 -1" stroke="#ffffff" stroke-width="2.2"/>' + thru(SIDE, -tx * .5 + 6, -ty * .5 - 4, 1.8) ;
+    } else if (ph === 6 || ph === 8) {
+      var sw = ph === 6 ? p * 6.283 : p * 4; tx = Math.cos(sw) * (ph === 6 ? RX - 2 : 20); ty = Math.sin(sw) * (ph === 6 ? RX - 2 : 20);
+      tools += thru(MAIN, tx, ty, 3.6) + '<circle cx="' + tx + '" cy="' + ty + '" r="1.4" fill="#2a2a2a"/>';
+    } else if (ph === 7 && p < .8) {
+      tools += thru(MAIN, MAIN[0] + 8, MAIN[1] + 2, 9, 30);
+    }
+    return '<g clip-path="url(#hsPupC)">' + under + over + '</g><use href="#hsIris"/>' +
+      (ovd > 0 ? '<circle r="' + (RL - 1) + '" fill="#d8ecff" opacity="' + (.07 * ovd) + '"/>' : '') + wounds + tools + '<use href="#hsGlint"/>';
+  }
+  function eyeView(ph, p, t) {
+    var jx = Math.sin(t * 1.7) * .8, jy = Math.cos(t * 1.3) * .6;
+    return '<g transform="translate(' + (222 + jx).toFixed(1) + ' ' + (131 + jy).toFixed(1) + ')">' + FIELD + surg(ph, p) + HOOKS + '</g>';
+  }
+  function miniEye(cx, cy, s, rxp, dr, ox, oy) { /* one past case: same eye, slightly different rhexis size and centring */
+    var C = 2 * Math.PI * (RX + dr);
+    return '<g transform="translate(' + cx + ' ' + cy + ') scale(' + s + ')"><g clip-path="url(#hsMiniC)"><use href="#hsBack"/><g clip-path="url(#hsPupC)"><circle r="' + RN + '" fill="url(#hsNuc)"/>' +
+      '<circle cx="' + ox + '" cy="' + oy + '" r="' + (RX + dr) + '" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2" stroke-dasharray="' + (C * rxp).toFixed(1) + ' ' + (C + 1).toFixed(1) + '" transform="rotate(-100 ' + ox + ' ' + oy + ')"/></g><use href="#hsIris"/><use href="#hsGlint"/></g></g>';
   }
   function phaseAt(f) { for (var i = PH.length - 1; i >= 0; i--) if (f >= PH[i][3]) return [i, cl((f - PH[i][3]) / PH[i][1])]; return [0, 0]; }
 
-  var defs = '<defs><radialGradient id="hsRef" cx="45%" cy="42%" r="60%"><stop offset="0" stop-color="#ffb35c"/><stop offset=".7" stop-color="#e8862f"/><stop offset="1" stop-color="#b9561f"/></radialGradient>' +
-    '<radialGradient id="hsScl" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#f1d3cb"/><stop offset="1" stop-color="#d79b92"/></radialGradient>' +
-    '<pattern id="hsDrape" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#2f8a6a"/><circle cx="4" cy="4" r="1.6" fill="#5fc6a0"/></pattern></defs>';
+  var defs = '<defs>' + EYEDEFS +
+    '<pattern id="hsDrape" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#2c8466"/><circle cx="4.5" cy="4.5" r="1.7" fill="#63c9a2"/></pattern>' +
+    '<clipPath id="hsMiniC" clipPathUnits="userSpaceOnUse"><rect x="-120" y="-110" width="240" height="220" rx="8"/></clipPath></defs>';
   var box = document.createElement('div');
   box.style.cssText = 'position:relative;width:720px;height:430px;flex-shrink:0;font-family:' + SANS + ';color:' + TXT;
   box.innerHTML =
@@ -322,8 +413,7 @@ window.ANIMS.hindsight = function (frame) {
       var f = (t - T1) / (T2 - T1), pa = phaseAt(f);
       head = '2. Each phase is found automatically';
       crumb = 'Review'; chip = 'Detecting phases';
-      vg = '<rect x="0" y="0" width="444" height="262" fill="url(#hsDrape)"/><path d="M60 40 Q222 -10 384 40 L384 222 Q222 272 60 222 Z" fill="#e0b9a6" opacity=".35"/>' + eye(222, 131, 112, DRAW[pa[0]], pa[0] >= 8 ? 1 : pa[1]) +
-        '<path d="M96 40 l40 34 M348 40 l-40 34 M96 222 l40 -34 M348 222 l-40 -34" stroke="#b7bcc2" stroke-width="5" fill="none" stroke-linecap="round"/>';
+      vg = eyeView(pa[0], pa[1], t);
       tag = PH[pa[0]][0]; time = mmss(f * CASE_MIN) + ' / 15:32'; ai = '<span style="color:#5ec4c0">● AI ' + Math.round(f * 100) + '%</span>';
       side = '<div style="font-weight:700;font-size:14px;margin-bottom:4px">Phases</div>';
       PH.forEach(function (p, i) { var done = f >= p[3] + p[1] * .3; side += row(p[2], (i + 1) + '. ' + p[0], done ? mmss(p[1] * CASE_MIN) : '…', !done); });
@@ -333,10 +423,11 @@ window.ANIMS.hindsight = function (frame) {
       head = '3. Review in seconds: your last 10 capsulorhexis, side by side';
       crumb = 'Export Studio'; chip = 'Ready';
       vg = '<rect x="0" y="0" width="444" height="262" fill="#141413"/>';
+      var DR = [0, -3, 2, -1, 4, -2, 1, -4, 3, 0], OF = [[0, 0], [3, -2], [-2, 1], [1, 3], [-3, -1], [2, 2], [0, -3], [-1, 2], [3, 1], [-2, -2]];
       for (var i = 0; i < 10; i++) {
-        var c = i % 5, r = i / 5 | 0, cx = 46 + c * 88, cy = 80 + r * 118, pr = cl(g * 1.6 - i * .04 - (i % 3) * .05);
-        vg += '<rect x="' + (cx - 42) + '" y="' + (cy - 54) + '" width="84" height="108" rx="4" fill="url(#hsDrape)" opacity="' + cl(g * 8 - i * .5) + '"/>' +
-          '<g opacity="' + cl(g * 8 - i * .5) + '">' + eye(cx, cy - 6, 36, 2, pr, true) + '<text x="' + cx + '" y="' + (cy + 48) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="' + SANS + '">' + CASES[i] + '</text></g>';
+        var c = i % 5, r = i / 5 | 0, cx = 46 + c * 88, cy = 80 + r * 118, pr = cl(g * 1.6 - i * .04 - (i % 3) * .05), op = cl(g * 8 - i * .5);
+        vg += '<g opacity="' + op + '"><rect x="' + (cx - 42) + '" y="' + (cy - 52) + '" width="84" height="104" rx="4" fill="url(#hsDrape)"/>' + miniEye(cx, cy - 6, .34, pr, DR[i], OF[i][0], OF[i][1]) +
+          '<text x="' + cx + '" y="' + (cy + 46) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="' + SANS + '">' + CASES[i] + '</text></g>';
       }
       tag = 'Capsulorhexis · 10 cases'; time = '10 clips · 7:48 total';
       var ex = cl((g - .45) / .4);

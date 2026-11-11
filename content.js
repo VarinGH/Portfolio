@@ -1,7 +1,7 @@
 /* ALL PORTFOLIO CONTENT LIVES IN THIS FILE.
    Any text can be a plain string, or {en: '...', th: '...'} for both languages.
    Media per project: 1 to 3 items. Types:
-     {type:'video', src:'media/forceps-demo.mp4', cap:'...'}
+     {type:'video', src:'media/forceps-demo.mp4', cap:'...', tab:'Recording'}   (tab: label for the switch when there are 2 or 3 items)
      {type:'image', src:'media/forceps-1.jpg', cap:'...'}
      {type:'html',  html:'...', cap:'...'}            (simple coded animation)
      {type:'anim',  name:'defocus', light:true, cap:'...'}   (scripted animation from anims.js)
@@ -52,8 +52,8 @@ window.PORTFOLIO = {
       role: 'Desktop application | Role: Idea and application development | 2026',
       problem: ['Trainees record nearly every case, yet most footage is never watched again', 'Locating one step inside a full-length recording takes longer than the step itself', 'Feedback ends up being given from memory'],
       bullets: ['Automatic USB thumbdrive case sync', 'Automatic phase detection', 'Quick review, e.g. export the last 10 capsulorhexis you did'],
-      media: [{ type: 'anim', name: 'hindsight', cap: 'Redrawn from the application: a thumb drive syncs new cases, phases are detected automatically, then the last 10 capsulorhexis are pulled up side by side for export. Illustrative cases.' },
-        { type: 'video', src: 'media/hindsight-demo.mp4', fit: true, cap: 'Screen recording of the application: phase timeline, structured debrief and ICO-OSCAR self-assessment. Patient details removed.' }]
+      media: [{ type: 'video', src: 'media/hindsight-demo.mp4', fit: true, tab: { en: 'Screen recording', th: 'วิดีโอหน้าจอ' }, cap: 'Screen recording of the application: phase timeline, structured debrief and ICO-OSCAR self-assessment. Patient details removed.' },
+        { type: 'anim', name: 'hindsight', tab: { en: 'Animation', th: 'ภาพเคลื่อนไหว' }, cap: 'Redrawn from the application: a thumb drive syncs new cases, the ten phases of a phacoemulsification case are detected automatically, then the last 10 capsulorhexis are pulled up side by side for export. Illustrative cases.' }]
     },
     { type: 'project', sec: 'sw',
       title: 'Electronic CRF',

@@ -33,7 +33,7 @@
     var tabs = '';
     if (ms.length > 1) {
       tabs = '<div class="tabs" role="tablist">' + ms.map(function (x, i) {
-        return '<button type="button" role="tab" data-media="' + i + '" aria-selected="' + (i === mediaIdx) + '">' + esc(u.fig) + ' ' + (cur + 1) + String.fromCharCode(97 + i) + '</button>';
+        return (i ? '<i></i>' : '') + '<button type="button" role="tab" data-media="' + i + '" aria-selected="' + (i === mediaIdx) + '">' + (x.tab ? T(x.tab) : esc(u.fig) + ' ' + (cur + 1) + String.fromCharCode(97 + i)) + '</button>';
       }).join('') + '</div>';
     }
     var n = (cur + 1) + (ms.length > 1 ? String.fromCharCode(97 + mediaIdx) : '');
