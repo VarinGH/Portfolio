@@ -15,7 +15,7 @@ window.PORTFOLIO = {
   sections: [
     { id: 'pr', label: { en: 'Product', th: 'ผลิตภัณฑ์' } },
     { id: 'sw', label: { en: 'Software', th: 'ซอฟต์แวร์' } },
-    { id: 're', label: { en: 'Projects', th: 'โครงการ' } },
+    { id: 're', label: { en: 'Research', th: 'งานวิจัย' } },
     { id: 'cv', label: { en: 'CV', th: 'ประวัติย่อ' } }
   ],
   pages: [
@@ -72,14 +72,16 @@ window.PORTFOLIO = {
         html: '<svg viewBox="0 0 320 220" width="420" height="289" aria-hidden="true"><g class="gt"><circle cx="160" cy="110" r="70" fill="#262626" stroke="#555555"></circle><circle cx="160" cy="110" r="44" fill="#3d3d3d"></circle><circle cx="160" cy="110" r="20" fill="#0d0d0d"></circle><rect x="84" y="34" width="152" height="152" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 6"></rect><path d="M160 20 V200 M70 110 H250" stroke="#ffffff" stroke-width="1" fill="none"></path></g></svg>' }]
     },
     { type: 'research', sec: 're',
-      title: 'Current projects and research interest',
-      left: { heading: 'Current projects', items: [
-        { name: 'STACATTO', meta: 'Role: [YOUR ROLE] | [SITE]', text: '[WHAT THE STUDY IS: one or two sentences.] [WHAT YOU DO ON IT: one sentence.]' },
-        { name: 'SightSpire', meta: 'Role: Research assistant | Thai hospital sites', text: 'Phase 3b clinical trial (NCT06847542) of the port delivery system with ranibizumab for neovascular age-related macular degeneration. [WHAT YOU DO ON IT: one sentence.]' }
-      ] },
+      title: 'Publications and research interest',
+      left: { heading: 'Publications',
+        list: ['[PUBLICATION 1: authors, title, journal, year]', '[PUBLICATION 2]', '[PUBLICATION 3]'] },
       right: { heading: 'Research interest', items: [
         { name: 'Umbrella reviews', text: 'An umbrella review gathers the systematic reviews on one clinical question and compares their conclusions. It is most useful where several reviews exist and disagree.' }
-      ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'] }
+      ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'],
+        sub: { heading: 'Current projects', items: [
+          { name: 'STACATTO', meta: 'Role: [YOUR ROLE] | [SITE]', text: '[WHAT THE STUDY IS, AND WHAT YOU DO ON IT.]' },
+          { name: 'SightSpire', meta: 'Role: Research assistant | Thai hospital sites', text: 'Phase 3b trial (NCT06847542) of the port delivery system with ranibizumab for neovascular AMD. [WHAT YOU DO ON IT.]' }
+        ] } }
     },
     { type: 'cv', sec: 'cv',
       title: 'Curriculum vitae',

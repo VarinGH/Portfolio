@@ -67,6 +67,11 @@ figcaption strong{color:var(--ink)}
 h3{margin:0;font-size:29px;font-weight:600}
 .meta{font-size:18px;font-style:italic;color:var(--grey)}
 .lbl{font-family:var(--sans);font-size:19px;font-weight:700}
+.cols ul{font-size:21px;line-height:1.36;gap:7px}
+.cols p{font-size:21px;line-height:1.4}
+.col{gap:16px}
+.subh{margin-top:6px;padding-top:14px;border-top:1px solid var(--rule)}
+.item.sm{gap:3px}.item.sm h3{font-size:23px}.item.sm p{font-size:20px;line-height:1.36}.item.sm .meta{font-size:17px}
 .fill{flex:1 1 0;min-height:0;margin-top:20px}
 .cv-top{display:flex;gap:24px;align-items:center}
 .photo{width:166px;height:210px;flex-shrink:0;border:1px solid var(--ink);overflow:hidden}

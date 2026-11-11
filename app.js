@@ -49,7 +49,11 @@
       var col = function (c) {
         var h = '<div class="col"><h2>' + T(c.heading) + '</h2>';
         (c.items || []).forEach(function (it) { h += '<div class="item"><h3>' + T(it.name) + '</h3>' + (it.meta ? '<div class="meta">' + T(it.meta) + '</div>' : '') + '<p>' + T(it.text) + '</p></div>'; });
-        if (c.list) h += '<div class="item"><div class="lbl">' + T(c.listLabel) + '</div><ul>' + li(c.list) + '</ul></div>';
+        if (c.list) h += '<div class="item">' + (c.listLabel ? '<div class="lbl">' + T(c.listLabel) + '</div>' : '') + '<ul>' + li(c.list) + '</ul></div>';
+        if (c.sub) {
+          h += '<h2 class="subh">' + T(c.sub.heading) + '</h2>';
+          (c.sub.items || []).forEach(function (it) { h += '<div class="item sm"><h3>' + T(it.name) + '</h3>' + (it.meta ? '<div class="meta">' + T(it.meta) + '</div>' : '') + '<p>' + T(it.text) + '</p></div>'; });
+        }
         return h + '</div>';
       };
       return '<h1>' + T(p.title) + '</h1><div class="cols">' + col(p.left) + col(p.right) + '</div>';
