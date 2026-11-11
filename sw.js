@@ -1,6 +1,6 @@
 /* Offline support. Online: always fetch the newest files and refresh the stored copy. Offline: serve the stored copy. */
-var CACHE = 'portfolio-v3';
-var FILES = ['./', 'index.html', 'app.css', 'app.js', 'content.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
+var CACHE = 'portfolio-v4';
+var FILES = ['./', 'index.html', 'app.css', 'app.js', 'content.js', 'anims.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/source-serif-4-latin-400-normal.woff2', 'fonts/source-serif-4-latin-400-italic.woff2', 'fonts/source-serif-4-latin-600-normal.woff2',
   'fonts/source-sans-3-latin-400-normal.woff2', 'fonts/source-sans-3-latin-600-normal.woff2', 'fonts/source-sans-3-latin-700-normal.woff2',
   'fonts/sarabun-thai-400-normal.woff2', 'fonts/sarabun-thai-600-normal.woff2', 'fonts/sarabun-thai-700-normal.woff2'];

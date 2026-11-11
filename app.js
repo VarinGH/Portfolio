@@ -3,7 +3,7 @@
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   var lang = store.get('lang') === 'th' ? 'th' : 'en';
   var hinted = store.get('hinted') === '1';
-  var cur = 0, mediaIdx = 0;
+  var cur = 0, mediaIdx = 0, stopAnim = null;
   var page = document.getElementById('page'), stage = document.getElementById('stage');
 
   function tx(v) { return v == null ? '' : (typeof v === 'string' ? v : (v[lang] || v.en || '')); }
@@ -25,6 +25,7 @@
     var cls = m.fit ? ' class="fit"' : '';
     if (m.type === 'video') return '<video' + cls + ' src="' + esc(m.src) + '" style="' + st + '" autoplay muted loop playsinline preload="auto"></video>';
     if (m.type === 'image') return '<img' + cls + ' src="' + esc(m.src) + '" style="' + st + '" alt="">';
+    if (m.type === 'anim') return '';
     return m.html || '';
   }
   function figure(p, u) {
@@ -37,7 +38,7 @@
       }).join('') + '</div>';
     }
     var n = (cur + 1) + (ms.length > 1 ? String.fromCharCode(97 + mediaIdx) : '');
-    return '<figure><div class="frame">' + mediaInner(m) + '</div>' + tabs + '<figcaption><strong>' + esc(u.fig) + ' ' + n + '.</strong> ' + T(m.cap) + '</figcaption></figure>';
+    return '<figure><div class="frame' + (m.light ? ' light' : '') + '"' + (m.type === 'anim' ? ' data-anim="' + esc(m.name) + '"' : '') + '>' + mediaInner(m) + '</div>' + tabs + '<figcaption><strong>' + esc(u.fig) + ' ' + n + '.</strong> ' + T(m.cap) + '</figcaption></figure>';
   }
   function body(p, u) {
     if (p.type === 'project') {
@@ -84,7 +85,10 @@
   function render() {
     var u = D.ui[lang], p = P[cur];
     document.documentElement.lang = lang;
+    if (stopAnim) { stopAnim(); stopAnim = null; }
     page.innerHTML = header(u) + body(p, u) + nav(u);
+    var an = page.querySelector('[data-anim]');
+    if (an && window.ANIMS && window.ANIMS[an.dataset.anim]) stopAnim = window.ANIMS[an.dataset.anim](an);
     var v = page.querySelector('video'); if (v) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
   }
   function go(i, fromNext) {

@@ -3,7 +3,8 @@
    Media per project: 1 to 3 items. Types:
      {type:'video', src:'media/forceps-demo.mp4', cap:'...'}
      {type:'image', src:'media/forceps-1.jpg', cap:'...'}
-     {type:'html',  html:'...', cap:'...'}            (coded animation)
+     {type:'html',  html:'...', cap:'...'}            (simple coded animation)
+     {type:'anim',  name:'defocus', light:true, cap:'...'}   (scripted animation from anims.js)
    Optional framing for video/image: pos:'50% 50%' (which part stays in view), zoom:1.2, fit:true (show whole, no crop) */
 var SANS = "font-family:'Source Sans 3','Sarabun',Arial,sans-serif";
 window.PORTFOLIO = {
@@ -60,8 +61,7 @@ window.PORTFOLIO = {
       role: 'Web application | Role: [YOUR ROLE] | 2026',
       problem: ['On paper and spreadsheet case report forms, any value can be written down', 'Out-of-range measurements and missing fields are found weeks later at data cleaning, after the participant has gone home'],
       bullets: ['Validation rules run at the moment of entry', 'Out-of-range and missing values are flagged before the visit ends', '[THIRD KEY FEATURE]'],
-      media: [{ type: 'html', cap: 'Animated demonstration (placeholder); the range shown is an example.',
-        html: '<div style="position:relative;width:480px;height:200px;' + SANS + ';color:#16181c"><div class="crfA" style="position:absolute;inset:0;box-sizing:border-box;background:#ffffff;padding:24px 28px;display:flex;flex-direction:column;gap:10px"><span style="font-size:18px;font-weight:600">Axial length, right eye (mm)</span><span style="font-size:32px;font-weight:700;padding:6px 12px;border:4px solid #16181c">236.0</span><span style="font-size:18px;font-weight:700">Out of range. Expected 20 to 35. Please re-check.</span></div><div class="crfB" style="position:absolute;inset:0;box-sizing:border-box;background:#ffffff;padding:24px 28px;display:flex;flex-direction:column;gap:10px"><span style="font-size:18px;font-weight:600">Axial length, right eye (mm)</span><span style="font-size:32px;font-weight:700;padding:8px 14px;border:2px solid #9a9a9a">23.60</span><span style="font-size:18px;color:#4a4f57">Accepted</span></div></div>' }]
+      media: [{ type: 'anim', name: 'defocus', light: true, cap: 'Measuring a defocus curve across three screens. At step 7 a mistyped value is caught at entry and corrected before it is saved. Illustrative values.' }]
     },
     { type: 'project', sec: 'sw',
       title: 'Globe tracker',
