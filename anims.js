@@ -225,3 +225,156 @@ window.ANIMS.defocus = function (frame) {
   window.addEventListener('resize', fit);
   return function () { clearInterval(timer); cancelAnimationFrame(raf); window.removeEventListener('resize', fit); };
 };
+
+/* Hindsight, redrawn from the real desktop app (dark theme, phase colours, monospace phase tag):
+   1. a thumb drive is plugged in and new cases copy in by themselves,
+   2. phases are found automatically while the playhead runs,
+   3. the last 10 capsulorhexis are pulled up side by side and exported. Illustrative cases. */
+window.ANIMS.hindsight = function (frame) {
+  var SANS = "'Source Sans 3','Sarabun',Arial,sans-serif", MONO = "ui-monospace,Consolas,'Courier New',monospace";
+  var PH = [ /* name, share of case, colour (as in the app's timeline) */
+    ['Incision', .06, '#d9536b'], ['OVD injection', .05, '#e6c27a'], ['Capsulorhexis', .12, '#5aaee8'],
+    ['Hydrodissection', .10, '#5ec4c0'], ['Phacoemulsification', .34, '#e0705a'], ['Irrigation/aspiration', .17, '#a78bfa'], ['IOL insertion', .16, '#7bc67e']];
+  var acc = 0; PH.forEach(function (p) { p.push(acc); acc += p[1]; });          /* p[3] = start */
+  var CASE_MIN = 15.5, L = 17, T1 = 3.6, T2 = 11, T3 = 16;                      /* seconds */
+  var CASES = ['12 Nov', '11 Nov', '7 Nov', '5 Nov', '4 Nov', '31 Oct', '29 Oct', '24 Oct', '22 Oct', '17 Oct'];
+  var BG = '#262623', PANEL = '#1f1f1d', LINE = '#3a3a36', TXT = '#e8e8e4', DIM = '#9a9a94', BLUE = '#3b8beb';
+  function mmss(m) { var s = Math.round(m * 60); return (s / 60 | 0) + ':' + ('0' + s % 60).slice(-2); }
+  function cl(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function ease(x) { x = cl(x); return x * x * (3 - 2 * x); }
+
+  /* one eye, top view through the microscope. ph = phase index, p = progress 0..1 within it */
+  function eye(cx, cy, R, ph, p, mini) {
+    var k = R / 100, s = '';
+    var nuc = ph < 4 ? 1 : ph === 4 ? 1 - ease(p) : 0;
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (100 * k) + '" fill="url(#hsScl)"/>';
+    if (!mini) s += '<path d="M' + (cx - 70 * k) + ' ' + (cy - 60 * k) + ' q30 20 50 8 M' + (cx + 40 * k) + ' ' + (cy + 70 * k) + ' q20 -10 34 -34 M' + (cx - 80 * k) + ' ' + (cy + 30 * k) + ' q16 6 26 22" stroke="#c96a6a" stroke-width="1.2" fill="none" opacity=".7"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (60 * k) + '" fill="#3f4c58"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (44 * k) + '" fill="url(#hsRef)"/>';
+    if (nuc > 0) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (34 * k * (0.25 + .75 * nuc)) + '" fill="#c98a32" opacity="' + (0.35 + .5 * nuc) + '"/>';
+    if (ph === 1 || ph === 2) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (40 * k * (ph === 1 ? ease(p) : 1)) + '" fill="#ffffff" opacity=".12"/>';
+    if (ph >= 2) { /* capsulorhexis edge */
+      var rp = ph === 2 ? ease(p) : 1, C = 2 * Math.PI * 30 * k;
+      s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (30 * k) + '" fill="none" stroke="#ffffff" stroke-opacity=".85" stroke-width="' + (mini ? 1.4 : 2) + '" stroke-dasharray="' + (C * rp) + ' ' + C + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"/>';
+    }
+    if (ph === 3) s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (34 * k * (0.7 + .3 * ((p * 3) % 1))) + '" fill="none" stroke="#9fe3ff" stroke-width="2" opacity="' + (1 - (p * 3) % 1) + '"/>';
+    if (ph >= 6) { /* IOL unfolds */
+      var q = ph === 6 ? ease(p) : 1;
+      s += '<g opacity="' + q + '" transform="rotate(' + (-60 + 60 * q) + ' ' + cx + ' ' + cy + ')"><circle cx="' + cx + '" cy="' + cy + '" r="' + (26 * k) + '" fill="#dff3ff" fill-opacity=".22" stroke="#ffffff" stroke-opacity=".7" stroke-width="1.2"/>' +
+        '<path d="M' + (cx + 22 * k) + ' ' + (cy - 12 * k) + ' q26 -10 18 -40 M' + (cx - 22 * k) + ' ' + (cy + 12 * k) + ' q-26 10 -18 40" stroke="#ffffff" stroke-opacity=".75" stroke-width="1.6" fill="none"/></g>';
+    }
+    if (!mini) { /* instrument for the current phase */
+      var tool = '#c9ced4', w = 5;
+      if (ph === 0) { var a = ease(p); s += '<path d="M' + (cx - 150 + 80 * a) + ' ' + (cy - 70 + 30 * a) + ' l' + 50 + ' ' + 20 + '" stroke="' + tool + '" stroke-width="7" stroke-linecap="round"/>'; if (p > .5) s += '<path d="M' + (cx - 66) + ' ' + (cy - 36) + ' l10 6" stroke="#7a2a2a" stroke-width="3"/>'; }
+      else {
+        var ang = ph === 2 ? -Math.PI / 2 + 2 * Math.PI * ease(p) : Math.PI * 1.15, tip = ph === 2 ? 30 : ph === 4 ? 12 : 18;
+        var tx = cx + Math.cos(ang) * tip, ty = cy + Math.sin(ang) * tip;
+        s += '<path d="M' + (cx - 130) + ' ' + (cy - 40) + ' L' + (cx - 64) + ' ' + (cy - 30) + ' L' + tx + ' ' + ty + '" stroke="' + tool + '" stroke-width="' + (ph === 4 ? 9 : w) + '" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+        if (ph === 4) s += '<path d="M' + (cx + 130) + ' ' + (cy + 30) + ' L' + (cx + 60) + ' ' + (cy + 24) + ' L' + (cx + 14 * Math.cos(p * 30)) + ' ' + (cy + 10) + '" stroke="' + tool + '" stroke-width="4" fill="none" stroke-linecap="round"/>';
+      }
+    }
+    return s;
+  }
+  function phaseAt(f) { for (var i = PH.length - 1; i >= 0; i--) if (f >= PH[i][3]) return [i, cl((f - PH[i][3]) / PH[i][1])]; return [0, 0]; }
+
+  var defs = '<defs><radialGradient id="hsRef" cx="45%" cy="42%" r="60%"><stop offset="0" stop-color="#ffb35c"/><stop offset=".7" stop-color="#e8862f"/><stop offset="1" stop-color="#b9561f"/></radialGradient>' +
+    '<radialGradient id="hsScl" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#f1d3cb"/><stop offset="1" stop-color="#d79b92"/></radialGradient>' +
+    '<pattern id="hsDrape" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#2f8a6a"/><circle cx="4" cy="4" r="1.6" fill="#5fc6a0"/></pattern></defs>';
+  var box = document.createElement('div');
+  box.style.cssText = 'position:relative;width:720px;height:430px;flex-shrink:0;font-family:' + SANS + ';color:' + TXT;
+  box.innerHTML =
+    '<div data-k="head" style="position:absolute;left:0;right:0;top:8px;text-align:center;font-size:20px;font-weight:600;color:#f2f2ee"></div>' +
+    '<div style="position:absolute;left:8px;right:8px;top:42px;bottom:6px;background:' + BG + ';border:1px solid ' + LINE + ';border-radius:10px;overflow:hidden">' +
+      '<div style="height:34px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid ' + LINE + '">' +
+        '<span style="width:20px;height:20px;border-radius:5px;background:' + BLUE + ';display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border:2px solid #fff;border-radius:50%"></span></span>' +
+        '<span style="font-weight:700;font-size:15px">Hindsight</span><span style="font-size:10px;letter-spacing:.12em;color:' + DIM + '">SURGICAL REVIEW</span>' +
+        '<span data-k="crumb" style="margin-left:14px;font-size:15px;font-weight:600"></span>' +
+        '<span data-k="chip" style="margin-left:auto;font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px"></span></div>' +
+      '<svg data-k="vid" viewBox="0 0 444 262" style="position:absolute;left:10px;top:44px;width:444px;height:262px;border-radius:6px;background:#0d0d0d">' + defs + '<g data-k="vg"></g></svg>' +
+      '<div data-k="tag" style="position:absolute;left:18px;top:52px;font-family:' + MONO + ';font-size:12px;color:#fff;background:rgba(0,0,0,.6);border-left:3px solid ' + BLUE + ';padding:3px 8px"></div>' +
+      '<div data-k="side" style="position:absolute;left:466px;right:10px;top:44px;bottom:10px;background:' + PANEL + ';border-radius:6px;padding:10px 12px;font-size:13px;overflow:hidden"></div>' +
+      '<div style="position:absolute;left:10px;top:314px;width:444px;display:flex;align-items:center;gap:10px">' +
+        '<span style="width:26px;height:26px;border-radius:50%;background:' + BLUE + ';display:flex;align-items:center;justify-content:center"><span style="width:0;height:0;border-left:9px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:2px"></span></span>' +
+        '<span data-k="time" style="font-family:' + MONO + ';font-size:13px"></span><span data-k="ai" style="margin-left:auto;font-size:12px;font-weight:700"></span></div>' +
+      '<div data-k="tl" style="position:absolute;left:10px;top:348px;width:444px;height:26px;background:#181816;border-radius:3px"></div>' +
+    '</div>';
+  frame.innerHTML = ''; frame.appendChild(box);
+  var el = {}; Array.prototype.forEach.call(box.querySelectorAll('[data-k]'), function (n) { el[n.dataset.k] = n; });
+  function fit() { var s = Math.min(frame.clientWidth / 720, frame.clientHeight / 430); box.style.transform = 'scale(' + s + ')'; }
+  fit();
+
+  function row(dot, name, right, dim) {
+    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid ' + LINE + ';' + (dim ? 'opacity:.35' : '') + '"><span style="width:9px;height:9px;border-radius:2px;background:' + dot + ';flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + name + '</span><span style="font-family:' + MONO + ';font-size:12px;color:' + DIM + '">' + right + '</span></div>';
+  }
+  function bar(f, col) { return '<div style="height:5px;background:#33332f;border-radius:3px;margin:3px 0 2px"><div style="height:5px;width:' + (f * 100) + '%;background:' + col + ';border-radius:3px"></div></div>'; }
+  function timeline(f, hi) {
+    var h = '';
+    PH.forEach(function (p, i) {
+      var vis = cl((f - p[3]) / p[1]); if (vis <= 0) return;
+      h += '<div style="position:absolute;top:3px;height:20px;left:' + (p[3] * 100) + '%;width:' + (p[1] * vis * 100) + '%;background:' + p[2] + ';opacity:' + (hi == null || hi === i ? 1 : .3) + ';overflow:hidden;font-size:10px;font-weight:700;color:#1a1a1a;line-height:20px;padding-left:3px;box-sizing:border-box;white-space:nowrap">' + (p[1] > .09 ? p[0] : '') + '</div>';
+    });
+    if (hi == null) h += '<div style="position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff;left:' + (f * 100) + '%"></div>';
+    return h;
+  }
+
+  function draw(t) {
+    var vg = '', side = '', tag = '', time = '', ai = '', head, chip, crumb, tl;
+    if (t < T1) { /* 1. sync from thumb drive */
+      var u = t / T1;
+      head = '1. Plug in the thumb drive: new cases copy in by themselves';
+      crumb = 'Case Files'; chip = 'USB connected';
+      var x = 150 + 60 * (1 - ease(u * 2));
+      vg = '<rect x="0" y="0" width="444" height="262" fill="#141413"/>' +
+        '<rect x="' + (x - 40) + '" y="104" width="80" height="54" rx="8" fill="#3d3d39"/><rect x="' + (x + 40) + '" y="116" width="34" height="30" fill="#b8bcc2"/><rect x="' + (x + 48) + '" y="123" width="6" height="6" fill="#55595e"/><rect x="' + (x + 60) + '" y="123" width="6" height="6" fill="#55595e"/>' +
+        '<text x="' + x + '" y="136" text-anchor="middle" font-size="12" fill="' + DIM + '" font-family="' + SANS + '">OR recorder</text>' +
+        '<rect x="290" y="70" width="110" height="122" rx="8" fill="none" stroke="' + LINE + '"/><text x="345" y="186" text-anchor="middle" font-size="11" fill="' + DIM + '" font-family="' + SANS + '">This computer</text>';
+      for (var d = 0; d < 3; d++) { var dx = ((u * 3 + d / 3) % 1); if (u > .15 && u < .9) vg += '<rect x="' + (250 + 40 * dx) + '" y="126" width="8" height="10" rx="1" fill="' + BLUE + '" opacity="' + (1 - dx) + '"/>'; }
+      side = '<div style="font-weight:700;font-size:14px;margin-bottom:6px">Importing from USB</div>';
+      ['Case 1 · 15:32', 'Case 2 · 09:21', 'Case 3 · 12:08'].forEach(function (n, i) {
+        var f = cl((u - .12 - i * .25) / .25);
+        side += '<div style="margin-top:8px;font-size:13px;display:flex;justify-content:space-between"><span>' + n + '</span><span style="color:' + (f >= 1 ? '#7bc67e' : DIM) + '">' + (f >= 1 ? '✓ copied' : f > 0 ? Math.round(f * 100) + '%' : 'waiting') + '</span></div>' + bar(f, f >= 1 ? '#7bc67e' : BLUE);
+      });
+      side += '<div style="margin-top:14px;color:' + DIM + ';font-size:12px;line-height:1.35">100% local: videos and data never leave this computer</div>';
+      time = '00:00 / 15:32'; tl = '';
+    } else if (t < T2) { /* 2. phase detection */
+      var f = (t - T1) / (T2 - T1), pa = phaseAt(f);
+      head = '2. Each phase is found automatically';
+      crumb = 'Review'; chip = 'Detecting phases';
+      vg = '<rect x="0" y="0" width="444" height="262" fill="url(#hsDrape)"/><path d="M60 40 Q222 -10 384 40 L384 222 Q222 272 60 222 Z" fill="#e0b9a6" opacity=".35"/>' + eye(222, 131, 112, pa[0], pa[1]) +
+        '<path d="M96 40 l40 34 M348 40 l-40 34 M96 222 l40 -34 M348 222 l-40 -34" stroke="#b7bcc2" stroke-width="5" fill="none" stroke-linecap="round"/>';
+      tag = PH[pa[0]][0]; time = mmss(f * CASE_MIN) + ' / 15:32'; ai = '<span style="color:#5ec4c0">● AI ' + Math.round(f * 100) + '%</span>';
+      side = '<div style="font-weight:700;font-size:14px;margin-bottom:4px">Phases</div>';
+      PH.forEach(function (p, i) { var done = f >= p[3] + p[1] * .3; side += row(p[2], (i + 1) + '. ' + p[0], done ? mmss(p[1] * CASE_MIN) : '…', !done); });
+      tl = timeline(f);
+    } else { /* 3. last 10 capsulorhexis */
+      var g = (t - T2) / (T3 - T2);
+      head = '3. Review in seconds: your last 10 capsulorhexis, side by side';
+      crumb = 'Export Studio'; chip = 'Ready';
+      vg = '<rect x="0" y="0" width="444" height="262" fill="#141413"/>';
+      for (var i = 0; i < 10; i++) {
+        var c = i % 5, r = i / 5 | 0, cx = 46 + c * 88, cy = 80 + r * 118, pr = cl(g * 1.6 - i * .04 - (i % 3) * .05);
+        vg += '<rect x="' + (cx - 42) + '" y="' + (cy - 54) + '" width="84" height="108" rx="4" fill="url(#hsDrape)" opacity="' + cl(g * 8 - i * .5) + '"/>' +
+          '<g opacity="' + cl(g * 8 - i * .5) + '">' + eye(cx, cy - 6, 36, 2, pr, true) + '<text x="' + cx + '" y="' + (cy + 48) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="' + SANS + '">' + CASES[i] + '</text></g>';
+      }
+      tag = 'Capsulorhexis · 10 cases'; time = '10 clips · 7:48 total';
+      var ex = cl((g - .45) / .4);
+      side = '<div style="font-weight:700;font-size:14px;margin-bottom:6px">Export Studio</div>' +
+        row('#5aaee8', 'Phase: Capsulorhexis', '') + row(BLUE, 'Cases: my last 10', '') + row('#9a9a94', 'Layout: side by side', '') +
+        '<div style="margin-top:14px;height:34px;border-radius:6px;background:' + (ex >= 1 ? '#2e5b37' : BLUE) + ';color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">' +
+        (ex > 0 && ex < 1 ? '<span style="position:absolute;left:0;top:0;bottom:0;width:' + (ex * 100) + '%;background:rgba(255,255,255,.22)"></span>' : '') +
+        '<span style="position:relative">' + (ex >= 1 ? '✓ Saved for feedback' : ex > 0 ? 'Exporting ' + Math.round(ex * 100) + '%' : 'Export 10 clips') + '</span></div>' +
+        '<div style="margin-top:10px;color:' + DIM + ';font-size:12px;line-height:1.35">Compare technique across cases, or send to your supervisor for feedback</div>';
+      tl = timeline(1, 2);
+    }
+    el.head.textContent = head; el.crumb.textContent = crumb;
+    el.chip.textContent = chip; el.chip.style.background = chip === 'Detecting phases' ? '#1f3b3a' : chip === 'Ready' ? '#1d2f45' : '#3a321c';
+    el.chip.style.color = chip === 'Detecting phases' ? '#5ec4c0' : chip === 'Ready' ? '#7fb4f0' : '#e6c27a';
+    el.vg.innerHTML = vg; el.side.innerHTML = side; el.tag.textContent = tag; el.tag.style.display = tag ? '' : 'none';
+    el.time.textContent = time; el.ai.innerHTML = ai; el.tl.innerHTML = tl;
+  }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { draw(T2 - .01); return function () {}; }
+  var t0 = performance.now(), id = setInterval(function () { draw(((performance.now() - t0) / 1000) % L); }, 50);
+  draw(0); window.addEventListener('resize', fit);
+  return function () { clearInterval(id); window.removeEventListener('resize', fit); };
+};
