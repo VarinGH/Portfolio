@@ -37,13 +37,12 @@ window.PORTFOLIO = {
       media: [{ type: 'anim', name: 'vakiosk', light: true, bg: '#DDE2E6', cap: 'Redrawn from the kiosk application: the patient stands at 6 m, says "start", and reads each line aloud; the machine hears, grades and prints the result. Illustrative values.' }]
     },
     { type: 'project', sec: 'pr',
-      title: 'Scheimpflug microsurface analysis',
-      sub: '[ONE-LINE DESCRIPTION OF WHAT IT MEASURES]',
-      role: '[TYPE OF PRODUCT] | Role: [YOUR ROLE] | [YEAR]',
-      problem: ['[PROBLEM 1: what cannot be measured or seen today]', '[PROBLEM 2]'],
-      bullets: ['[KEY SOLUTION 1]', '[KEY SOLUTION 2]', '[KEY SOLUTION 3]'],
-      media: [{ type: 'html', cap: 'Animated demonstration (placeholder).',
-        html: '<svg viewBox="0 0 220 220" width="280" height="280" aria-hidden="true"><circle cx="110" cy="110" r="96" fill="#262626" stroke="#555555"></circle><circle cx="110" cy="110" r="60" fill="none" stroke="#555555" stroke-dasharray="3 5"></circle><path class="spL" d="M110 8 V212" stroke="#ffffff" stroke-width="3" fill="none"></path></svg>' }]
+      title: 'Eye drop compliance tracker',
+      sub: 'A bottle-mounted camera and motion sensor that confirms the drop reached the eye',
+      role: 'Medical device, bench prototype | Role: Idea and device design | 2026',
+      problem: ['Smart bottles count attempts (motion, squeeze, cap opening), not drops that reached the eye', 'A drop on the lid or cheek is still recorded as taken'],
+      bullets: ['Motion sensor wakes an infrared camera when the bottle is turned upside down', 'Each instillation is filmed, time-stamped and stored on the device', 'Clips train an on-device model, validated against fluorescein'],
+      media: [{ type: 'anim', name: 'eyedrop', cap: 'To-scale 3D model of the bench prototype on a Vigamox bottle: XIAO ESP32-S3 Sense and battery in the base, OV2640 camera and infrared LED at the shoulder. Drag to turn; tap a part to explore it.' }]
     },
     { type: 'project', sec: 'sw',
       title: 'Hindsight',

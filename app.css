@@ -170,3 +170,23 @@ li em{font-style:italic}li strong{font-weight:600}
 .sbtn[disabled]{border-color:var(--rule);color:var(--rule)}
 .set-note{margin-top:22px;font-size:19px;line-height:1.4;color:var(--grey)}
 @media (prefers-reduced-motion:reduce){.arrow.next:not([disabled]) .disc svg,.arrow.pop .disc,.sec.pop>span{animation:none}.body.turn *{animation:none !important}}
+
+/* Figure 3: eye drop tracker 3D model. Keeps the model page's own look (IBM Plex Sans, blue #1f5fbf, 4 px corners) on a studio backdrop */
+@font-face{font-family:'IBM Plex Sans';font-weight:500;src:url(fonts/ibm-plex-sans-latin-500-normal.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'IBM Plex Sans';font-weight:600;src:url(fonts/ibm-plex-sans-latin-600-normal.woff2) format('woff2');font-display:swap}
+.frame.ed3{background:radial-gradient(ellipse 75% 70% at 60% 38%,#fdfdfe 0%,#e9ecf0 48%,#c6ccd4 100%);color:#17202b;font-family:'IBM Plex Sans',var(--sans);display:block}
+.ed3-gl{position:absolute;left:0;top:0;width:100%;height:100%;display:block;touch-action:none}
+.ed3-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ed3-tag{position:absolute;left:0;top:0;font:500 14px/1.2 'IBM Plex Sans',sans-serif;background:rgba(255,255,255,.94);color:#17202b;border:1px solid #cfd6de;border-radius:3px;padding:3px 7px;white-space:nowrap;will-change:transform}
+.ed3-ui{position:absolute;inset:0;pointer-events:none}
+.ed3-ui button{pointer-events:auto;font:500 15px/1 'IBM Plex Sans',sans-serif;color:#17202b;background:rgba(255,255,255,.92);border:1px solid #cfd6de;border-radius:4px;padding:0 12px;min-height:35px;text-align:left;transition:background-color .15s,color .15s,transform .08s}
+.ed3-ui button:active{transform:scale(.96)}
+.ed3-ui button[aria-pressed="true"]{background:#1f5fbf;border-color:#1f5fbf;color:#fff}
+.ed3-list{position:absolute;left:12px;top:12px;bottom:12px;width:138px;display:flex;flex-direction:column;gap:4px}
+.ed3-h{font:600 12px/1 'IBM Plex Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5b6876;margin:2px 0 3px 2px}
+.ed3-tools{position:absolute;right:12px;top:12px;display:flex;gap:6px}
+.ed3-card{position:absolute;right:12px;bottom:12px;width:300px;background:rgba(255,255,255,.95);border:1px solid #cfd6de;border-left:3px solid #1f5fbf;border-radius:4px;padding:10px 12px;font:400 14.5px/1.38 'IBM Plex Sans',sans-serif;color:#2b3440;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
+.ed3-card.on{opacity:1;transform:none}
+.ed3-card b{display:block;font-weight:600;font-size:15.5px;color:#17202b;margin-bottom:2px}
+.ed3-hint{position:absolute;left:162px;bottom:12px;font:500 13px/1 'IBM Plex Sans',sans-serif;color:#5b6876}
+.ed3-err{color:#fff;font-size:18px;padding:20px}
