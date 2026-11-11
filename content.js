@@ -84,19 +84,72 @@ window.PORTFOLIO = {
     },
     { type: 'cv', sec: 'cv',
       title: 'Curriculum vitae',
-      photo: '',  /* e.g. 'media/photo.jpg' */
-      lines: ['Varin Dejgambhir, MD', '[CURRENT POSITION]', '[CONTACT]'],
+      photo: 'media/photo.jpg',
+      statement: 'I am a physician who puts patients first and enjoys working as part of a team. I believe good care comes from people who support each other, so I try to be the colleague others can rely on and are glad to see. Whatever the day brings, I show up with a positive attitude and help the team find a way forward.',
       blocks: [
-        { heading: 'Education', list: ['[DEGREE, INSTITUTION, YEAR]', '[DEGREE, INSTITUTION, YEAR]'] },
-        { heading: 'Clinical experience', list: ['[POSITION, HOSPITAL, YEARS]', '[POSITION, HOSPITAL, YEARS]'] }
+        { heading: 'Education', entries: [
+          { t: 'Chulalongkorn University, International Medical Program (CU-MEDi) | 2021–2025', s: 'Doctor of Medicine, First-Class Honours', n: 'Observership, Department of Ophthalmology, with Dr. Thanapong Somkijrungroj (2 months)' },
+          { t: 'University of Dundee, United Kingdom | 2024', s: 'Elective in Ophthalmology and Geriatrics (2 months)' },
+          { t: 'Mahidol University, Thailand | 2018', s: 'Civil Engineering Course' },
+          { t: 'Assumption University, Thailand | 2008–2011', s: 'Bachelor of Business Administration, International Business Management' },
+          { t: 'Raffles Design Institute | 2009–2010', s: 'Product Design Course' }
+        ] },
+        { heading: 'Professional experience', cols: 2, entries: [
+          { t: 'Queen Savang Vadhana Memorial Hospital | 2025–2026', s: 'Intern Physician', wide: true },
+          { t: 'G.M.G. Thailand | 2012–Present', s: 'Partner and Manager' },
+          { t: 'Assumption University | 2015–2016', s: 'English Teacher' },
+          { t: 'Millward Brown Firefly Co., Ltd. | 2012', s: 'Research Associate' },
+          { t: 'Wall Street English Thailand | 2011', s: 'English Personal Tutor' }
+        ] }
       ]
     },
     { type: 'cv', sec: 'cv',
-      title: 'Curriculum vitae (continued)',
+      title: 'Projects and presentations',
       blocks: [
-        { heading: 'Research and publications', list: ['[ITEM]', '[ITEM]', '[ITEM]'] },
-        { heading: 'Awards and presentations', list: ['[ITEM]', '[ITEM]'] },
-        { heading: 'Skills and languages', list: ['[ITEM]', '[ITEM]'] }
+        { list: [
+          'Oral presentation, *Applying Laser-Assisted Flange Creation in Yamane’s Technique*, APVRS 2026, Gold Coast, Australia, August 2026',
+          '**Winner, Cataract Research Video Competition**, Laser-Assisted Precision Flange Creation, 38th APACRS–55th RCOPT Joint Meeting, Pattaya, Thailand, June 2026',
+          'Video competition entry, *Unseen Fear of the Unseeing Eye*, 37th APACRS Annual Meeting, Ahmedabad, India, 2025',
+          'Organizing committee for Cataract Day and GOIW meeting, Bangkok, 2025',
+          'Presenter, session *“Amazing Phaco!: My View, Your View, Our View for Our Patients”*, 51st RCOPT Meeting, Bangkok, June 2024',
+          'Oral presentation, *Overcoming Barriers: A Physician’s Approach to Non-Compliance in Patients with Chronic Disease*, 58th MDCU Congress, Bangkok, Thailand, 2022',
+          'President, CU-MEDi Class 1; CU-MEDi Representative, Student Union, Faculty of Medicine, Chulalongkorn University (SMCU), 2021'
+        ] },
+        { heading: 'Proficiency and certificates', list: [
+          'Completed **EyeSi Cataract training course** A–C, total training time 15 hours 45 minutes, average **score 92%** (University of Dundee)',
+          'IELTS: band **8 out of 9**',
+          'TOEIC: **985 out of 990**',
+          'Statistical analysis with SPSS; Excel with VBA coding; Adobe Creative Suite'
+        ] },
+        { heading: 'AI use capabilities', list: [
+          'Advanced agentic AI workflows (Claude Code, custom skills, MCP integrations) for research synthesis and software development'
+        ] }
+      ]
+    },
+    { type: 'cv', sec: 'cv',
+      title: 'Conferences and community',
+      blocks: [
+        { heading: 'Conferences attended', cols: 2, small: true, list: [
+          'ESCRS 2026, London, United Kingdom',
+          'APVRS 2026, Gold Coast, Australia',
+          '38th APACRS–55th RCOPT Joint Meeting, Pattaya, June 2026',
+          '37th APACRS Annual Meeting, Ahmedabad, India, August 2025',
+          'FujiRetina, Tokyo, Japan, 2025',
+          '36th APACRS–24th CSCRS Joint Meeting, Chengdu, China, 2024',
+          '51st RCOPT Meeting, Bangkok, July 2024',
+          '50th RCOPT Meeting, Pattaya, December 2023',
+          '21st Specialty Day, Thammasat Eye Center, 2023',
+          'CROST–RCOPT Meeting, How to Efficiently Improve the Optical Clinic, 2023',
+          'Research Day, Chulalongkorn Eye Center, 2023',
+          '11th Asian Neuro-Ophthalmology Society Meeting, Bangkok, 2022',
+          '8th Asia Cornea Society Biennial Scientific Meeting, Bangkok, 2022',
+          '48th RCOPT Meeting, Pattaya, December 2022'
+        ] },
+        { heading: 'Community contributions', list: [
+          'Assisted at an ophthalmology screening event in Saraburi, June 2025',
+          'Produced a public education video in collaboration with the Obstetrics and Gynecology department, Queen Savang Vadhana Memorial Hospital, Thai Red Cross Society',
+          'Participated in Medi-Lingo, a local language proficiency initiative for healthcare workers at Queen Savang Vadhana Memorial Hospital, Thai Red Cross Society'
+        ] }
       ]
     }
   ]

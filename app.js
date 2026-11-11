@@ -9,7 +9,8 @@
   function tx(v) { return v == null ? '' : (typeof v === 'string' ? v : (v[lang] || v.en || '')); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function T(v) { return esc(tx(v)); }
-  function li(a) { return (a || []).map(function (b) { return '<li>' + T(b) + '</li>'; }).join(''); }
+  function M(v) { return T(v).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); }
+  function li(a) { return (a || []).map(function (b) { return '<li>' + M(b) + '</li>'; }).join(''); }
   var CH_L = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5 L7.5 12 L14.5 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var CH_R = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5 L16.5 12 L9.5 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -54,11 +55,14 @@
       return '<h1>' + T(p.title) + '</h1><div class="cols">' + col(p.left) + col(p.right) + '</div>';
     }
     var h = '<h1>' + T(p.title) + '</h1><div class="fill">';
-    if (p.lines) {
-      h += '<div class="cv-top"><div class="photo">' + (p.photo ? '<img src="' + esc(p.photo) + '" alt="">' : 'Photo') + '</div><div class="item">' +
-        p.lines.map(function (l, i) { return i === 0 ? '<h3>' + T(l) + '</h3>' : '<p>' + T(l) + '</p>'; }).join('') + '</div></div>';
-    }
-    (p.blocks || []).forEach(function (b) { h += '<div class="cv-sec"><h2>' + T(b.heading) + '</h2><ul>' + li(b.list) + '</ul></div>'; });
+    if (p.statement) h += '<div class="cv-top">' + (p.photo ? '<div class="photo"><img src="' + esc(p.photo) + '" alt=""></div>' : '') + '<p class="stmt">' + T(p.statement) + '</p></div>';
+    (p.blocks || []).forEach(function (b, bi) {
+      h += '<div class="cv-sec' + (bi === 0 && !p.statement ? ' first' : '') + '">' + (b.heading ? '<h2>' + T(b.heading) + '</h2>' : '');
+      if (b.entries) h += '<div class="ents' + (b.cols === 2 ? ' two' : '') + '">' + b.entries.map(function (e) {
+        return '<div class="ent' + (e.wide ? ' wide' : '') + '"><b>' + T(e.t) + '</b>' + (e.s ? '<em>' + T(e.s) + '</em>' : '') + (e.n ? '<span>' + T(e.n) + '</span>' : '') + '</div>'; }).join('') + '</div>';
+      if (b.list) h += '<ul class="' + (b.cols === 2 ? 'two ' : '') + (b.small ? 'small' : '') + '">' + li(b.list) + '</ul>';
+      h += '</div>';
+    });
     return h + '</div>';
   }
   function nav(u) {
