@@ -68,7 +68,7 @@ window.PORTFOLIO = {
       role: '[TYPE OF SOFTWARE] | Role: [YOUR ROLE] | [YEAR]',
       problem: ['Eye movement during cataract surgery is not measured; stability is judged by eye and by feel', 'Without a number, it cannot be fed back to the surgeon, taught, or compared between surgeons, techniques or robotic systems'],
       bullets: ['Fits the limbus on every frame of an ordinary microscope recording, with no extra hardware', 'Reports globe pitch, yaw and torsion in degrees, plotted phase by phase across the whole case', 'First step towards live feedback, training metrics and a benchmark for robotic surgery'],
-      media: [{ type: 'video', src: 'media/globe-tracker.mp4', fit: true, cap: 'Screen recording during capsulorhexis: the limbus is fitted on every frame, and the pitch, yaw and torsion of the globe are tracked in degrees and plotted across the whole case, phase by phase.' }]
+      media: [{ type: 'video', src: 'media/globe-tracker.mp4', fit: true, cap: 'Screen recording during capsulorhexis: the limbus is fitted on every frame of the surgical view (left), and the pitch, yaw and torsion of the globe are tracked in degrees on a 3D model of the eye (right).' }]
     },
     { type: 'research', sec: 're',
       title: 'Research and awards',
