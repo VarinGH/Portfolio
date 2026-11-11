@@ -184,11 +184,11 @@
       }
     });
     function doUpdate() {
-      {
-        var wipe = window.caches ? caches.keys().then(function (ks) { return Promise.all(ks.map(function (x) { return caches.delete(x); })); }) : Promise.resolve();
-        var unreg = navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }) : Promise.resolve();
-        Promise.all([wipe, unreg]).catch(function () {}).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
-      }
+      /* fetch every core file straight from the server (skipping the browser's own cache), let the offline worker update itself, then restart */
+      var core = ['index.html', 'app.css', 'app.js', 'content.js', 'anims.js', 'version.js', 'sw.js'];
+      var pulls = core.map(function (f) { return fetch(f, { cache: 'reload' }).catch(function () {}); });
+      var worker = navigator.serviceWorker ? navigator.serviceWorker.getRegistration().then(function (r) { return r ? r.update() : null; }).catch(function () {}) : Promise.resolve();
+      Promise.all(pulls.concat([worker])).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
     }
     check(); offlineCount();
   }
