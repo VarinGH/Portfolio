@@ -94,7 +94,7 @@
   function go(i, fromNext) {
     if (i < 0 || i >= N || i === cur) return;
     turn = i > cur ? 'fwd' : 'back';
-    cur = i; mediaIdx = 0;
+    cur = i; mediaIdx = 0; logTurn();
     try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {}
     render();
   }
@@ -127,15 +127,20 @@
   function openSettings() {
     if (page.querySelector('.set')) return;
     var o = document.createElement('div'); o.className = 'set';
-    o.innerHTML = '<h1>Settings</h1><div class="role">Hidden page. Interviewers do not see this.</div>' +
+    o.innerHTML = '<h1>Settings</h1><div class="role">You have found the easter egg.</div>' +
       '<dl><dt>Version on this tablet</dt><dd>' + esc(V.version) + ' <span>(' + esc(V.built) + ')</span></dd>' +
+      '<dt>Last updated on this tablet</dt><dd>' + esc(fmtDT(+store.get('updatedAt') || 0)) + '</dd>' +
       '<dt>Version on the server</dt><dd data-s="srv">Checking\u2026</dd>' +
       '<dt>Saved for offline use</dt><dd data-s="off">\u2026</dd></dl>' +
       '<div class="set-btns"><button type="button" class="sbtn" data-s="upd" disabled>Update now</button>' +
       '<button type="button" class="sbtn" data-s="chk">Check again</button>' +
       '<button type="button" class="sbtn" data-s="p1">Back to page 1, English</button>' +
       '<button type="button" class="sbtn dark" data-s="close">Close</button></div>' +
-      '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>';
+      '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>' +
+      '<h2 class="set-h">Usage log</h2><p class="set-note" style="margin-top:6px">Which page was on screen, when, and for how long. Time on this settings page and time with the screen off are not counted. Press Clear log just before you hand the tablet over.</p>' +
+      '<div class="set-btns"><button type="button" class="sbtn" data-s="clr">Clear log</button><button type="button" class="sbtn" data-s="ref">Refresh log</button></div>' +
+      '<div data-s="log"></div>';
+    logPause();
     page.appendChild(o);
     var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
     function check() {
@@ -158,9 +163,11 @@
       e.stopPropagation();
       var b = e.target.closest('button'); if (!b || b.disabled) return;
       var k = b.dataset.s;
-      if (k === 'close') o.remove();
+      if (k === 'close') { o.remove(); logResume(); }
+      else if (k === 'clr') { logClear(); q('log').innerHTML = logHtml(); }
+      else if (k === 'ref') q('log').innerHTML = logHtml();
       else if (k === 'chk') { check(); offlineCount(); }
-      else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); }
+      else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); logResume(); }
       else if (k === 'upd') {
         if (!navigator.onLine) { check(); return; }
         b.disabled = true; b.textContent = 'Updating\u2026';
@@ -169,14 +176,52 @@
         Promise.all([wipe, unreg]).catch(function () {}).then(function () { location.replace(location.pathname + '?u=' + Date.now() + '#1'); });
       }
     });
+    q('log').innerHTML = logHtml();
     check(); offlineCount();
+  }
+
+  /* usage log: which page was on screen, when, and for how long (kept on this tablet only) */
+  var LOG = [], open_ = null, paused = false;
+  try { LOG = JSON.parse(store.get('log') || '[]') || []; } catch (e) { LOG = []; }
+  try { var lo = JSON.parse(store.get('logOpen') || 'null'); if (lo && lo.last > lo.t) LOG.push({ p: lo.p, t: lo.t, d: lo.last - lo.t }); } catch (e) {}
+  store.set('logOpen', 'null');
+  function logSave() { if (LOG.length > 3000) LOG = LOG.slice(-3000); store.set('log', JSON.stringify(LOG)); }
+  function logClose() {
+    if (!open_) return;
+    var d = Date.now() - open_.t;
+    if (d >= 300) LOG.push({ p: open_.p, t: open_.t, d: d });
+    open_ = null; store.set('logOpen', 'null'); logSave();
+  }
+  function logOpenNow() { if (paused || document.visibilityState !== 'visible') return; open_ = { p: cur + 1, t: Date.now() }; }
+  function logTurn() { logClose(); logOpenNow(); }
+  function logPause() { logClose(); paused = true; }
+  function logResume() { paused = false; logOpenNow(); }
+  function logClear() { LOG = []; open_ = null; logSave(); store.set('logOpen', 'null'); }
+  setInterval(function () { if (open_) store.set('logOpen', JSON.stringify({ p: open_.p, t: open_.t, last: Date.now() })); }, 4000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') logOpenNow(); else logClose(); });
+  window.addEventListener('pagehide', logClose);
+  function two(n) { return (n < 10 ? '0' : '') + n; }
+  function fmtDT(ms) { if (!ms) return 'Not recorded'; var d = new Date(ms); return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getFullYear() + ', ' + two(d.getHours()) + ':' + two(d.getMinutes()); }
+  function fmtT(ms) { var d = new Date(ms); return two(d.getHours()) + ':' + two(d.getMinutes()) + ':' + two(d.getSeconds()); }
+  function fmtD(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + two(s % 60); }
+  function pageName(n) { var p = P[n - 1]; return p ? tx(p.short || p.title) : '?'; }
+  function logHtml() {
+    if (!LOG.length) return '<p class="set-note">No page views recorded yet.</p>';
+    var tot = {}, cnt = {}, all = 0;
+    LOG.forEach(function (e) { tot[e.p] = (tot[e.p] || 0) + e.d; cnt[e.p] = (cnt[e.p] || 0) + 1; all += e.d; });
+    var h = '<table class="logt"><tr><th>Page</th><th></th><th>Views</th><th>Total time</th></tr>';
+    for (var n = 1; n <= N; n++) h += '<tr' + (tot[n] ? '' : ' class="none"') + '><td>' + n + '</td><td>' + esc(pageName(n)) + '</td><td>' + (cnt[n] || 0) + '</td><td>' + (tot[n] ? fmtD(tot[n]) : 'not opened') + '</td></tr>';
+    h += '<tr class="sum"><td></td><td>All pages, from ' + esc(fmtDT(LOG[0].t)) + '</td><td>' + LOG.length + '</td><td>' + fmtD(all) + '</td></tr></table>';
+    h += '<table class="logt"><tr><th>Time</th><th>Page</th><th></th><th>Shown for</th></tr>';
+    LOG.slice(-300).forEach(function (e) { h += '<tr><td>' + fmtT(e.t) + '</td><td>' + e.p + '</td><td>' + esc(pageName(e.p)) + '</td><td>' + fmtD(e.d) + '</td></tr>'; });
+    return h + '</table>';
   }
   /* each time the app comes to the front with internet, compare versions quietly; the result shows in Settings */
   /* swipe left / right to turn the page */
   var sx = null, sy = null;
   document.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } }, { passive: true });
   document.addEventListener('touchend', function (e) {
-    if (sx == null) return;
+    if (sx == null || page.querySelector('.set, .lb')) { sx = null; return; }
     var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; sx = null;
     if (Math.abs(dx) > 70 && Math.abs(dx) > 2 * Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1), dx < 0);
   }, { passive: true });
@@ -202,7 +247,8 @@
 
   var h = parseInt((location.hash || '').slice(1), 10);
   if (h >= 1 && h <= N) cur = h - 1;
-  render();
+  if (store.get('seenVersion') !== V.version) { store.set('seenVersion', V.version); store.set('updatedAt', String(Date.now())); }
+  render(); logOpenNow();
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
