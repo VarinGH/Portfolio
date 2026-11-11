@@ -232,9 +232,11 @@ window.ANIMS.defocus = function (frame) {
    3. the last 10 capsulorhexis are pulled up side by side and exported. Illustrative cases. */
 window.ANIMS.hindsight = function (frame) {
   var SANS = "'Source Sans 3','Sarabun',Arial,sans-serif", MONO = "ui-monospace,Consolas,'Courier New',monospace";
-  var PH = [ /* name, share of case, colour (as in the app's timeline) */
-    ['Incision', .06, '#d9536b'], ['OVD injection', .05, '#e6c27a'], ['Capsulorhexis', .12, '#5aaee8'],
-    ['Hydrodissection', .10, '#5ec4c0'], ['Phacoemulsification', .34, '#e0705a'], ['Irrigation/aspiration', .17, '#a78bfa'], ['IOL insertion', .16, '#7bc67e']];
+  var PH = [ /* name, share of case, colour: the app's own PHASES and PHASE_COLORS */
+    ['Incision', .05, '#e06c75'], ['OVD injection', .04, '#61afef'], ['Capsulorhexis', .11, '#e5c07b'], ['Hydrodissection', .07, '#56b6c2'],
+    ['Hydrodelineation', .04, '#48a999'], ['Phacoemulsification', .32, '#d97757'], ['Irrigation/Aspiration', .15, '#98c379'],
+    ['IOL implantation', .11, '#c678dd'], ['OVD removal', .07, '#e88db9'], ['Wound sealing', .04, '#8b949e']];
+  var DRAW = [0, 1, 2, 3, 3, 4, 5, 6, 6, 6];   /* which eye drawing each phase uses */
   var acc = 0; PH.forEach(function (p) { p.push(acc); acc += p[1]; });          /* p[3] = start */
   var CASE_MIN = 15.5, L = 17, T1 = 3.6, T2 = 11, T3 = 16;                      /* seconds */
   var CASES = ['12 Nov', '11 Nov', '7 Nov', '5 Nov', '4 Nov', '31 Oct', '29 Oct', '24 Oct', '22 Oct', '17 Oct'];
@@ -304,7 +306,7 @@ window.ANIMS.hindsight = function (frame) {
   fit();
 
   function row(dot, name, right, dim) {
-    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid ' + LINE + ';' + (dim ? 'opacity:.35' : '') + '"><span style="width:9px;height:9px;border-radius:2px;background:' + dot + ';flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + name + '</span><span style="font-family:' + MONO + ';font-size:12px;color:' + DIM + '">' + right + '</span></div>';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid ' + LINE + ';' + (dim ? 'opacity:.35' : '') + '"><span style="width:9px;height:9px;border-radius:2px;background:' + dot + ';flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + name + '</span><span style="font-family:' + MONO + ';font-size:12px;color:' + DIM + '">' + right + '</span></div>';
   }
   function bar(f, col) { return '<div style="height:5px;background:#33332f;border-radius:3px;margin:3px 0 2px"><div style="height:5px;width:' + (f * 100) + '%;background:' + col + ';border-radius:3px"></div></div>'; }
   function timeline(f, hi) {
@@ -340,7 +342,7 @@ window.ANIMS.hindsight = function (frame) {
       var f = (t - T1) / (T2 - T1), pa = phaseAt(f);
       head = '2. Each phase is found automatically';
       crumb = 'Review'; chip = 'Detecting phases';
-      vg = '<rect x="0" y="0" width="444" height="262" fill="url(#hsDrape)"/><path d="M60 40 Q222 -10 384 40 L384 222 Q222 272 60 222 Z" fill="#e0b9a6" opacity=".35"/>' + eye(222, 131, 112, pa[0], pa[1]) +
+      vg = '<rect x="0" y="0" width="444" height="262" fill="url(#hsDrape)"/><path d="M60 40 Q222 -10 384 40 L384 222 Q222 272 60 222 Z" fill="#e0b9a6" opacity=".35"/>' + eye(222, 131, 112, DRAW[pa[0]], pa[0] >= 8 ? 1 : pa[1]) +
         '<path d="M96 40 l40 34 M348 40 l-40 34 M96 222 l40 -34 M348 222 l-40 -34" stroke="#b7bcc2" stroke-width="5" fill="none" stroke-linecap="round"/>';
       tag = PH[pa[0]][0]; time = mmss(f * CASE_MIN) + ' / 15:32'; ai = '<span style="color:#5ec4c0">● AI ' + Math.round(f * 100) + '%</span>';
       side = '<div style="font-weight:700;font-size:14px;margin-bottom:4px">Phases</div>';
@@ -359,7 +361,7 @@ window.ANIMS.hindsight = function (frame) {
       tag = 'Capsulorhexis · 10 cases'; time = '10 clips · 7:48 total';
       var ex = cl((g - .45) / .4);
       side = '<div style="font-weight:700;font-size:14px;margin-bottom:6px">Export Studio</div>' +
-        row('#5aaee8', 'Phase: Capsulorhexis', '') + row(BLUE, 'Cases: my last 10', '') + row('#9a9a94', 'Layout: side by side', '') +
+        row('#e5c07b', 'Phase: Capsulorhexis', '') + row(BLUE, 'Cases: my last 10', '') + row('#9a9a94', 'Layout: side by side', '') +
         '<div style="margin-top:14px;height:34px;border-radius:6px;background:' + (ex >= 1 ? '#2e5b37' : BLUE) + ';color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">' +
         (ex > 0 && ex < 1 ? '<span style="position:absolute;left:0;top:0;bottom:0;width:' + (ex * 100) + '%;background:rgba(255,255,255,.22)"></span>' : '') +
         '<span style="position:relative">' + (ex >= 1 ? '✓ Saved for feedback' : ex > 0 ? 'Exporting ' + Math.round(ex * 100) + '%' : 'Export 10 clips') + '</span></div>' +
