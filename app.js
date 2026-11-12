@@ -37,7 +37,7 @@
       }).join('') + '</div>';
     }
     var n = (cur + 1) + (ms.length > 1 ? String.fromCharCode(97 + mediaIdx) : '');
-    return '<figure><div class="frame' + (m.light ? ' light' : '') + '"' + (m.bg ? ' style="background:' + esc(m.bg) + '"' : '') + (m.type === 'anim' ? ' data-anim="' + esc(m.name) + '"' : '') + '>' + mediaInner(m) + '</div>' + tabs + '<figcaption><strong>' + esc(u.fig) + ' ' + n + '.</strong> ' + T(m.cap) + '</figcaption></figure>';
+    return '<figure><div class="frame' + (m.light ? ' light' : '') + '"' + (m.bg || m.ratio ? ' style="' + (m.bg ? 'background:' + esc(m.bg) + ';' : '') + (m.ratio ? 'aspect-ratio:' + esc(m.ratio) + ';flex:none;min-height:0' : '') + '"' : '') + (m.type === 'anim' ? ' data-anim="' + esc(m.name) + '"' : '') + '>' + mediaInner(m) + '</div>' + tabs + (m.cap ? '<figcaption><strong>' + esc(u.fig) + ' ' + n + '.</strong> ' + T(m.cap) + '</figcaption>' : '') + '</figure>';
   }
   function body(p, u) {
     if (p.type === 'project') {
