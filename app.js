@@ -1,6 +1,7 @@
 (function () {
   var D = window.PORTFOLIO, P = D.pages, N = P.length;
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  try { Object.keys(localStorage).forEach(function (k) { if (['lang', 'seenVersion', 'updatedAt'].indexOf(k) < 0) localStorage.removeItem(k); }); } catch (e) {}
   var lang = store.get('lang') === 'th' ? 'th' : 'en';
   var cur = 0, mediaIdx = 0, stopAnim = null, turn = '', popSel = '';
   var page = document.getElementById('page'), stage = document.getElementById('stage');
@@ -100,7 +101,7 @@
     if (i < 0 || i >= N || i === cur) return;
     turn = i > cur ? 'fwd' : 'back';
     if (!popSel) popSel = i > cur ? '.arrow.next' : '.arrow:not(.next)';
-    cur = i; mediaIdx = 0; logTurn();
+    cur = i; mediaIdx = 0;
     try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {}
     render();
   }
@@ -145,10 +146,7 @@
       '<button type="button" class="sbtn" data-s="chk">Check again</button>' +
       '<button type="button" class="sbtn" data-s="p1">Back to page 1, English</button>' +
       '<button type="button" class="sbtn dark" data-s="close">Close</button></div>' +
-      '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p>' +
-      '<div class="set-btns" style="margin-top:34px;padding-top:24px;border-top:3px solid var(--ink)"><button type="button" class="sbtn" data-s="exp">Export data</button><button type="button" class="sbtn" data-s="clr">Clear data</button></div>' +
-      '<p class="set-note" data-s="expmsg"></p></div>';
-    logPause();
+      '<p class="set-note">Update now downloads the newest version and restarts the app. It needs internet. Without internet the app keeps running from the saved copy and nothing is checked.</p></div>';
     document.body.appendChild(o);
     var q = function (k) { return o.querySelector('[data-s="' + k + '"]'); };
     function check() {
@@ -170,14 +168,9 @@
       e.stopPropagation();
       var b = e.target.closest('button'); if (!b || b.disabled) return;
       var k = b.dataset.s;
-      if (k === 'close') { o.remove(); logResume(); }
-      else if (k === 'exp') logExport(function (m) { q('expmsg').textContent = m; });
-      else if (k === 'clr') {
-        if (b.dataset.arm) { logClear(); delete b.dataset.arm; b.textContent = 'Clear data'; q('expmsg').textContent = 'Data cleared at ' + fmtT(Date.now()) + '.'; }
-        else { b.dataset.arm = '1'; b.textContent = 'Press again to clear'; setTimeout(function () { if (b.dataset.arm) { delete b.dataset.arm; b.textContent = 'Clear data'; } }, 4000); }
-      }
+      if (k === 'close') o.remove();
       else if (k === 'chk') { check(); offlineCount(); }
-      else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); logResume(); }
+      else if (k === 'p1') { lang = 'en'; store.set('lang', 'en'); o.remove(); cur = -1; go(0); }
       else if (k === 'upd') {
         b.disabled = true; b.textContent = 'Updating\u2026';
         /* only wipe the saved copy after the server has really answered, so a tablet without internet keeps working */
@@ -197,58 +190,9 @@
     check(); offlineCount();
   }
 
-  /* usage log: which page was on screen, when, and for how long (kept on this tablet only) */
-  var LOG = [], open_ = null, paused = false;
-  try { LOG = JSON.parse(store.get('log') || '[]') || []; } catch (e) { LOG = []; }
-  try { var lo = JSON.parse(store.get('logOpen') || 'null'); if (lo && lo.last > lo.t) LOG.push({ p: lo.p, t: lo.t, d: lo.last - lo.t }); } catch (e) {}
-  store.set('logOpen', 'null');
-  function logSave() { if (LOG.length > 3000) LOG = LOG.slice(-3000); store.set('log', JSON.stringify(LOG)); }
-  function logClose() {
-    if (!open_) return;
-    var d = Date.now() - open_.t;
-    if (d >= 300) LOG.push({ p: open_.p, t: open_.t, d: d });
-    open_ = null; store.set('logOpen', 'null'); logSave();
-  }
-  function logOpenNow() { if (paused || document.visibilityState !== 'visible') return; open_ = { p: cur + 1, t: Date.now() }; }
-  function logTurn() { logClose(); logOpenNow(); }
-  function logPause() { logClose(); paused = true; }
-  function logResume() { paused = false; logOpenNow(); }
-  function logClear() { LOG = []; open_ = null; logSave(); store.set('logOpen', 'null'); }
-  setInterval(function () { if (open_) store.set('logOpen', JSON.stringify({ p: open_.p, t: open_.t, last: Date.now() })); }, 4000);
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') logOpenNow(); else logClose(); });
-  window.addEventListener('pagehide', logClose);
   function two(n) { return (n < 10 ? '0' : '') + n; }
   function fmtDT(ms) { if (!ms) return 'Not recorded'; var d = new Date(ms); return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getFullYear() + ', ' + two(d.getHours()) + ':' + two(d.getMinutes()); }
   function fmtT(ms) { var d = new Date(ms); return two(d.getHours()) + ':' + two(d.getMinutes()) + ':' + two(d.getSeconds()); }
-  function fmtD(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + two(s % 60); }
-  function pageName(n) { var p = P[n - 1]; return p ? tx(p.short || p.title) : '?'; }
-  function tabletId() { var id = store.get('tabletId'); if (!id) { id = Math.random().toString(36).slice(2, 6).toUpperCase(); store.set('tabletId', id); } return id; }
-  /* export as a CSV file: shared through the tablet's share sheet when possible, otherwise saved to Downloads */
-  function logExport(say) {
-    if (!LOG.length) { say('Nothing recorded yet.'); return; }
-    var rows = ['tablet,date,time,page,title,seconds'];
-    LOG.forEach(function (e) {
-      var d = new Date(e.t);
-      rows.push([tabletId(), d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate()), fmtT(e.t), e.p, '"' + pageName(e.p).replace(/"/g, '""') + '"', (e.d / 1000).toFixed(1)].join(','));
-    });
-    var n = new Date(), name = 'portfolio-data-' + tabletId() + '-' + n.getFullYear() + two(n.getMonth() + 1) + two(n.getDate()) + '-' + two(n.getHours()) + two(n.getMinutes()) + '.csv';
-    var blob = new Blob(['\ufeff' + rows.join('\r\n') + '\r\n'], { type: 'text/csv' });
-    function download() {
-      var u = URL.createObjectURL(blob), l = document.createElement('a');
-      l.href = u; l.download = name; document.body.appendChild(l); l.click(); l.remove();
-      setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
-      say('Saved ' + LOG.length + ' rows as ' + name + ' in the Downloads folder.');
-    }
-    try {
-      var file = new File([blob], name, { type: 'text/csv' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: name }).then(function () { say('Exported ' + LOG.length + ' rows as ' + name + '.'); })
-          .catch(function (e) { if (e && e.name === 'AbortError') say('Export cancelled.'); else download(); });
-        return;
-      }
-    } catch (e) {}
-    download();
-  }
 
   /* swipe left / right to turn the page */
   var sx = null, sy = null;
@@ -281,7 +225,7 @@
   var h = parseInt((location.hash || '').slice(1), 10);
   if (h >= 1 && h <= N) cur = h - 1;
   if (store.get('seenVersion') !== V.version) { store.set('seenVersion', V.version); store.set('updatedAt', String(Date.now())); }
-  render(); logOpenNow();
+  render();
 
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
