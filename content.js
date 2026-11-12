@@ -162,7 +162,7 @@ window.PORTFOLIO = {
       hint: { en: 'Tap a photo to enlarge.', th: 'แตะรูปเพื่อขยาย' },
       items: [
         { src: 'media/cv-01.jpg', cap: "ESCRS 2026 with Dr. Thanapong and Dr. Sérgio Canabrava" },
-        { src: 'media/cv-02.jpg', cap: "APVRS 2026, Gold Coast, Australia" },
+        { src: 'media/cv-02.jpg', pos: '50% 6%', cap: "APVRS 2026, Gold Coast, Australia" },
         { src: 'media/cv-03.jpg', cap: "APACRS 2026 Video Competition Winner" },
         { src: 'media/cv-04.jpg', cap: "Global Ocular Inflammation Workshop Meeting, 2025" },
         { src: 'media/cv-05.jpg', cap: "Cataract Day, 2025" },

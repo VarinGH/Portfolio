@@ -60,7 +60,7 @@
     }
     if (p.type === 'gallery') {
       return '<h1>' + T(p.title) + '</h1><div class="role">' + T(p.hint) + '</div><div class="gal">' + p.items.map(function (it, i) {
-        return '<button type="button" class="gi" data-zoom="' + i + '"><img src="' + esc(it.src) + '" alt=""><span>' + T(it.cap) + '</span></button>'; }).join('') + '</div>';
+        return '<button type="button" class="gi" data-zoom="' + i + '"><img src="' + esc(it.src) + '" alt=""' + (it.pos ? ' style="object-position:' + esc(it.pos) + '"' : '') + '><span>' + T(it.cap) + '</span></button>'; }).join('') + '</div>';
     }
     var h = '<h1>' + T(p.title) + '</h1><div class="fill">';
     if (p.statement) h += '<div class="cv-top">' + (p.photo ? '<div class="photo"><img src="' + esc(p.photo) + '" alt=""></div>' : '') + '<p class="stmt">' + T(p.statement) + '</p></div>';
