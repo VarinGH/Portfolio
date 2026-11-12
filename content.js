@@ -16,7 +16,7 @@ window.PORTFOLIO = {
     { id: 'pr', label: { en: 'Product innovation', th: 'นวัตกรรมผลิตภัณฑ์' } },
     { id: 'sw', label: { en: 'Software innovation', th: 'นวัตกรรมซอฟต์แวร์' } },
     { id: 're', label: { en: 'Research and Awards', th: 'งานวิจัยและรางวัล' } },
-    { id: 'cv', label: { en: 'CV', th: 'ประวัติย่อ' } }
+    { id: 'cv', label: { en: 'CV and Photos', th: 'ประวัติย่อและภาพ' } }
   ],
   pages: [
     { type: 'project', sec: 'pr',
