@@ -33,7 +33,7 @@ window.PORTFOLIO = {
       role: 'Medical device prototype | Role: Invented the algorithm, user experience and interaction; built the prototype | Status: Software adaptation for production; viability testing',
       problem: ['Visual acuity is measured on every eye patient, and each test needs a staff member to stand with the patient', 'In a busy clinic this becomes a queue before anyone sees a doctor'],
       bullets: ['Spoken instructions guide the patient through the test', 'Speech recognition on the device hears and grades each answer', 'Prints the result with no assistant needed'],
-      media: [{ type: 'anim', name: 'vakiosk', light: true, bg: '#DDE2E6', cap: 'Redrawn from the kiosk application: the patient stands at 6 m, says "start", and reads each line aloud; the machine hears, grades and prints the result. Illustrative values.' }]
+      media: [{ type: 'anim', name: 'vakiosk', light: true, bg: '#E9E9E6', cap: 'Redrawn from the kiosk application: the patient stands at 6 m, says "start", and reads each line aloud; the machine hears, grades and prints the result. Illustrative values.' }]
     },
     { type: 'project', sec: 'pr',
       title: 'Eye drop compliance tracker',
