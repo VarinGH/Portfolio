@@ -183,7 +183,7 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 
 **left lower item 1 name:** ชนะเลิศ APACRS Film Festival
 
-**left lower item 1 meta:** 2026 | Cataract/Implant Surgery | ร่วมกับ Dr. Thanapong Somkijrungroj
+**left lower item 1 meta:** 2026 | Cataract/Implant Surgery | ร่วมกับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์
 
 **left lower item 1 text:** Laser Assisted Precision Flange Creation
 
@@ -223,7 +223,7 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 
 **block 1 entry 1 line2:** แพทยศาสตรบัณฑิต (เกียรตินิยมอันดับหนึ่ง)
 
-**block 1 entry 1 note:** Observership ภาควิชาจักษุวิทยา กับ Dr. Thanapong Somkijrungroj (2 เดือน)
+**block 1 entry 1 note:** Observership ภาควิชาจักษุวิทยา กับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์ (2 เดือน)
 
 **block 1 entry 2 line1:** University of Dundee สหราชอาณาจักร | 2024
 
@@ -243,7 +243,7 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 
 **block 2 heading:** ประสบการณ์ทำงาน
 
-**block 2 entry 1 line1:** โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา | 2025–2026
+**block 2 entry 1 line1:** โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา (สภากาชาดไทย) | 2025–2026
 
 **block 2 entry 1 line2:** แพทย์เพิ่มพูนทักษะ
 
@@ -270,7 +270,7 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 **block 1 list:**
 
 - นำเสนอผลงานด้วยวาจา เรื่อง *Applying Laser-Assisted Flange Creation in Yamane’s Technique*, งานประชุม APVRS, Gold Coast, ออสเตรเลีย, 2026
-- **รางวัลชนะเลิศ สาขา Cataract/Implant Surgery, APACRS Film Festival**, เรื่อง *Laser Assisted Precision Flange Creation* (ร่วมกับ Dr. Thanapong Somkijrungroj), งานประชุม 38th APACRS–55th RCOPT Joint Meeting, พัทยา, 2026
+- **รางวัลชนะเลิศ สาขา Cataract/Implant Surgery, APACRS Film Festival**, เรื่อง *Laser Assisted Precision Flange Creation* (ร่วมกับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์), งานประชุม 38th APACRS–55th RCOPT Joint Meeting, พัทยา, 2026
 - ส่งผลงานเข้าประกวด Film Festival เรื่อง *Unseen Fear of the Unseeing Eye*, งานประชุม 37th APACRS Annual Meeting, Ahmedabad, อินเดีย, 2025
 - กรรมการจัดงาน Cataract Day และ Global Ocular Inflammation Workshop (GOIW), กรุงเทพฯ, 2025
 - ผู้นำเสนอในหัวข้อ *Amazing Phaco!: My View, Your View, Our View for Our Patients*, งานประชุมวิชาการ 51st RCOPT Meeting, กรุงเทพฯ, 2024
@@ -314,8 +314,8 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 **block 2 list:**
 
 - ช่วยงานตรวจคัดกรองโรคตา จังหวัดสระบุรี, 2025
-- จัดทำวิดีโอให้ความรู้แก่ประชาชน ร่วมกับกลุ่มงานสูติ-นรีเวชกรรม โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา
-- เข้าร่วมโครงการ Medi-Lingo เพื่อส่งเสริมการสื่อสารภาษาท้องถิ่นสำหรับบุคลากรทางการแพทย์ โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา
+- จัดทำวิดีโอให้ความรู้แก่ประชาชน ร่วมกับกลุ่มงานสูติ-นรีเวชกรรม โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา (สภากาชาดไทย)
+- เข้าร่วมโครงการ Medi-Lingo เพื่อส่งเสริมการสื่อสารภาษาท้องถิ่นสำหรับบุคลากรทางการแพทย์ โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา (สภากาชาดไทย)
 
 **block 3 heading:** ข้อมูลติดต่อ
 
@@ -330,7 +330,7 @@ Thai text of the app. First draft by Gemini 4 Argon from English Content.md (v59
 
 **hint:** แตะรูปเพื่อขยาย
 
-**item 1 caption:** ESCRS 2026 กับ Dr. Thanapong และ Dr. Sérgio Canabrava
+**item 1 caption:** ESCRS 2026 กับ นพ. ธนาพงษ์ และ Dr. Sérgio Canabrava
 
 **item 2 caption:** นำเสนอผลงานที่งาน APVRS 2026 เมือง Gold Coast
 
