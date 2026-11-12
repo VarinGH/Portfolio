@@ -488,15 +488,11 @@ window.ANIMS.vakiosk = function (frame) {
     instr: '', mic: 'listening', chips: [], chipN: 0, lat: [], done: 0 }, TL = [];
   function snap(d, u) { TL.push({ d: d, u: u || 0, s: JSON.parse(JSON.stringify(S)) }); S.hit = -1; }
   function chip(h, e, v) { var ms = 150 + ((S.chipN * 37) % 110); S.chipN++; S.chips.unshift({ n: S.chipN, h: h, e: e, v: v, ms: ms }); S.chips = S.chips.slice(0, NCHIP); S.lat.push(ms); S.lat = S.lat.slice(-12); }
-  var T_A = .6, T_B = 2.6;                 /* the patient walks up between T_A and T_B */
-  snap(T_B);
-  S.ready = true; snap(.9);
-  snap(.55, 1);
-  chip('เริ่ม', 'START', 'cmd'); S.ms = 'STARTING'; S.msSub = 'test begins'; snap(.8);
-  function eyeRun(eye, a, b) {
+  var T_A = .6, T_B = 2.6;                 /* the next patient walks up between T_A and T_B (registration, at the end of the loop) */
+  function eyeRun(eye, a, b, intro) {
     S.st = 'meas'; S.eye = eye; S.li = 0; S.mk = []; S.ptr = 0; S.done = 0; S.mic = 'listening';
-    S.instr = eye === 'od' ? 'ปิดตาซ้าย' : 'สลับตา — ปิดตาขวา'; snap(eye === 'od' ? 1.3 : 1.6);
-    S.instr = 'อ่านตัวเลขทีละตัว'; snap(.6);
+    if (intro) { S.instr = intro; snap(1.6); }
+    S.instr = 'อ่านตัวเลขทีละตัว'; snap(intro ? .6 : .22);
     for (var li = 0; li < LINES.length; li++) {
       S.li = li; S.mk = []; S.ptr = 0;
       if (li) { S.instr = 'แถวถัดไป'; snap(.5); S.instr = 'อ่านตัวเลขทีละตัว'; }
@@ -512,11 +508,20 @@ window.ANIMS.vakiosk = function (frame) {
       S.done = li + 1;
     }
   }
+  /* opens straight on the reading screen: the first digit is heard and graded within about half a second */
   eyeRun('od', .28, .34);
-  eyeRun('os', .14, .17);
+  eyeRun('os', .14, .17, 'สลับตา — ปิดตาขวา');
   S.instr = 'กำลังพิมพ์ผล'; S.mic = 'idle'; snap(1);
   S.st = 'sum'; snap(6.5);
-  var TOT = 0, START = TL.map(function (x) { var t = TOT; TOT += x.d; return t; });
+  /* next patient: registration, "เริ่ม", then the loop returns to the reading screen */
+  var REG = TL.length;
+  S.st = 'reg'; S.ready = false; S.ms = 'READY'; S.msSub = 'waiting for patient…'; S.chips = []; S.lat = []; S.mic = 'listening'; S.eye = 'od'; S.li = 0; S.mk = []; S.ptr = 0; S.done = 0;
+  snap(T_B);
+  S.ready = true; snap(.9);
+  snap(.55, 1);
+  chip('เริ่ม', 'START', 'cmd'); S.ms = 'STARTING'; S.msSub = 'test begins'; snap(.8);
+  S.st = 'meas'; S.instr = 'ปิดตาซ้าย'; snap(1.2);
+  var TOT = 0, START = TL.map(function (x) { var t = TOT; TOT += x.d; return t; }), REG0 = START[REG];
   var UTT = []; TL.forEach(function (x, i) { if (x.u) UTT.push([START[i] + .02, Math.max(x.d + .1, .26) * (x.u > 1 ? 1.25 : 1), x.u]); });
 
   /* ---------- microphone level, synthesised to behave like speech: silence floor, syllable bursts ---------- */
@@ -677,7 +682,7 @@ window.ANIMS.vakiosk = function (frame) {
     if (s.st !== cur.st) {
       ['reg', 'meas', 'sum'].forEach(function (k) {
         st[k].style.display = k !== s.st ? 'none' : k === 'meas' ? 'block' : 'flex'; dv[k].style.display = k === s.st ? 'block' : 'none';
-        if (k === s.st) { [st[k], dv[k]].forEach(function (n) { n.classList.remove('vk-st'); void n.offsetWidth; n.classList.add('vk-st'); }); }
+        if (k === s.st && cur.st) { [st[k], dv[k]].forEach(function (n) { n.classList.remove('vk-st'); void n.offsetWidth; n.classList.add('vk-st'); }); }
       });
       if (s.st === 'sum') {
         el.res.classList.remove('vk-res'); void el.res.offsetWidth; el.res.classList.add('vk-res');
@@ -763,7 +768,7 @@ window.ANIMS.vakiosk = function (frame) {
   var lastDist = '', lastSec = -1, lastLt = '';
   function distance(t) {
     var txt = '--';
-    if (t >= T_A) txt = (t < T_B ? 3.2 + 2.81 * ease3((t - T_A) / (T_B - T_A)) : 6.01 + [0, .01, 0, -.01, 0, .01][Math.floor(t * 2.5) % 6]).toFixed(2);
+    t -= REG0; if (t >= T_A) txt = (t < T_B ? 3.2 + 2.81 * ease3((t - T_A) / (T_B - T_A)) : 6.01 + [0, .01, 0, -.01, 0, .01][Math.floor(t * 2.5) % 6]).toFixed(2);
     if (txt !== lastDist) { lastDist = txt; el.dist.textContent = txt + ' ม.'; el.bd.textContent = txt + ' m'; }
   }
 
@@ -773,7 +778,7 @@ window.ANIMS.vakiosk = function (frame) {
   function tick(now) {
     raf = requestAnimationFrame(tick);
     var abs = (now - t0) / 1000, t = abs % TOT, dt = Math.min(.1, (now - lastNow) / 1000); lastNow = now;
-    if (t < lastT) { idx = -1; cur = fresh(); ltShown = 0; }
+    if (t < lastT) { idx = -1; var keep = cur.st; cur = fresh(); cur.st = keep; ltShown = 0; }
     lastT = t;
     while (idx < TL.length - 1 && START[idx + 1] <= t) { idx++; apply(TL[idx].s); }
     if (cur.st === 'reg') distance(t);
