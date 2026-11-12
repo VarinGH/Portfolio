@@ -62,11 +62,11 @@ window.PORTFOLIO = {
     },
     { type: 'project', sec: 'sw',
       title: 'Globe tracker',
-      sub: 'Measures how much the eye moves during cataract surgery, from the microscope video alone',
+      sub: 'Tracks eye movement in cataract surgery',
       role: 'Integrated software | Role: Ideation and algorithm development',
-      problem: ['Eye movement during cataract surgery is not measured; stability is judged by eye and by feel', 'Without a number, it cannot be fed back to the surgeon, taught, or compared between surgeons, techniques or robotic systems'],
-      bullets: ['Fits the limbus on every frame of an ordinary microscope recording, with no extra hardware', 'Reports globe pitch, yaw and torsion in degrees, plotted phase by phase across the whole case', 'First step towards live feedback, training metrics and a benchmark for robotic surgery'],
-      media: [{ type: 'video', src: 'media/globe-tracker.mp4', fit: true, cap: 'Screen recording during capsulorhexis: the limbus is fitted on every frame of the surgical view (left), and the pitch, yaw and torsion of the globe are tracked in degrees on a 3D model of the eye (right).' }]
+      problem: ['Eye movement in cataract surgery is never measured', 'Without a number, it cannot be taught or compared'],
+      bullets: ['Fits the limbus on every frame of a standard video', 'Reports globe pitch, yaw and torsion in degrees', 'A first step to feedback, training and robotic metrics'],
+      media: [{ type: 'video', src: 'media/globe-tracker.mp4', ratio: '1528 / 836', cap: 'Limbus fitted on the surgical view (left); globe pitch, yaw and torsion on a 3D model of the eye (right).' }]
     },
     { type: 'research', sec: 're',
       title: 'Research and awards',
