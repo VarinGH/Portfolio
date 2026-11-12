@@ -44,7 +44,7 @@ window.PORTFOLIO = {
       media: [{ type: 'anim', name: 'eyedrop', cap: 'To-scale 3D model of the bench prototype. Drag to turn; tap a part to explore it.' }]
     },
     { type: 'project', sec: 'sw',
-      title: 'Hindsight',
+      title: 'Hindsight: AI phase detection case manager',
       sub: 'Surgical video library with automatic phase detection',
       role: 'Desktop application | Role: Concept and development | Status: Under development',
       problem: ['Surgical cases are recorded routinely, but the footage is hard to revisit', 'Finding one step in a full-length recording takes longer than the step itself'],
@@ -53,7 +53,7 @@ window.PORTFOLIO = {
         { type: 'anim', name: 'hindsight', tab: { en: 'Animation', th: 'ภาพเคลื่อนไหว' }, cap: 'Animation redrawn from the application: cases sync from a USB drive, phases are detected, and the last 10 capsulorhexes are lined up for export. Illustrative cases.' }]
     },
     { type: 'project', sec: 'sw',
-      title: 'Electronic CRF',
+      title: 'Electronic CRF with automatic error detection',
       sub: 'Case report form that checks each value as it is entered',
       role: 'Web application | Role: Application design to protocol and IRB requirements | Status: Pending mock data test',
       problem: ['Paper and spreadsheet forms accept any value', 'Errors and missing fields surface weeks later, after the participant has left'],

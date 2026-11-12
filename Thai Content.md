@@ -96,9 +96,9 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **media 1 caption:** โมเดล 3 มิติตามสัดส่วนจริงของเครื่องต้นแบบ ลากเพื่อหมุน หรือแตะแต่ละชิ้นส่วนเพื่อดูรายละเอียดได้ครับ
 
-## Page 4: Hindsight
+## Page 4: Hindsight: AI phase detection case manager
 
-**title:** Hindsight
+**title:** Hindsight: AI phase detection case manager
 
 **subtitle:** คลังวิดีโอผ่าตัด พร้อมระบบแยกขั้นตอนการผ่าตัดอัตโนมัติ
 
@@ -106,7 +106,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **problem:**
 
-- เรามักบันทึกวิดีโอผ่าตัดไว้เป็นประจำ แต่การย้อนกลับมาเปิดดูทำได้ไม่สะดวกนัก
+- การย้อนกลับมาเปิดดูวิดีโอผ่าตัดทำได้ไม่สะดวก เนื่องจากโปรแกรมไม่ได้ออกแบบมาสำหรับการรีวิว
 - บางครั้งการเลื่อนหาเพียงขั้นตอนเดียวในวิดีโอทั้งเคส ใช้เวลานานกว่าการผ่าตัดขั้นตอนนั้นจริงๆ ครับ
 
 **solutions:**
@@ -123,9 +123,9 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **media 2 caption:** ภาพจำลองการทำงานของโปรแกรม ตั้งแต่ดึงเคสจาก USB drive แยกขั้นตอนผ่าตัด และเรียงคลิปขั้นตอน capsulorhexis 10 เคสล่าสุดเพื่อส่งออกไฟล์ (เคสสมมติ)
 
-## Page 5: Electronic CRF
+## Page 5: Electronic CRF with automatic error detection
 
-**title:** Electronic CRF
+**title:** Electronic CRF with automatic error detection
 
 **subtitle:** แบบบันทึกข้อมูลวิจัยที่ช่วยตรวจสอบความถูกต้องทันทีที่กรอก
 
@@ -133,8 +133,8 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **problem:**
 
-- แบบฟอร์มกระดาษหรือสเปรดชีตทั่วไปมักยอมให้กรอกค่าใดลงไปก็ได้
-- กว่าจะพบว่ากรอกผิดหรือตกหล่นก็มักผ่านไปหลายสัปดาห์ ตอนนั้นผู้เข้าร่วมวิจัยกลับบ้านไปแล้วครับ
+- แบบฟอร์มกระดาษหรือสเปรดชีตสามารถเขียนข้อมูลอะไรลงไปก็ได้ โดยไม่มีการตรวจสอบ
+- กว่าจะพบว่ากรอกผิดหรือตกหล่นก็มักผ่านไปหลายสัปดาห์ ซึ่งอาจจะไม่สามารถตามผู้เข้าร่วมวิจัยกลับมาได้ครับ
 
 **solutions:**
 
@@ -154,14 +154,14 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **problem:**
 
-- โดยทั่วไปเรายังไม่ได้วัดการเคลื่อนไหวของลูกตาระหว่างผ่าตัดต้อกระจกออกมาเป็นตัวเลข
+- ปัจจุบันยังไม่มีการวัดการเคลื่อนไหวของลูกตาระหว่างผ่าตัดต้อกระจกออกมาเป็นตัวเลข
 - เมื่อไม่มีค่าที่วัดได้ชัดเจน จึงนำมาใช้สอนต่อหรือเปรียบเทียบกันได้ยาก
 
 **solutions:**
 
 - ตรวจจับขอบ limbus ในทุกเฟรมจากไฟล์วิดีโอผ่าตัดทั่วไป
 - รายงานการหมุนเอียงของลูกตาเป็นค่า pitch, yaw และ torsion (องศา)
-- เป็นก้าวแรกสู่การให้ feedback ที่วัดผลได้ชัดเจน การฝึกอบรม และตัวชี้วัดในการผ่าตัดด้วยหุ่นยนต์
+- เป็นก้าวแรกสู่การสร้าง feedback ที่วัดผลได้ชัดเจน การฝึกอบรม และสามารถพัฒนาใช้เป็นตัวชี้วัดในการผ่าตัดด้วยหุ่นยนต์ครับ
 
 **media 1 caption:** การตรวจจับขอบ limbus ในภาพผ่าตัดจริง (ซ้าย) และค่า pitch, yaw, torsion แสดงบนโมเดลลูกตา 3 มิติ (ขวา)
 
@@ -253,15 +253,15 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **block 2 entry 3 line1:** มหาวิทยาลัยอัสสัมชัญ | 2015–2016
 
-**block 2 entry 3 line2:** ผู้สอนภาษาอังกฤษ
+**block 2 entry 3 line2:** English Teacher
 
 **block 2 entry 4 line1:** Millward Brown Firefly Co., Ltd. | 2012
 
-**block 2 entry 4 line2:** ผู้ช่วยนักวิจัย
+**block 2 entry 4 line2:** Research Associate
 
 **block 2 entry 5 line1:** Wall Street English Thailand | 2011
 
-**block 2 entry 5 line2:** ผู้สอนภาษาอังกฤษแบบตัวต่อตัว
+**block 2 entry 5 line2:** English Personal Tutor
 
 ## Page 9: Presentations and leadership
 

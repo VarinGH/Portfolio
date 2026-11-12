@@ -103,9 +103,9 @@ When you are done, hand the file back and it is written into `content.js` and pu
 
 **media 1 caption:** To-scale 3D model of the bench prototype. Drag to turn; tap a part to explore it.
 
-## Page 4: Hindsight
+## Page 4: Hindsight: AI phase detection case manager
 
-**title:** Hindsight
+**title:** Hindsight: AI phase detection case manager
 
 **subtitle:** Surgical video library with automatic phase detection
 
@@ -130,9 +130,9 @@ When you are done, hand the file back and it is written into `content.js` and pu
 
 **media 2 caption:** Animation redrawn from the application: cases sync from a USB drive, phases are detected, and the last 10 capsulorhexes are lined up for export. Illustrative cases.
 
-## Page 5: Electronic CRF
+## Page 5: Electronic CRF with automatic error detection
 
-**title:** Electronic CRF
+**title:** Electronic CRF with automatic error detection
 
 **subtitle:** Case report form that checks each value as it is entered
 
