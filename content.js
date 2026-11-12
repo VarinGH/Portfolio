@@ -71,7 +71,8 @@ window.PORTFOLIO = {
     { type: 'research', sec: 're',
       title: 'Research and awards',
       left: { heading: 'Publications', items: [
-        { sm: true, name: 'Development of a Camera-Based Refractive Error Image Simulation Dataset and Mobile Application: A Proof-of-Concept Study', meta: 'BMC Ophthalmology | Accepted, 2026' }
+        { sm: true, name: 'Development of a camera-based refractive error image simulation dataset and mobile application: a proof-of-concept study', meta: 'BMC Ophthalmol. 2026; accepted.' },
+        { sm: true, name: 'A randomized controlled trial comparing the incidence of surgical site infections in cesarean section with and without subcutaneous drain placement', meta: 'J Med Assoc Thai. 2026; accepted.' }
       ],
         sub: { heading: 'Awards', items: [
           { name: 'Winner, Cataract Surgery category', meta: 'APACRS Film Festival 2026', text: 'Laser-Assisted Precision Flange Creation' }
