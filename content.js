@@ -110,7 +110,7 @@ window.PORTFOLIO = {
     { type: 'cv', sec: 'cv',
       title: 'Projects and presentations',
       blocks: [
-        { list: [
+        { tint: 'blue', list: [
           'Oral presentation, *Applying Laser-Assisted Flange Creation in Yamane’s Technique*, APVRS 2026, Gold Coast, Australia, August 2026',
           '**Winner, Cataract Research Video Competition**, Laser-Assisted Precision Flange Creation, 38th APACRS–55th RCOPT Joint Meeting, Pattaya, Thailand, June 2026',
           'Video competition entry, *Unseen Fear of the Unseeing Eye*, 37th APACRS Annual Meeting, Ahmedabad, India, 2025',

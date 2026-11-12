@@ -65,7 +65,7 @@
     var h = '<h1>' + T(p.title) + '</h1><div class="fill">';
     if (p.statement) h += '<div class="cv-top">' + (p.photo ? '<div class="photo"><img src="' + esc(p.photo) + '" alt=""></div>' : '') + '<p class="stmt">' + T(p.statement) + '</p></div>';
     (p.blocks || []).forEach(function (b, bi) {
-      h += '<div class="cv-sec' + (bi === 0 && !p.statement ? ' first' : '') + '">' + (b.heading ? '<h2>' + T(b.heading) + '</h2>' : '');
+      h += '<div class="cv-sec' + (bi === 0 && !p.statement ? ' first' : '') + (b.tint ? ' tint ' + b.tint : '') + '">' + (b.heading ? '<h2>' + T(b.heading) + '</h2>' : '');
       if (b.entries) h += '<div class="ents' + (b.cols === 2 ? ' two' : '') + '">' + b.entries.map(function (e) {
         return '<div class="ent' + (e.wide ? ' wide' : '') + '"><b>' + T(e.t) + '</b>' + (e.s ? '<em>' + T(e.s) + '</em>' : '') + (e.n ? '<span>' + T(e.n) + '</span>' : '') + '</div>'; }).join('') + '</div>';
       if (b.list) h += '<ul class="' + (b.cols === 2 ? 'two ' : '') + (b.small ? 'small' : '') + '">' + li(b.list) + '</ul>';

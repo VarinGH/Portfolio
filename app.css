@@ -81,6 +81,8 @@ h3{margin:0;font-size:29px;font-weight:600}
 .stmt{font-style:italic;font-size:20px;line-height:1.4}
 .cv-sec{margin-top:14px;padding-top:10px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
 .cv-sec.first{margin-top:0;padding-top:0;border-top:0}
+.cv-sec.tint{background:#DCE6F0;border-top:0;border-radius:0;padding:16px 20px;margin-top:0}
+.cv-sec.tint.first{padding-top:16px}
 .cv-sec ul{font-size:21px;line-height:1.36;gap:7px}
 .cv-sec ul.small{font-size:20px;gap:6px}
 .cv-sec ul.two{display:block;columns:2;column-gap:36px}
