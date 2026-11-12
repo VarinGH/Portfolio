@@ -78,12 +78,16 @@ window.PORTFOLIO = {
           { name: 'Winner, Cataract Surgery category', meta: 'APACRS Film Festival 2026', text: 'Laser-Assisted Precision Flange Creation' }
         ] } },
       media: [{ type: 'video', src: 'media/apacrs-film.mp4', ratio: '1 / 1' }],
-      right: { heading: 'Research interest', items: [
-        { name: 'Umbrella reviews', text: 'An umbrella review gathers the systematic reviews on one clinical question and compares their conclusions. It is most useful where several reviews exist and disagree.' }
-      ], listLabel: 'Topics in progress', list: ['Management of non-infectious uveitis after anti-TNF failure (umbrella review)', 'Adoption of and barriers to immediate sequential bilateral cataract surgery (systematic review)'],
+      right: { heading: 'Research interest', list: [
+          'Product and software innovation',
+          'Integrated AI and foundation model applications',
+          'Patient education and better patient interaction',
+          'Population screening and primary prevention',
+          'Umbrella reviews'
+        ],
         sub: { heading: 'Current projects', items: [
-          { name: 'STACATTO', meta: 'Role: [YOUR ROLE] | [SITE]', text: '[WHAT THE STUDY IS, AND WHAT YOU DO ON IT.]' },
-          { name: 'SightSpire', meta: 'Role: Research assistant | Thai hospital sites', text: 'Phase 3b trial (NCT06847542) of the port delivery system with ranibizumab for neovascular AMD. [WHAT YOU DO ON IT.]' }
+          { name: 'STACCATO', meta: 'Role: International coordinator, local coordinator, budgeting', text: 'NIH-funded randomised trials in CMV anterior uveitis: oral valganciclovir, ganciclovir 2% eye drops or no antiviral for active disease, then long-term suppression.' },
+          { name: 'SightSpire', meta: 'Role: Research assistant | Thai hospital sites', text: 'Phase 3b trial (NCT06847542) of the port delivery system with ranibizumab for neovascular AMD.' }
         ] } }
     },
     { type: 'cv', sec: 'cv',
