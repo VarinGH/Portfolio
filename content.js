@@ -160,7 +160,7 @@ window.PORTFOLIO = {
     },
     { type: 'gallery', sec: 'cv',
       title: 'Activities',
-      hint: { en: 'Tap a photo to enlarge.', th: 'แตะรูปเพื่อขยาย' },
+      hint: { en: 'Tap a photo to enlarge.', th: 'แตะที่รูปเพื่อขยายดูภาพใหญ่ได้ครับ' },
       items: [
         { src: 'media/cv-01.jpg', cap: "ESCRS 2026 with Dr. Thanapong and Dr. Sérgio Canabrava" },
         { src: 'media/cv-02.jpg', pos: '50% 6%', cap: "Oral presentation, APVRS 2026, Gold Coast" },
