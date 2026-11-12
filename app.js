@@ -136,7 +136,7 @@
   function openSettings() {
     if (document.querySelector('.set')) return;
     var o = document.createElement('div'); o.className = 'set';
-    o.innerHTML = '<div class="set-in" style="zoom:' + (window.innerWidth / 800) + '"><h1>Settings</h1><div class="role">You have found the easter egg.</div>' +
+    o.innerHTML = '<div class="set-in" style="zoom:' + (window.innerWidth / 800) + '"><h1>Settings</h1><div class="role">For setup only.</div>' +
       '<dl><dt>Version on this tablet</dt><dd>' + esc(V.version) + ' <span>(' + esc(V.built) + ')</span></dd>' +
       '<dt>Last updated on this tablet</dt><dd>' + esc(fmtDT(+store.get('updatedAt') || 0)) + '</dd>' +
       '<dt>Version on the server</dt><dd data-s="srv">Checking\u2026</dd>' +
