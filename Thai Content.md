@@ -45,7 +45,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 **problem:**
 
 - เทคนิค endolaser ของทีมเราช่วยสร้าง flange ที่แม่นยำในการทำ Yamane scleral fixation
-- ศัลยแพทย์ให้ความเห็นว่า การถือปลายเลเซอร์ให้ตรงกับ haptic ด้วยมือทำได้ยากครับ
+- แพทย์ให้ความเห็นว่า การถือปลายเลเซอร์ให้ตรงกับ haptic ด้วยมือทำได้ยากครับ
 
 **solutions:**
 
@@ -183,7 +183,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **left lower item 1 name:** ชนะเลิศ APACRS Film Festival
 
-**left lower item 1 meta:** 2026 | Cataract/Implant Surgery | ร่วมกับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์
+**left lower item 1 meta:** 2026 | Cataract/Implant Surgery | ร่วมกับ อ. นพ. ธนาพงษ์ สมกิจรุ่งโรจน์
 
 **left lower item 1 text:** Laser Assisted Precision Flange Creation
 
@@ -223,7 +223,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **block 1 entry 1 line2:** แพทยศาสตรบัณฑิต (เกียรตินิยมอันดับหนึ่ง)
 
-**block 1 entry 1 note:** Observership ภาควิชาจักษุวิทยา กับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์ (2 เดือน)
+**block 1 entry 1 note:** Observership ภาควิชาจักษุวิทยา กับ อ. นพ. ธนาพงษ์ สมกิจรุ่งโรจน์ (2 เดือน)
 
 **block 1 entry 2 line1:** University of Dundee สหราชอาณาจักร | 2024
 
@@ -270,7 +270,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 **block 1 list:**
 
 - นำเสนอผลงานด้วยวาจา เรื่อง *Applying Laser-Assisted Flange Creation in Yamane’s Technique*, งานประชุม APVRS, Gold Coast, ออสเตรเลีย, 2026
-- **รางวัลชนะเลิศ สาขา Cataract/Implant Surgery, APACRS Film Festival**, เรื่อง *Laser Assisted Precision Flange Creation* (ร่วมกับ นพ. ธนาพงษ์ สมกิจรุ่งโรจน์), งานประชุม 38th APACRS–55th RCOPT Joint Meeting, พัทยา, 2026
+- **รางวัลชนะเลิศ สาขา Cataract/Implant Surgery, APACRS Film Festival**, เรื่อง *Laser Assisted Precision Flange Creation* (ร่วมกับ อ. นพ. ธนาพงษ์ สมกิจรุ่งโรจน์), งานประชุม 38th APACRS–55th RCOPT Joint Meeting, พัทยา, 2026
 - ส่งผลงานเข้าประกวด Film Festival เรื่อง *Unseen Fear of the Unseeing Eye*, งานประชุม 37th APACRS Annual Meeting, Ahmedabad, อินเดีย, 2025
 - กรรมการจัดงาน Cataract Day และ Global Ocular Inflammation Workshop (GOIW), กรุงเทพฯ, 2025
 - ร่วมนำเสนอในหัวข้อ *Amazing Phaco!: My View, Your View, Our View for Our Patients*, งานประชุมวิชาการ 51st RCOPT Meeting, กรุงเทพฯ, 2024
@@ -330,7 +330,7 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **hint:** แตะที่รูปเพื่อขยายดูภาพใหญ่ได้ครับ
 
-**item 1 caption:** ESCRS 2026 กับ นพ. ธนาพงษ์ และ Dr. Sérgio Canabrava
+**item 1 caption:** ESCRS 2026 กับ อ. นพ. ธนาพงษ์ และ Dr. Sérgio Canabrava
 
 **item 2 caption:** นำเสนอผลงานที่งาน APVRS 2026 เมือง Gold Coast
 
