@@ -21,16 +21,16 @@ window.PORTFOLIO = {
   pages: [
     { type: 'project', sec: 'pr',
       title: 'Laser flange forceps',
-      sub: 'Custom forceps for laser-assisted flange creation',
-      role: 'Surgical instrument | Role: [YOUR ROLE] | [YEAR]',
-      problem: ['In Yamane scleral fixation, each flange is made with handheld cautery, so its size varies from one haptic to the next', 'A flange that is too small can slip back through the sclera'],
-      bullets: ['[HOW THE FORCEPS HOLDS THE HAPTIC]', 'Endolaser forms the flange at a set power and duration', 'Benchtop study on PVDF haptics: [KEY RESULT]'],
-      media: [{ type: 'video', src: 'media/forceps-assembly.mp4', fit: true, ratio: '16 / 9', bg: '#E9E9E6', cap: 'Rendered assembly of the Laser Flanger: the endolaser probe mounts on an arm with an angle scale and is aimed at the haptic held in the forceps tip.' }]
+      sub: 'Custom forceps for laser-assisted precision flange creation',
+      role: 'Surgical instrument | Role: Inventor; prototype development | Status: Under development',
+      problem: ['We proposed using endolaser to create a precise flange in Yamane scleral fixation', 'Feedback: aligning the laser tip with the haptic can be challenging'],
+      bullets: ['We developed novel forceps that standardise this step', 'The laser tip and the haptic are held side by side, stably'],
+      media: [{ type: 'video', src: 'media/forceps-assembly.mp4', fit: true, ratio: '16 / 9', bg: '#E9E9E6', cap: '3D model of the forceps in action, modelled in SolidWorks.' }]
     },
     { type: 'project', sec: 'pr',
-      title: 'Automatic VA machine',
+      title: 'Automatic VA kiosk',
       sub: 'Voice-guided visual acuity test that runs without staff',
-      role: 'Medical device prototype | Role: [YOUR ROLE] | 2026',
+      role: 'Medical device prototype | Role: Invented the algorithm, user experience and interaction; built the prototype | Status: Software adaptation for production; viability testing',
       problem: ['Visual acuity is measured on every eye patient, and each test needs a staff member to stand with the patient', 'In a busy clinic this becomes a queue before anyone sees a doctor'],
       bullets: ['Spoken instructions guide the patient through the test', 'Speech recognition on the device hears and grades each answer', 'Prints the result with no assistant needed'],
       media: [{ type: 'anim', name: 'vakiosk', light: true, bg: '#DDE2E6', cap: 'Redrawn from the kiosk application: the patient stands at 6 m, says "start", and reads each line aloud; the machine hears, grades and prints the result. Illustrative values.' }]
@@ -38,7 +38,7 @@ window.PORTFOLIO = {
     { type: 'project', sec: 'pr',
       title: 'Eye drop compliance tracker',
       sub: 'A bottle-mounted camera and motion sensor that confirms the drop reached the eye',
-      role: 'Medical device, bench prototype | Role: Idea and device design | 2026 | Status: On permanent hold due to patent limitation in USA',
+      role: 'Data logger, not a medical device; bench prototype | Role: Idea and device design | Status: On permanent hold due to patent limitation in USA',
       problem: ['Smart bottles count attempts (motion, squeeze, cap opening), not drops that reached the eye', 'A drop on the lid or cheek is still recorded as taken'],
       bullets: ['Motion sensor wakes an infrared camera when the bottle is turned upside down', 'Each instillation is filmed, time-stamped and stored on the device', 'Clips train an on-device model, validated against fluorescein'],
       media: [{ type: 'anim', name: 'eyedrop', cap: 'To-scale 3D model of the bench prototype on a Vigamox bottle: XIAO ESP32 board and CR2450 button cell on the side, OV2640 camera and infrared LED at the shoulder. Drag to turn; tap a part to explore it.' }]
@@ -46,7 +46,7 @@ window.PORTFOLIO = {
     { type: 'project', sec: 'sw',
       title: 'Hindsight',
       sub: 'Case video management with phase detection for rapid review',
-      role: 'Desktop application | Role: Idea and application development | 2026',
+      role: 'Desktop application | Role: Idea and application development',
       problem: ['Trainees record nearly every case, yet most footage is never watched again', 'Locating one step inside a full-length recording takes longer than the step itself', 'Feedback ends up being given from memory'],
       bullets: ['Automatic USB thumbdrive case sync', 'Automatic phase detection', 'Quick review, e.g. export the last 10 capsulorhexis you did'],
       media: [{ type: 'video', src: 'media/hindsight-demo.mp4', fit: true, tab: { en: 'Screen recording', th: 'วิดีโอหน้าจอ' }, cap: 'Screen recording of the application: phase timeline, structured debrief and ICO-OSCAR self-assessment. Patient details removed.' },
@@ -55,7 +55,7 @@ window.PORTFOLIO = {
     { type: 'project', sec: 'sw',
       title: 'Electronic CRF',
       sub: 'Case report form that checks each value as it is entered',
-      role: 'Web application | Role: [YOUR ROLE] | 2026',
+      role: 'Web application | Role: Application design to research requirements and IRB regulatory compliance',
       problem: ['On paper and spreadsheet case report forms, any value can be written down', 'Out-of-range measurements and missing fields are found weeks later at data cleaning, after the participant has gone home'],
       bullets: ['Validation rules run at the moment of entry', 'Out-of-range and missing values are flagged before the visit ends', 'Optometrist, assistant and principal investigator each work on their own linked screen'],
       media: [{ type: 'anim', name: 'defocus', light: true, bg: 'transparent', cap: 'Measuring a defocus curve on three linked screens. Each mistyped value is flagged at once and re-measured. Illustrative values.' }]
@@ -63,7 +63,7 @@ window.PORTFOLIO = {
     { type: 'project', sec: 'sw',
       title: 'Globe tracker',
       sub: 'Measures how much the eye moves during cataract surgery, from the microscope video alone',
-      role: '[TYPE OF SOFTWARE] | Role: [YOUR ROLE] | [YEAR]',
+      role: 'Integrated software | Role: Ideation and algorithm development',
       problem: ['Eye movement during cataract surgery is not measured; stability is judged by eye and by feel', 'Without a number, it cannot be fed back to the surgeon, taught, or compared between surgeons, techniques or robotic systems'],
       bullets: ['Fits the limbus on every frame of an ordinary microscope recording, with no extra hardware', 'Reports globe pitch, yaw and torsion in degrees, plotted phase by phase across the whole case', 'First step towards live feedback, training metrics and a benchmark for robotic surgery'],
       media: [{ type: 'video', src: 'media/globe-tracker.mp4', fit: true, cap: 'Screen recording during capsulorhexis: the limbus is fitted on every frame of the surgical view (left), and the pitch, yaw and torsion of the globe are tracked in degrees on a 3D model of the eye (right).' }]
