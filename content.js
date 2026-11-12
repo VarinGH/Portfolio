@@ -25,7 +25,7 @@ window.PORTFOLIO = {
       role: 'Surgical instrument | Role: [YOUR ROLE] | [YEAR]',
       problem: ['In Yamane scleral fixation, each flange is made with handheld cautery, so its size varies from one haptic to the next', 'A flange that is too small can slip back through the sclera'],
       bullets: ['[HOW THE FORCEPS HOLDS THE HAPTIC]', 'Endolaser forms the flange at a set power and duration', 'Benchtop study on PVDF haptics: [KEY RESULT]'],
-      media: [{ type: 'video', src: 'media/forceps-assembly.mp4', fit: true, cap: 'Rendered assembly of the Laser Flanger: the endolaser probe mounts on an arm with an angle scale and is aimed at the haptic held in the forceps tip.' }]
+      media: [{ type: 'video', src: 'media/forceps-assembly.mp4', fit: true, ratio: '16 / 9', bg: '#E9E9E6', cap: 'Rendered assembly of the Laser Flanger: the endolaser probe mounts on an arm with an angle scale and is aimed at the haptic held in the forceps tip.' }]
     },
     { type: 'project', sec: 'pr',
       title: 'Automatic VA machine',
