@@ -48,7 +48,7 @@
     if (p.type === 'research') {
       var col = function (c, fig) {
         var h = '<div class="col"><h2>' + T(c.heading) + '</h2>';
-        (c.items || []).forEach(function (it) { h += '<div class="item' + (it.sm ? ' sm' : '') + '"><h3>' + T(it.name) + '</h3>' + (it.meta ? '<div class="meta">' + T(it.meta) + '</div>' : '') + (it.text ? '<p>' + T(it.text) + '</p>' : '') + '</div>'; });
+        (c.items || []).forEach(function (it) { h += '<div class="item' + (it.sm ? ' sm pub' : '') + '"><h3>' + T(it.name) + '</h3>' + (it.meta ? '<div class="meta">' + T(it.meta) + '</div>' : '') + (it.text ? '<p>' + T(it.text) + '</p>' : '') + '</div>'; });
         if (c.list) h += '<div class="item">' + (c.listLabel ? '<div class="lbl">' + T(c.listLabel) + '</div>' : '') + '<ul>' + li(c.list) + '</ul></div>';
         if (c.sub) {
           h += '<h2 class="subh">' + T(c.sub.heading) + '</h2>';
