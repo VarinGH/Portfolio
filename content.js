@@ -42,7 +42,7 @@ window.PORTFOLIO = {
       role: 'Medical device, bench prototype | Role: Idea and device design | 2026 | Status: On permanent hold due to patent limitation in USA',
       problem: ['Smart bottles count attempts (motion, squeeze, cap opening), not drops that reached the eye', 'A drop on the lid or cheek is still recorded as taken'],
       bullets: ['Motion sensor wakes an infrared camera when the bottle is turned upside down', 'Each instillation is filmed, time-stamped and stored on the device', 'Clips train an on-device model, validated against fluorescein'],
-      media: [{ type: 'anim', name: 'eyedrop', cap: 'To-scale 3D model of the bench prototype on a Vigamox bottle: XIAO ESP32-S3 Sense and battery in the base, OV2640 camera and infrared LED at the shoulder. Drag to turn; tap a part to explore it.' }]
+      media: [{ type: 'anim', name: 'eyedrop', cap: 'To-scale 3D model of the bench prototype on a Vigamox bottle: XIAO ESP32 board and CR2450 button cell on the side, OV2640 camera and infrared LED at the shoulder. Drag to turn; tap a part to explore it.' }]
     },
     { type: 'project', sec: 'sw',
       title: 'Hindsight',

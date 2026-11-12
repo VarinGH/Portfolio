@@ -177,8 +177,12 @@ li em{font-style:italic}li strong{font-weight:600}
 .frame.ed3{background:#F3F3F0;display:block;font-family:var(--sans)}
 .ed3-gl{position:absolute;left:0;top:0;width:100%;height:100%;display:block;touch-action:none}
 .ed3-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.ed3-tag{position:absolute;left:0;top:0;font:400 15px/1.2 var(--sans);color:var(--ink);background:rgba(243,243,240,.9);padding:1px 5px;white-space:nowrap;will-change:transform}
-.ed3-tag::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:var(--lead,9px);background:var(--ink)}
+.ed3-lead{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.ed3-lead polyline{fill:none;stroke:var(--ink);stroke-width:1}
+.ed3-lead circle{fill:var(--ink)}
+.ed3-tag{position:absolute;left:0;top:0;font:400 15px/22px var(--sans);color:var(--ink);white-space:nowrap;will-change:transform}
+.ed3-gl,.ed3-labels{transition:opacity .12s ease-out}
+.ed3-gl.dip,.ed3-labels.dip{opacity:0}
 .ed3-ui{position:absolute;inset:0;pointer-events:none}
 .ed3-ui button{pointer-events:auto;font-family:var(--sans);font-size:18px;line-height:1;color:#5a5f66;transition:transform .05s ease-out,opacity .05s ease-out}
 .ed3-ui button:active{opacity:.6}
@@ -190,8 +194,9 @@ li em{font-style:italic}li strong{font-weight:600}
 .ed3-tools button{min-height:44px;padding:0 14px}
 .ed3-tools button:last-child{padding-right:8px}
 .ed3-tools i{width:1px;height:20px;background:var(--ink)}
-.ed3-card{position:absolute;right:16px;bottom:14px;width:290px;padding-top:9px;background:#F3F3F0;border-top:1px solid var(--rule);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.ed3-card{position:absolute;left:176px;right:18px;bottom:12px;padding-top:9px;background:#F3F3F0;border-top:1px solid var(--rule);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
 .ed3-card.on{opacity:1;transform:none}
+.ed3-card.on~.ed3-hint{opacity:0}
 .ed3-card b{display:block;font:700 19px/1.2 var(--sans);color:var(--ink);margin-bottom:3px}
 .ed3-card span{display:block;font:400 17px/1.4 var(--serif);color:var(--grey)}
 .ed3-hint{position:absolute;left:172px;bottom:14px;font:400 16px/1 var(--sans);color:var(--mid);transition:opacity .6s}

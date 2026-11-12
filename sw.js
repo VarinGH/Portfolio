@@ -1,6 +1,6 @@
 /* Offline support. Online: always fetch the newest files and refresh the stored copy. Offline: serve the stored copy. */
-var CACHE = 'portfolio-v42';
-var FILES = ['./', 'index.html', 'app.css', 'app.js', 'version.js', 'content.js', 'anims.js', 'eyedrop3d.js', 'lib/three.min.js', 'lib/RoomEnvironment.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
+var CACHE = 'portfolio-v43';
+var FILES = ['./', 'index.html', 'app.css', 'app.js', 'version.js', 'content.js', 'anims.js', 'eyedrop3d.js', 'media/xiao.bin', 'lib/three.min.js', 'lib/RoomEnvironment.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
   'fonts/source-serif-4-latin-400-normal.woff2', 'fonts/source-serif-4-latin-400-italic.woff2', 'fonts/source-serif-4-latin-600-normal.woff2',
   'fonts/source-sans-3-latin-400-normal.woff2', 'fonts/source-sans-3-latin-600-normal.woff2', 'fonts/source-sans-3-latin-700-normal.woff2',
   'fonts/sarabun-latin-400.woff2', 'fonts/sarabun-latin-500.woff2', 'fonts/sarabun-latin-600.woff2',
