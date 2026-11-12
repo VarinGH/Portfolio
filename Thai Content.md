@@ -191,6 +191,8 @@ Thai text of the app. Drafted and then rewritten for natural, polite Thai by Gem
 
 **right list:**
 
+- การฝึกผ่าตัดและการประเมินทักษะอย่างเป็นรูปธรรม
+- งานวิจัยทางคลินิกด้านจักษุวิทยา
 - นวัตกรรมผลิตภัณฑ์และซอฟต์แวร์
 - การประยุกต์ใช้ AI และ foundation models
 - การสื่อสารและให้ความรู้แก่ผู้ป่วย

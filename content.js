@@ -79,6 +79,8 @@ window.PORTFOLIO = {
         ] } },
       media: [{ type: 'video', src: 'media/apacrs-film.mp4', ratio: '1 / 1' }],
       right: { heading: 'Research interests', list: [
+          'Surgical training and objective skill assessment',
+          'Clinical trials in ophthalmology',
           'Product and software innovation',
           'Applied AI and foundation models',
           'Patient education and communication',

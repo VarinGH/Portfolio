@@ -198,6 +198,8 @@ When you are done, hand the file back and it is written into `content.js` and pu
 
 **right list:**
 
+- Surgical training and objective skill assessment
+- Clinical trials in ophthalmology
 - Product and software innovation
 - Applied AI and foundation models
 - Patient education and communication
