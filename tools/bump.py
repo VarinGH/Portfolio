@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Run before every commit: stamps a new version into version.js, version.json and sw.js,
-and regenerates English Content.md from content.js."""
+and regenerates English Content.md from content.js and content.th.js from Thai Content.md."""
 import json, re, subprocess, datetime, os
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 n = int(subprocess.check_output(['git', '-C', root, 'rev-list', '--count', 'HEAD']).decode()) + 1
@@ -15,5 +15,6 @@ open(p, 'w', encoding='utf-8').write(s)
 print(v, built)
 try:
     print(subprocess.check_output(['node', os.path.join(root, 'tools', 'content_md.js')]).decode().strip())
+    print(subprocess.check_output(['node', os.path.join(root, 'tools', 'thai_md.js')]).decode().strip())
 except Exception as e:
-    print('WARNING: English Content.md NOT regenerated:', e)
+    print('WARNING: English Content.md / content.th.js NOT regenerated:', e)
